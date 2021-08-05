@@ -1,0 +1,666 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Api to Ficus",
+        "version": "0.1"
+    },
+    "paths": {
+        "/login": {
+            "post": {
+                "tags": [
+                    "auth"
+                ],
+                "summary": "Path to log in",
+                "description": "The way to log in for users, who are registered.",
+                "operationId": "login",
+                "requestBody": {
+                    "description": "The personal information of registered users. In field login user can enter login or email",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "login": {
+                                        "description": "Login of user",
+                                        "type": "string"
+                                    },
+                                    "password": {
+                                        "description": "User's password",
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object",
+                                "example": {
+                                    "email": "example@mail.com",
+                                    "login": "example_user3457"
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "405": {
+                        "description": "Invalid input"
+                    },
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "access_token": {
+                                            "description": "The token, that user uses to log in",
+                                            "type": "string"
+                                        },
+                                        "token_type": {
+                                            "description": "Type of token",
+                                            "type": "string"
+                                        },
+                                        "expires_in": {
+                                            "description": "Time in minutes to token expire",
+                                            "type": "integer"
+                                        },
+                                        "id": {
+                                            "description": "Primary key",
+                                            "type": "integer"
+                                        },
+                                        "name": {
+                                            "description": "Name of user",
+                                            "type": "string"
+                                        },
+                                        "email": {
+                                            "description": "Email of user",
+                                            "type": "mail"
+                                        },
+                                        "login": {
+                                            "description": "Login of user",
+                                            "type": "string"
+                                        },
+                                        "email_verified_at": {
+                                            "description": "Time of verifiing user's mail",
+                                            "type": "timestamps"
+                                        },
+                                        "created_at": {
+                                            "description": "Time of user's registeration",
+                                            "type": "timestamps"
+                                        },
+                                        "updated_at": {
+                                            "description": "Time of last user's information changing",
+                                            "type": "timestamps"
+                                        }
+                                    },
+                                    "type": "object",
+                                    "example": {
+                                        "access_token": "example of token",
+                                        "token_type": "bearer",
+                                        "expires_in": "7200",
+                                        "user": {
+                                            "id": 1,
+                                            "name": "Example name",
+                                            "email": "example@mail.com",
+                                            "login": "example_user3457",
+                                            "email_verified_at": null,
+                                            "created_at": null,
+                                            "updated_at": null
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    },
+                    "503": {
+                        "description": "Service Unavailable"
+                    },
+                    "404": {
+                        "description": "Not found"
+                    }
+                }
+            }
+        },
+        "/refresh": {
+            "get": {
+                "tags": [
+                    "auth"
+                ],
+                "summary": "Path to refresh user's token",
+                "description": "The way to refresh user's token.",
+                "operationId": "refresh",
+                "parameters": [
+                    {
+                        "name": "access_token",
+                        "in": "query",
+                        "description": "Old token of user, who wants new token.",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "405": {
+                        "description": "Invalid input"
+                    },
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "access_token": {
+                                            "description": "The token, that user uses to log in",
+                                            "type": "string"
+                                        },
+                                        "token_type": {
+                                            "description": "Type of token",
+                                            "type": "string"
+                                        },
+                                        "expires_in": {
+                                            "description": "Time in minutes to token expire",
+                                            "type": "integer"
+                                        },
+                                        "id": {
+                                            "description": "Primary key",
+                                            "type": "integer"
+                                        },
+                                        "name": {
+                                            "description": "Name of user",
+                                            "type": "string"
+                                        },
+                                        "email": {
+                                            "description": "Email of user",
+                                            "type": "mail"
+                                        },
+                                        "login": {
+                                            "description": "Login of user",
+                                            "type": "string"
+                                        },
+                                        "email_verified_at": {
+                                            "description": "Time of verifiing user's mail",
+                                            "type": "timestamps"
+                                        },
+                                        "created_at": {
+                                            "description": "Time of user's registeration",
+                                            "type": "timestamps"
+                                        },
+                                        "updated_at": {
+                                            "description": "Time of last user's information changing",
+                                            "type": "timestamps"
+                                        }
+                                    },
+                                    "type": "object",
+                                    "example": {
+                                        "access_token": "example of token",
+                                        "token_type": "bearer",
+                                        "expires_in": "7200",
+                                        "user": {
+                                            "id": 1,
+                                            "name": "Example name",
+                                            "email": "example@mail.com",
+                                            "login": "example_user3457",
+                                            "email_verified_at": null,
+                                            "created_at": null,
+                                            "updated_at": null
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    },
+                    "503": {
+                        "description": "Service Unavailable"
+                    },
+                    "404": {
+                        "description": "Not found"
+                    }
+                }
+            }
+        },
+        "/register": {
+            "post": {
+                "tags": [
+                    "auth"
+                ],
+                "summary": "Path to register in system",
+                "description": "The way to register users.",
+                "operationId": "register",
+                "requestBody": {
+                    "description": "The personal information of registered users. In field login user can enter login or email",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "name": {
+                                        "description": "Name of user",
+                                        "type": "string"
+                                    },
+                                    "email": {
+                                        "description": "Email of user",
+                                        "type": "mail"
+                                    },
+                                    "login": {
+                                        "description": "Login of user",
+                                        "type": "string"
+                                    },
+                                    "password": {
+                                        "description": "Password of user",
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object",
+                                "example": {
+                                    "name": "Example name",
+                                    "email": "example@mail.com",
+                                    "login": "example_user3457",
+                                    "password": "password"
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "405": {
+                        "description": "Invalid input"
+                    },
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "access_token": {
+                                            "description": "The token, that user uses to log in",
+                                            "type": "string"
+                                        },
+                                        "token_type": {
+                                            "description": "Type of token",
+                                            "type": "string"
+                                        },
+                                        "expires_in": {
+                                            "description": "Time in minutes to token expire",
+                                            "type": "integer"
+                                        },
+                                        "id": {
+                                            "description": "Primary key",
+                                            "type": "integer"
+                                        },
+                                        "name": {
+                                            "description": "Name of user",
+                                            "type": "string"
+                                        },
+                                        "email": {
+                                            "description": "Email of user",
+                                            "type": "mail"
+                                        },
+                                        "login": {
+                                            "description": "Login of user",
+                                            "type": "string"
+                                        },
+                                        "email_verified_at": {
+                                            "description": "Time of verifiing user's mail",
+                                            "type": "timestamps"
+                                        },
+                                        "created_at": {
+                                            "description": "Time of user's registeration",
+                                            "type": "timestamps"
+                                        },
+                                        "updated_at": {
+                                            "description": "Time of last user's information changing",
+                                            "type": "timestamps"
+                                        }
+                                    },
+                                    "type": "object",
+                                    "example": {
+                                        "access_token": "example of token",
+                                        "token_type": "bearer",
+                                        "expires_in": "7200",
+                                        "user": {
+                                            "id": 1,
+                                            "name": "Example name",
+                                            "email": "example@mail.com",
+                                            "login": "example_user3457",
+                                            "email_verified_at": null,
+                                            "created_at": null,
+                                            "updated_at": null
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    },
+                    "503": {
+                        "description": "Service Unavailable"
+                    },
+                    "404": {
+                        "description": "Not found"
+                    }
+                }
+            }
+        },
+        "/user": {
+            "get": {
+                "tags": [
+                    "user"
+                ],
+                "summary": "Get all users from database",
+                "description": "Get all users from database with their fields except of password",
+                "operationId": "user",
+                "responses": {
+                    "405": {
+                        "description": "Invalid input"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    },
+                    "503": {
+                        "description": "Service Unavailable"
+                    },
+                    "404": {
+                        "description": "Not found"
+                    },
+                    "200": {
+                        "description": "ok",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "id": {
+                                            "description": "Primary key",
+                                            "type": "integer"
+                                        },
+                                        "name": {
+                                            "description": "Name of user",
+                                            "type": "string"
+                                        },
+                                        "email": {
+                                            "description": "Email of user",
+                                            "type": "mail"
+                                        },
+                                        "login": {
+                                            "description": "Login of user",
+                                            "type": "string"
+                                        },
+                                        "email_verified_at": {
+                                            "description": "Time of verifiing user's mail",
+                                            "type": "timestamps"
+                                        },
+                                        "created_at": {
+                                            "description": "Time of user's registeration",
+                                            "type": "timestamps"
+                                        },
+                                        "updated_at": {
+                                            "description": "Time of last user's information changing",
+                                            "type": "timestamps"
+                                        }
+                                    },
+                                    "type": "object",
+                                    "example": {
+                                        "id": 1,
+                                        "name": "Example name",
+                                        "email": "example@mail.com",
+                                        "login": "example_user3457",
+                                        "email_verified_at": null,
+                                        "created_at": null,
+                                        "updated_at": null
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "user"
+                ],
+                "summary": "Create an user",
+                "description": "Add user to database",
+                "operationId": "user",
+                "requestBody": {
+                    "description": "Pet object that needs to be added to the store",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "name": {
+                                        "description": "Name of user",
+                                        "type": "string"
+                                    },
+                                    "email": {
+                                        "description": "Email of user",
+                                        "type": "mail"
+                                    },
+                                    "login": {
+                                        "description": "Login of user",
+                                        "type": "string"
+                                    },
+                                    "password": {
+                                        "description": "Password of user",
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object",
+                                "example": {
+                                    "name": "Example name",
+                                    "email": "example@mail.com",
+                                    "login": "example_user3457",
+                                    "password": "password"
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "405": {
+                        "description": "Invalid input"
+                    },
+                    "200": {
+                        "description": "OK"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    },
+                    "503": {
+                        "description": "Service Unavailable"
+                    },
+                    "404": {
+                        "description": "Not found"
+                    }
+                }
+            }
+        },
+        "/user/{user_id}": {
+            "get": {
+                "tags": [
+                    "user"
+                ],
+                "summary": "Get one user from database",
+                "description": "Get one user from database with his fields except of password",
+                "operationId": "user",
+                "parameters": [
+                    {
+                        "name": "user_id",
+                        "in": "path",
+                        "description": "id of user, who we want to get",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "responses": {
+                    "405": {
+                        "description": "Invalid input"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    },
+                    "503": {
+                        "description": "Service Unavailable"
+                    },
+                    "404": {
+                        "description": "Not found"
+                    },
+                    "200": {
+                        "description": "ok",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "id": {
+                                            "description": "Primary key",
+                                            "type": "integer"
+                                        },
+                                        "name": {
+                                            "description": "Name of user",
+                                            "type": "string"
+                                        },
+                                        "email": {
+                                            "description": "Email of user",
+                                            "type": "mail"
+                                        },
+                                        "login": {
+                                            "description": "Login of user",
+                                            "type": "string"
+                                        },
+                                        "email_verified_at": {
+                                            "description": "Time of verifiing user's mail",
+                                            "type": "timestamps"
+                                        },
+                                        "created_at": {
+                                            "description": "Time of user's registeration",
+                                            "type": "timestamps"
+                                        },
+                                        "updated_at": {
+                                            "description": "Time of last user's information changing",
+                                            "type": "timestamps"
+                                        }
+                                    },
+                                    "type": "object",
+                                    "example": {
+                                        "id": 1,
+                                        "name": "Example name",
+                                        "email": "example@mail.com",
+                                        "login": "example_user3457",
+                                        "email_verified_at": null,
+                                        "created_at": null,
+                                        "updated_at": null
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "user"
+                ],
+                "summary": "Update one user from database",
+                "description": "Update one user from database",
+                "operationId": "user/{user_id}",
+                "parameters": [
+                    {
+                        "name": "user_id",
+                        "in": "path",
+                        "description": "id of user, who we want to update",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "description": "User object that needs to be added to the store",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "name": {
+                                        "description": "Name of user",
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object",
+                                "example": {
+                                    "name": "Example name"
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "405": {
+                        "description": "Invalid input"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    },
+                    "503": {
+                        "description": "Service Unavailable"
+                    },
+                    "404": {
+                        "description": "Not found"
+                    },
+                    "200": {
+                        "description": "ok"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "user"
+                ],
+                "summary": "Delete one user from database",
+                "description": "Delete one user from database",
+                "operationId": "user/{user_id}",
+                "parameters": [
+                    {
+                        "name": "user_id",
+                        "in": "path",
+                        "description": "id of user, who we want to delete",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "responses": {
+                    "405": {
+                        "description": "Invalid input"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    },
+                    "503": {
+                        "description": "Service Unavailable"
+                    },
+                    "404": {
+                        "description": "Not found"
+                    },
+                    "200": {
+                        "description": "ok"
+                    }
+                }
+            }
+        }
+    },
+    "security": [
+        []
+    ]
+}
