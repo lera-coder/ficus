@@ -4,9 +4,17 @@ namespace App\Http\Controllers\API\Auth;
 
 use App\Http\Controllers\API\Controller;
 use App\Http\Requests\LoginRequest;
+use App\Http\Requests\RefreshPasswordEmailRequest;
+use App\Http\Requests\RefreshPasswordUpdateRequest;
 use App\Http\Requests\RegisterRequest;
+use App\Models\Network;
+use Illuminate\Auth\Events\PasswordReset;
 use App\Models\User;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Facades\Response;
+use Illuminate\Support\Str;
+use Laravel\Socialite\Facades\Socialite;
 use Tymon\JWTAuth\Exceptions\TokenInvalidException;
 
 class AuthController extends Controller
@@ -470,7 +478,7 @@ class AuthController extends Controller
      * )
      */
 
-    public function register(RegisterRequest $request){
+    public function register(RegisterRequest  $request){
         try{
             User::createNewUser($request->all());
             return $this->createNewToken(auth()->attempt($request->only('login', 'password')));
@@ -479,5 +487,84 @@ class AuthController extends Controller
             return Response::json(['error'=>$exception->getMessage()], 401);
         }
     }
+
+
+
+    //it doesn't work at this version
+    public function emailPassword(RefreshPasswordEmailRequest $request){
+        $status = Password::sendResetLink($request->only('email'));
+        return $status === Password::RESET_LINK_SENT
+            ? response('Now user should go to confirm email')
+            :response('Sorry, you cannot change your password!', 401);
+    }
+
+
+
+
+    //it doesn't work at this version
+    public function resetPassword(RefreshPasswordUpdateRequest $request){
+
+        $status = Password::reset(
+            $request->only('password', 'password_confirmation', 'token', 'email'),
+            function ($user, $password) {
+                $user->forceFill([
+                    'password' => Hash::make($password)
+                ])->setRememberToken(Str::random(60));
+
+                $user->save();
+
+                event(new PasswordReset($user));
+            }
+        );
+
+        return $status === Password::PASSWORD_RESET
+            ? response('Everything is good')
+            : response('Something went wrong!', 500);
+    }
+
+
+    /**
+     * The function to redirect user to network to authentificate
+     *
+     * @param $network
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Http\Response
+     */
+    public function redirectToSocialNetwork($network){
+        if (!Network::checkForExist($network)) return response("Sorry, network ".$network." is not used by our app.", 404);
+        return Socialite::driver($network)->stateless()->redirect();
+    }
+
+
+
+
+    /**
+     * Function to add or login user in system via data retrieved from network
+     * @param $network
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Http\JsonResponse|\Illuminate\Http\Response
+     */
+
+    public function callbackFromSocialNetwork($network){
+        $network_id = Network::checkForExist($network);
+        if (!$network_id){
+            return response("Sorry, network " . $network . " is not used by our app.", 404);
+        }
+
+        $network_id = $network_id->id;
+
+        $user_credentials = Socialite::driver($network)->stateless()->user();
+        $user = User::where('email', $user_credentials->email)->first();
+
+        if(!$user){
+            $user = User::create([
+                'name' => $user_credentials->name,
+                'email' => $user_credentials->email,
+            ]);
+        }
+
+        return $this->createNewToken($user->updateSocialNetwork($network_id));
+
+
+    }
+
 
 }

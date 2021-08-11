@@ -2,23 +2,10 @@
 
 namespace App\Http\Requests;
 
-use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Support\Facades\Redirect;
 use App\Rules\LoginRule;
 
-class LoginRequest extends FormRequest
+class LoginRequest extends ParentRequest
 {
-
-
-    /**
-     * Determine if the user is authorized to make this request.
-     *
-     * @return bool
-     */
-    public function authorize()
-    {
-        return true;
-    }
 
     /**
      * Get the validation rules that apply to the request.
@@ -27,11 +14,11 @@ class LoginRequest extends FormRequest
      */
     public function rules()
     {
-
         return [
             "login"=>["required", "string", new LoginRule()],
             "password"=>"required|string"
         ];
     }
+
 
 }

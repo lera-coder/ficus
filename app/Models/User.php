@@ -2,63 +2,26 @@
 
 namespace App\Models;
 
+use Illuminate\Auth\Events\Registered;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Hash;
 use Tymon\JWTAuth\Contracts\JWTSubject;
+use Illuminate\Contracts\Auth\CanResetPassword;
 
-class User extends Authenticatable implements JWTSubject
+class User extends Authenticatable implements JWTSubject, MustVerifyEmail, CanResetPassword
 {
     use HasFactory, Notifiable;
 
-    /**
-     * @SWG\Definition(
-     *  definition="User",
-     *  @SWG\Property(
-     *      property="id",
-     *      type="integer"
-     *  ),
-     *  @SWG\Property(
-     *      property="name",
-     *      type="string"
-     *  ),
-     *  @SWG\Property(
-     *      property="email",
-     *      type="string"
-     *  ),
-     *  @SWG\Property(
-     *      property="password",
-     *      type="string"
-     *  ),
-     *  @SWG\Property(
-     *      property="login",
-     *      type="string"
-     *  ),
-     *  @SWG\Property(
-     *      property="email_verified_at",
-     *      type="timestamps"
-     *  ),
-     *  @SWG\Property(
-     *      property="remember_token",
-     *      type="string"
-     *  ),
-     *  @SWG\Property(
-     *      property="updated_at",
-     *      type="timestamps"
-     *  ),
-     *  @SWG\Property(
-     *      property="created_at",
-     *      type="timestamps"
-     *  ),
-     * )
-     */
+
     protected $fillable = [
         'name',
         'email',
         'password',
-        'login'
+        'login',
+        'network_id'
     ];
 
     /**
@@ -91,9 +54,39 @@ class User extends Authenticatable implements JWTSubject
         return [];
     }
 
+
+    /**
+     * Static function for creating new User and firing event of registration
+     * @param $credentials
+     */
     public static function createNewUser($credentials){
         $credentials['password'] = Hash::make($credentials['password']);
-        self::create($credentials);
+        $user = self::create($credentials);
+        event(new Registered($user));
+    }
+
+
+    /**
+     * Static function to get email from login field even, if user entered login
+     * @param $login
+     * @return array
+     */
+    public static function getEmail($login){
+        return str_contains($login, '@')
+            ? ['email' => $login]
+            : ['email' => User::where('login', $login)->first()->email];
+    }
+
+
+    /**
+     * Function to edit user, that login via social network and return him a token
+     * @param $network_id
+     */
+    public function updateSocialNetwork($network_id){
+        $this->network_id = $network_id;
+        $this->email_verified_at = now();
+        $this->save();
+        return auth()->login($this);
     }
 
 }

@@ -8,15 +8,6 @@ use Illuminate\Support\Facades\Validator;
 
 class LoginRule implements Rule
 {
-    /**
-     * Create a new rule instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        //
-    }
 
     /**
      * Determine if the validation rule passes.
@@ -30,7 +21,6 @@ class LoginRule implements Rule
         $validator = str_contains($value, '@')?
             Validator::make([$attribute => $value], ['login'=>'exists:users,email']) :
             Validator::make([$attribute => $value], ['login'=>'exists:users,login']);
-
         return !$validator->fails();
     }
 
