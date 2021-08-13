@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "8d3f52631abd307ed1d0869ba86cd3fa",
+    "content-hash": "2679cd6187355b6a8ac36d4640a974c3",
     "packages": [
         {
             "name": "asm89/stack-cors",
@@ -2855,6 +2855,66 @@
                 }
             ],
             "time": "2020-08-18T17:17:46+00:00"
+        },
+        {
+            "name": "srmklive/authy",
+            "version": "v0.7.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/srmklive/laravel-twofactor-authentication.git",
+                "reference": "0d295208dbbf6f64e2e13ebc4eadf00e3263b813"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/srmklive/laravel-twofactor-authentication/zipball/0d295208dbbf6f64e2e13ebc4eadf00e3263b813",
+                "reference": "0d295208dbbf6f64e2e13ebc4eadf00e3263b813",
+                "shasum": ""
+            },
+            "require": {
+                "guzzlehttp/guzzle": "~6.0|~7.0",
+                "illuminate/support": "~5.1|~5.2|~5.3|~5.4|~5.5|~5.6|~5.7|~5.8|~6.0|~7.0|~8.0",
+                "nesbot/carbon": "~1.2|~2.0"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Srmklive\\Authy\\Providers\\AuthyServiceProvider"
+                    ],
+                    "aliases": {
+                        "Authy": "Srmklive\\Authy\\Facades\\Authy"
+                    }
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Srmklive\\Authy\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Raza Mehdi",
+                    "email": "srmk@outlook.com"
+                }
+            ],
+            "description": "Plugin for enabling two-factor authentication in Laravel applications",
+            "homepage": "https://github.com/srmklive/laravel-twofactor-authentication",
+            "keywords": [
+                "Authentication",
+                "api",
+                "authy",
+                "laravel two-factor authentication",
+                "two-factor"
+            ],
+            "support": {
+                "issues": "https://github.com/srmklive/laravel-twofactor-authentication/issues",
+                "source": "https://github.com/srmklive/laravel-twofactor-authentication/tree/master"
+            },
+            "time": "2020-09-09T07:45:37+00:00"
         },
         {
             "name": "swagger-api/swagger-ui",

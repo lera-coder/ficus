@@ -16,7 +16,7 @@ class RefreshPasswordEmailRequest extends ParentRequest
     public function rules()
     {
         return [
-            "email"=>'required|email',
+            "login"=>'required',
         ];
     }
 }

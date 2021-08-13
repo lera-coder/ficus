@@ -2,6 +2,10 @@
 
 namespace App\Http\Controllers\API;
 
+use App\Models\Email;
+use App\Models\Phone;
+use App\Models\PhoneCountryCode;
+use App\Models\Role;
 use App\Models\User;
 use Illuminate\Http\Request;
 
@@ -417,4 +421,6 @@ class UserController extends Controller
     {
         User::destroy($id);
     }
+
+
 }

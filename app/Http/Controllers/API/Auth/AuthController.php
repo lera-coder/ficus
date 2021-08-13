@@ -7,14 +7,20 @@ use App\Http\Requests\LoginRequest;
 use App\Http\Requests\RefreshPasswordEmailRequest;
 use App\Http\Requests\RefreshPasswordUpdateRequest;
 use App\Http\Requests\RegisterRequest;
+use App\Http\Resources\UserResource;
+use App\Models\Email;
 use App\Models\Network;
 use Illuminate\Auth\Events\PasswordReset;
 use App\Models\User;
+use Illuminate\Contracts\Auth\Authenticatable;
+use Illuminate\Foundation\Auth\EmailVerificationRequest;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Str;
 use Laravel\Socialite\Facades\Socialite;
+use Srmklive\Authy\Facades\Authy;
 use Tymon\JWTAuth\Exceptions\TokenInvalidException;
 
 class AuthController extends Controller
@@ -178,7 +184,7 @@ class AuthController extends Controller
             'access_token' => $token,
             'token_type' => 'bearer',
             'expires_in' => auth()->factory()->getTTL() * 60,
-            'user' => auth()->user()
+            'user' => new UserResource((auth()->user()))
         ]);
     }
 
@@ -481,7 +487,8 @@ class AuthController extends Controller
     public function register(RegisterRequest  $request){
         try{
             User::createNewUser($request->all());
-            return $this->createNewToken(auth()->attempt($request->only('login', 'password')));
+            $token = auth()->attempt($request->only('login', 'password'));
+            return $this->createNewToken($token);
         }
         catch (\PHPUnit\Exception $exception){
             return Response::json(['error'=>$exception->getMessage()], 401);
@@ -489,19 +496,26 @@ class AuthController extends Controller
     }
 
 
-
-    //it doesn't work at this version
+    /**
+     * Function to check data to decide is those data valid
+     *
+     * @param RefreshPasswordEmailRequest $request
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Http\Response
+     */
     public function emailPassword(RefreshPasswordEmailRequest $request){
-        $status = Password::sendResetLink($request->only('email'));
+        $status = Password::sendResetLink($request->only('login'));
         return $status === Password::RESET_LINK_SENT
             ? response('Now user should go to confirm email')
             :response('Sorry, you cannot change your password!', 401);
     }
 
 
-
-
-    //it doesn't work at this version
+    /**
+     * Function to reset password after confirmation on email
+     *
+     * @param RefreshPasswordUpdateRequest $request
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Http\Response
+     */
     public function resetPassword(RefreshPasswordUpdateRequest $request){
 
         $status = Password::reset(
@@ -552,7 +566,7 @@ class AuthController extends Controller
         $network_id = $network_id->id;
 
         $user_credentials = Socialite::driver($network)->stateless()->user();
-        $user = User::where('email', $user_credentials->email)->first();
+        $user = Email::where('email', $user_credentials->email)->first()->user;
 
         if(!$user){
             $user = User::create([
@@ -565,6 +579,108 @@ class AuthController extends Controller
 
 
     }
+
+
+
+
+
+    /**
+     * Send the post-authentication response.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \Illuminate\Contracts\Auth\Authenticatable  $user
+     * @return \Illuminate\Http\Response
+     */
+    protected function authenticated(Request $request, Authenticatable $user)
+    {
+        if (Authy::getProvider()->isEnabled($user)) {
+            return $this->logoutAndRedirectToTokenScreen($request, $user);
+        }
+
+        return redirect()->intended($this->redirectPath());
+    }
+
+
+    /**
+     * Generate a redirect response to the two-factor token screen.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \Illuminate\Contracts\Auth\Authenticatable  $user
+     * @return \Illuminate\Http\Response
+     */
+    protected function logoutAndRedirectToTokenScreen(Request $request, Authenticatable $user)
+    {
+        auth($this->getGuard())->logout();
+        $request->session()->put('authy:auth:id', $user->id);
+
+        return redirect(url('auth/token'));
+    }
+
+
+
+    /**
+     * Verify the two-factor authentication token.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function post2AuthToken(Request $request)
+    {
+        $this->validate($request, ['token' => 'required']);
+        if (! session('authy:auth:id')) {
+            return redirect(url('login'));
+        }
+
+        $guard = config('auth.defaults.guard');
+        $provider = config('auth.guards.' . $guard . '.provider');
+        $model = config('auth.providers.' . $provider . '.model');
+        $user = (new $model)->findOrFail(
+            $request->session()->pull('authy:auth:id')
+        );
+
+        if (Authy::getProvider()->tokenIsValid($user, $request->token)) {
+            auth($this->getGuard())->login($user);
+            return redirect()->intended($this->redirectPath());
+        } else {
+            return redirect(url('login'))->withErrors('Invalid two-factor authentication token provided!');
+        }
+    }
+
+
+    /**
+     * Route to show, that user must firstly verify email to use get the wishful result
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function verifyEmailNotice(){
+        return Response::json(['Please, verify your email, firstly!'], 401);
+    }
+
+
+    /**
+     * Route to send the list with email verifiing button second time
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function verifyEmailSend(Request $request){
+        $request->user()->sendEmailVerificationNotification();
+        return Response::json(['Email was successfully sended']);
+    }
+
+
+    /**
+     * Route to mark in database, that user verified password
+     *
+     * @param EmailVerificationRequest $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function verifyEmailConfirm(EmailVerificationRequest $request){
+        $request->fulfill();
+        return Response::json(['Your email is verified']);
+    }
+
+
 
 
 }

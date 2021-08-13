@@ -16,10 +16,14 @@ class DatabaseSeeder extends Seeder
 
         $this->call(
             [
+                NetworkSeeder::class,
                 UserSeeder::class,
-                NetworkSeeder::class
+                PhoneCountryCodeSeeder::class,
+                PhoneSeeder::class,
+                RoleSeeder::class,
+                EmailSeeder::class,
+
             ]
         );
-        // \App\Models\User::factory(10)->create();
     }
 }

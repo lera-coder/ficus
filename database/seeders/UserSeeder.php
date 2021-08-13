@@ -19,21 +19,18 @@ class UserSeeder extends Seeder
             [
                 "name"=>"Lera",
                 "login"=>"lera6606",
-                "email"=>"valeryselivanova0@gmail.com",
                 "password"=>Hash::make("2206"),
             ],
 
             [
-                "name"=>"Arnold",
-                "login"=>"arnold_shwarz",
-                "email"=>"arnoldsvarcneger86@gmail.com",
+                "name"=>"Slava",
+                "login"=>"slava6606",
                 "password"=>Hash::make("2206"),
             ],
 
             [
-                "name"=>"Katya",
-                "login"=>"katrusia234",
-                "email"=>"katerina@example.com",
+                "name"=>"Mustafa",
+                "login"=>"mustafa6606",
                 "password"=>Hash::make("2206"),
             ],
         ]);

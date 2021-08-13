@@ -16,8 +16,8 @@ class RegisterRequest extends ParentRequest
     {
         return [
             "name"=>"required|string",
-            "email"=>"required|email|unique:users,email",
-            "login"=>"required|string|unique:users,login|not_regex:/@^.+$/",
+            "email"=>"required|email|unique:emails,email",
+            "login"=>"required|string|unique:users,login|not_regex:/@^.+№/",
             "password"=>"required|string|confirmed",
         ];
     }

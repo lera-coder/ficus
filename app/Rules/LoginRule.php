@@ -19,7 +19,7 @@ class LoginRule implements Rule
     public function passes($attribute, $value)
     {
         $validator = str_contains($value, '@')?
-            Validator::make([$attribute => $value], ['login'=>'exists:users,email']) :
+            Validator::make([$attribute => $value], ['login'=>'exists:emails,email']) :
             Validator::make([$attribute => $value], ['login'=>'exists:users,login']);
         return !$validator->fails();
     }

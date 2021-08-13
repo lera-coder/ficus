@@ -10,6 +10,11 @@ class Network extends Model
     use HasFactory;
 
 
+    protected $fillable =[
+        'name'
+    ];
+
+
     /**
      * Function to check was this network connected to this app or no
      * @param $network
@@ -21,5 +26,16 @@ class Network extends Model
             }
         );
     }
+
+
+    /**
+     * Function to get all users, that are logged in via this network
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function users(){
+        return $this->hasMany(User::class);
+    }
+
+
 
 }
