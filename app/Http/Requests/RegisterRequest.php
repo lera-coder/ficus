@@ -2,21 +2,10 @@
 
 namespace App\Http\Requests;
 
-use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Support\Facades\Redirect;
 
-class RegisterRequest extends FormRequest
+class RegisterRequest extends ParentRequest
 {
 
-    /**
-     * Determine if the user is authorized to make this request.
-     *
-     * @return bool
-     */
-    public function authorize()
-    {
-        return true;
-    }
 
     /**
      * Get the validation rules that apply to the request.
@@ -27,11 +16,12 @@ class RegisterRequest extends FormRequest
     {
         return [
             "name"=>"required|string",
-            "email"=>"required|email|unique:users,email",
-            "login"=>"required|string|unique:users,login",
-            "password"=>"required|string",
+            "email"=>"required|email|unique:emails,email",
+            "login"=>"required|string|unique:users,login|not_regex:/@^.+№/",
+            "password"=>"required|string|confirmed",
         ];
     }
+
 
 
 }

@@ -16,7 +16,7 @@ class RefreshPasswordEmailRequest extends ParentRequest
     public function rules()
     {
         return [
-            "login"=>["required", "string", new LoginRule()],
+            "login"=>'required',
         ];
     }
 }

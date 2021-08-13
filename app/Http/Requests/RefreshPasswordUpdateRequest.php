@@ -3,6 +3,8 @@
 namespace App\Http\Requests;
 
 
+use App\Rules\LoginRule;
+
 class RefreshPasswordUpdateRequest extends ParentRequest
 {
 
