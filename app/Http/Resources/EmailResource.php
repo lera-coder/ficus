@@ -17,7 +17,6 @@ class EmailResource extends JsonResource
         return [
             'email'=>$this->email,
             'email_verified_at'=>$this->email_verified_at,
-
         ];
     }
 }

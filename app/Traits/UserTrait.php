@@ -4,6 +4,10 @@
 namespace App\Traits;
 
 
+use App\Models\Email;
+use App\Models\Phone;
+use Exception;
+
 trait  UserTrait
 {
 
@@ -67,10 +71,23 @@ trait  UserTrait
      *
      * @param $email_name
      */
-    public function makeEmailActive($email_name){
+    public function makeEmailActive($email_id){
+
+        try {
+            $email = Email::find($email_id);
+        }
+        catch (Exception $e){
+            return response('This email is not found!', 404);
+        }
+        if($email->is_active) return response('This email was already active');
+
         $this->activeEmail()->is_active = false;
-        $this->disactiveEmails()->where('email', $email_name)->first()->is_active = true;
         $this->push();
+
+        $email->is_active = true;
+        $email->save();
+
+
     }
 
 
@@ -81,9 +98,9 @@ trait  UserTrait
      */
     public function addEmail($email_name){
 
-        $this->emails()->create([
+        return $this->emails()->create([
             'email'=>$email_name,
-            'is_active'=>$this->emails()==0,
+            'is_active'=>$this->emails()->count()==0,
             'user_id'=>$this->id
         ]);
     }
@@ -94,10 +111,20 @@ trait  UserTrait
      *
      * @param $phone_number
      */
-    public function makePhoneActive($phone_number){
+    public function makePhoneActive($phone_id){
+        try {
+            $phone = Phone::find($phone_id);
+        }
+        catch (Exception $e){
+            return response('This phone is not found!', 404);
+        }
+        if($phone->is_active) return response('This phone was already active');
+
         $this->activePhone()->is_active = false;
-        $this->disactivePhones()->where('email', $phone_number)->first()->is_active = true;
         $this->push();
+
+        $phone->is_active = true;
+        $phone->save();
     }
 
 
@@ -106,13 +133,17 @@ trait  UserTrait
      *
      * @param $phone_number
      */
-    public function addPhone($phone_number){
-        $this->phones()->create([
+    public function addPhone($phone_number, $country_code){
+        $phone = $this->phones()->create([
             'email'=>$phone_number,
-            'is_active'=>$this->phones()==0,
+            'is_active'=>$this->phones()->count()==0,
+            'phone_country_code'=>$country_code,
             'user_id'=>$this->id
         ]);
+
     }
+
+
 
 
 

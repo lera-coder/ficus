@@ -19,11 +19,35 @@ use Illuminate\Support\Facades\Response;
 
 Route::middleware('jwt.verify')->group(function () {
 
+
     //Routes in Admin Panel
     Route::middleware('verified')->group(function () {
+        //User methods
         Route::resource("user", "App\Http\Controllers\API\UserController")->except('edit', 'create');
-        Route::post('user/auth2fa/toggle/{activity}', ["App\Http\Controllers\API\UserController", 'toggle2FAAuth']);
-        Route::post('user/email/{activity}', ["App\Http\Controllers\API\UserController", 'toggle2FAAuth']);
+
+        //Methods for country codes
+        Route::resource('country-code', "App\Http\Controllers\API\PhoneCountryCodeController")->except('edit', 'create');
+        //Method to get phones by countries
+        Route::get('country-code/phones/{id}', ["App\Http\Controllers\API\PhoneCountryCodeController", "phones"])->name('phones.country');
+
+
+        //Activate email
+        Route::get('user/email/activate/{id}', ["App\Http\Controllers\API\EmailController", 'setActive']);
+        //Get active email
+        Route::get("user/email/active", ["App\Http\Controllers\API\EmailController", "activeEmail"])->name("email.active");
+        //Methods for email
+        Route::resource('user/email', "App\Http\Controllers\API\EmailController")->except('edit', 'create');
+
+
+        //Activate phone
+        Route::get('user/phone/activate/{id}', ["App\Http\Controllers\API\PhoneController", 'setActive']);
+        //Get active phone
+        Route::get("user/phone/active", ["App\Http\Controllers\API\PhoneController", "activePhone"])->name("email.active");
+        //Methods for phone
+        Route::resource('user/phone', "App\Http\Controllers\API\PhoneController")->except('edit', 'create');
+
+        //Toggle 2FA
+        Route::get('user/auth2fa/toggle', ["App\Http\Controllers\API\UserController", 'toggle2FAAuth']);
     });
 
     //Email verifiing

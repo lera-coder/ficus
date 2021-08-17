@@ -48,6 +48,20 @@ class CustomJWTGuard extends JWTGuard
     }
 
 
+    /**
+     * Determine if the user matches the credentials.
+     *
+     * @param  mixed  $user
+     * @param  array  $credentials
+     *
+     * @return bool
+     */
+    protected function hasValidCredentials($user, $credentials)
+    {
+        return $user !== null && $this->validateCredentials($user, $credentials);
+    }
+
+
 
 
 

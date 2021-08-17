@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\API;
 
+use App\Http\Requests\ContactRequest;
 use App\Http\Requests\EmailRequest;
 use App\Http\Requests\PhoneRequest;
 use App\Models\User;
@@ -79,9 +80,8 @@ class UserController extends Controller
      * @param $activity
      * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Http\Response
      */
-    public function toggle2FAAuth($activity){
-        auth()->user()->toggle2FA($activity);
-        return response('2Factor Authentication was successfully turned on');
+    public function toggle2FAAuth(){
+        return auth()->user()->toggle2FA();
     }
 
 
@@ -90,8 +90,8 @@ class UserController extends Controller
      *
      * @param EmailRequest $request
      */
-    public function addContact(EmailRequest $request){
-        auth()->user()->addEmail($request);
+    public function addEmail(EmailRequest $request){
+
     }
 
 
@@ -99,16 +99,16 @@ class UserController extends Controller
      * @param PhoneRequest $request
      */
     public function addPhone(PhoneRequest $request){
-        auth()->user()->addPhone($request);
+        auth()->user()->addPhone($request->phone_number, $request->phone_country_code);
     }
-
-
-    /**
-     * @param PhoneRequest $request
-     */
-    public function makeActive(PhoneRequest $request){
-        auth()->user()->addPhone($request);
-    }
+//
+//
+//    /**
+//     * @param PhoneRequest $request
+//     */
+//    public function makeActive(PhoneRequest $request){
+//        auth()->user()->addPhone($request);
+//    }
 
 
 }

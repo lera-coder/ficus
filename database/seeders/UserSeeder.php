@@ -19,7 +19,7 @@ class UserSeeder extends Seeder
             [
                 "name"=>"Lera",
                 "login"=>"lera6606",
-                "is_2auth"=>true,
+                "is_2auth"=>false,
                 "password"=>Hash::make("2206"),
             ],
 
