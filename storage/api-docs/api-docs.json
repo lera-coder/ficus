@@ -5,7 +5,7 @@
         "version": "0.1"
     },
     "paths": {
-        "/login": {
+        "/api/login": {
             "post": {
                 "tags": [
                     "auth"
@@ -21,7 +21,7 @@
                             "schema": {
                                 "properties": {
                                     "login": {
-                                        "description": "Login of user",
+                                        "description": "Login or email of user",
                                         "type": "string"
                                     },
                                     "password": {
@@ -31,8 +31,8 @@
                                 },
                                 "type": "object",
                                 "example": {
-                                    "email": "example@mail.com",
-                                    "login": "example_user3457"
+                                    "login": "lera6606",
+                                    "password": "2206"
                                 }
                             }
                         }
@@ -41,6 +41,12 @@
                 "responses": {
                     "405": {
                         "description": "Invalid input"
+                    },
+                    "401": {
+                        "description": "Unright password"
+                    },
+                    "422": {
+                        "description": "Login/Email is not existed"
                     },
                     "200": {
                         "description": "OK",
@@ -87,21 +93,79 @@
                                         "updated_at": {
                                             "description": "Time of last user's information changing",
                                             "type": "timestamps"
+                                        },
+                                        "active_phone":{
+                                            "description": "It's the phone, that the system sholud use",
+                                            "type":"object"
+                                        },
+
+                                        "disactive_phones":{
+                                            "description": "All contact phones of user, that system will not use",
+                                            "type":"object"
+                                        },
+
+                                        "active_email":{
+                                            "description": "It's the email, that the system sholud use",
+                                            "type":"object"
+                                        },
+
+                                        "disactive_email":{
+                                            "description": "All contact emails of user, that system will not use",
+                                            "type":"object"
                                         }
+
                                     },
                                     "type": "object",
                                     "example": {
-                                        "access_token": "example of token",
+                                        "access_token": "gcfhvjbkncghvjbknlmhvgjbknlm;,vhgbjknlm;,vghjbknlm;,vghbjknlm;,vghbjknlm;,rtfyguhijokpdrtfyuiokpfcghjkl;",
                                         "token_type": "bearer",
-                                        "expires_in": "7200",
+                                        "expires_in": 14400,
                                         "user": {
+                                            "name": "Lera",
+                                            "login": "lera6606",
+                                            "email": {
                                             "id": 1,
-                                            "name": "Example name",
-                                            "email": "example@mail.com",
-                                            "login": "example_user3457",
+                                            "email": "valeryselivanova0@gmail.com",
                                             "email_verified_at": null,
+                                            "is_active": 1,
+                                            "user_id": 1,
                                             "created_at": null,
                                             "updated_at": null
+                                            },
+                                            "disactive_emails": {
+                                            "1": {
+                                                "id": 2,
+                                                "email": "arnoldsvarcneger86@gmail.com",
+                                                "email_verified_at": null,
+                                                "is_active": 0,
+                                                "user_id": 1,
+                                                "created_at": null,
+                                                "updated_at": null
+                                            }
+                                            },
+                                            "phone": {
+                                            "id": 2,
+                                            "phone_number": "0670099651",
+                                            "two_factor_options": null,
+                                            "is_active": 1,
+                                            "user_id": 1,
+                                            "phone_country_code_id": 1,
+                                            "created_at": null,
+                                            "updated_at": null
+                                            },
+                                            "disactive_phones": [
+                                            {
+                                                "id": 1,
+                                                "phone_number": "0950901024",
+                                                "two_factor_options": null,
+                                                "is_active": 0,
+                                                "user_id": 1,
+                                                "phone_country_code_id": 1,
+                                                "created_at": null,
+                                                "updated_at": null
+                                            }
+                                            ],
+                                            "network": null
                                         }
                                     }
                                 }
@@ -120,7 +184,7 @@
                 }
             }
         },
-        "/refresh": {
+        "/api/refresh": {
             "get": {
                 "tags": [
                     "auth"
@@ -222,7 +286,7 @@
                 }
             }
         },
-        "/register": {
+        "/api/register": {
             "post": {
                 "tags": [
                     "auth"
@@ -259,16 +323,18 @@
                                     "name": "Example name",
                                     "email": "example@mail.com",
                                     "login": "example_user3457",
-                                    "password": "password"
+                                    "password": "password",
+                                    "password_confirmation": "password"
                                 }
                             }
                         }
                     }
                 },
                 "responses": {
-                    "405": {
-                        "description": "Invalid input"
+                    "422":{
+                        "description":"The entered data is not valid."
                     },
+
                     "200": {
                         "description": "OK",
                         "content": {
@@ -314,21 +380,79 @@
                                         "updated_at": {
                                             "description": "Time of last user's information changing",
                                             "type": "timestamps"
+                                        },
+                                        "active_phone":{
+                                            "description": "It's the phone, that the system sholud use",
+                                            "type":"object"
+                                        },
+
+                                        "disactive_phones":{
+                                            "description": "All contact phones of user, that system will not use",
+                                            "type":"object"
+                                        },
+
+                                        "active_email":{
+                                            "description": "It's the email, that the system sholud use",
+                                            "type":"object"
+                                        },
+
+                                        "disactive_email":{
+                                            "description": "All contact emails of user, that system will not use",
+                                            "type":"object"
                                         }
+
                                     },
                                     "type": "object",
                                     "example": {
-                                        "access_token": "example of token",
+                                        "access_token": "gcfhvjbkncghvjbknlmhvgjbknlm;,vhgbjknlm;,vghjbknlm;,vghbjknlm;,vghbjknlm;,rtfyguhijokpdrtfyuiokpfcghjkl;",
                                         "token_type": "bearer",
-                                        "expires_in": "7200",
+                                        "expires_in": 14400,
                                         "user": {
+                                            "name": "Lera",
+                                            "login": "lera6606",
+                                            "email": {
                                             "id": 1,
-                                            "name": "Example name",
-                                            "email": "example@mail.com",
-                                            "login": "example_user3457",
+                                            "email": "valeryselivanova0@gmail.com",
                                             "email_verified_at": null,
+                                            "is_active": 1,
+                                            "user_id": 1,
                                             "created_at": null,
                                             "updated_at": null
+                                            },
+                                            "disactive_emails": {
+                                            "1": {
+                                                "id": 2,
+                                                "email": "arnoldsvarcneger86@gmail.com",
+                                                "email_verified_at": null,
+                                                "is_active": 0,
+                                                "user_id": 1,
+                                                "created_at": null,
+                                                "updated_at": null
+                                            }
+                                            },
+                                            "phone": {
+                                            "id": 2,
+                                            "phone_number": "0670099651",
+                                            "two_factor_options": null,
+                                            "is_active": 1,
+                                            "user_id": 1,
+                                            "phone_country_code_id": 1,
+                                            "created_at": null,
+                                            "updated_at": null
+                                            },
+                                            "disactive_phones": [
+                                            {
+                                                "id": 1,
+                                                "phone_number": "0950901024",
+                                                "two_factor_options": null,
+                                                "is_active": 0,
+                                                "user_id": 1,
+                                                "phone_country_code_id": 1,
+                                                "created_at": null,
+                                                "updated_at": null
+                                            }
+                                            ],
+                                            "network": null
                                         }
                                     }
                                 }
@@ -347,7 +471,7 @@
                 }
             }
         },
-        "/user": {
+        "/api/user": {
             "get": {
                 "tags": [
                     "user"
@@ -356,6 +480,9 @@
                 "description": "Get all users from database with their fields except of password",
                 "operationId": "user",
                 "responses": {
+                    "401": {
+                        "description": "User is unauthorized"
+                    },
                     "405": {
                         "description": "Invalid input"
                     },
@@ -462,6 +589,9 @@
                     }
                 },
                 "responses": {
+                    "401": {
+                        "description": "User is unauthorized"
+                    },
                     "405": {
                         "description": "Invalid input"
                     },
@@ -480,7 +610,7 @@
                 }
             }
         },
-        "/user/{user_id}": {
+        "/api/user/{user_id}": {
             "get": {
                 "tags": [
                     "user"
@@ -501,6 +631,9 @@
                     }
                 ],
                 "responses": {
+                    "401": {
+                        "description": "User is unauthorized"
+                    },
                     "405": {
                         "description": "Invalid input"
                     },
@@ -604,6 +737,9 @@
                     }
                 },
                 "responses": {
+                    "401": {
+                        "description": "User is unauthorized"
+                    },
                     "405": {
                         "description": "Invalid input"
                     },
@@ -641,6 +777,9 @@
                     }
                 ],
                 "responses": {
+                    "401": {
+                        "description": "User is unauthorized"
+                    },
                     "405": {
                         "description": "Invalid input"
                     },

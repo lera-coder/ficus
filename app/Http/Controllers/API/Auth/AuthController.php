@@ -12,7 +12,6 @@ use App\Models\Email;
 use App\Models\Network;
 use Illuminate\Auth\Events\PasswordReset;
 use App\Models\User;
-use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -20,164 +19,62 @@ use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Str;
 use Laravel\Socialite\Facades\Socialite;
-use Srmklive\Authy\Facades\Authy;
+use Nexmo\Laravel\Facade\Nexmo;
 use Tymon\JWTAuth\Exceptions\TokenInvalidException;
 
 class AuthController extends Controller
 {
 
+
     /**
-     * @OA\POST(
-     * path="/login",
-     * summary="Path to log in",
-     * description="The way to log in for users, who are registered.",
-     * operationId="login",
-     * tags={"auth"},
+     * Login function
      *
-     *
-     *     @OA\RequestBody(
-     *         description="The personal information of registered users. In field login user can enter login or email",
-     *         required=true,
-     *         @OA\MediaType(
-     *             mediaType="application/json",
-     *              @OA\Schema(
-     *                     @OA\Property(
-     *                         property="login",
-     *                         type="string",
-     *                         description="Login of user",
-     *                     ),
-     *
-     *
-     *                      @OA\Property(
-     *                         property="password",
-     *                         type="string",
-     *                         description="User's password",
-     *                     ),
-     *
-     *                     example={
-     *                         "email": "example@mail.com",
-     *                         "login": "example_user3457",
-     *                     }
-     *                 )
-     *
-     *
-     *         ),
-     *     ),
-     *     @OA\Response(
-     *         response=405,
-     *         description="Invalid input",
-     *     ),
-     *
-     *     @OA\Response(
-     *         response=200,
-     *         description="OK",
-     *         content={
-     *             @OA\MediaType(
-     *                 mediaType="application/json",
-     *                 @OA\Schema(
-     *                     @OA\Property(
-     *                         property="access_token",
-     *                         type="string",
-     *                         description="The token, that user uses to log in"
-     *                     ),
-     *
-     *                      @OA\Property(
-     *                         property="token_type",
-     *                         type="string",
-     *                         description="Type of token"
-     *                     ),
-     *
-     *                      @OA\Property(
-     *                         property="expires_in",
-     *                         type="integer",
-     *                         description="Time in minutes to token expire"
-     *                     ),
-     *                     @OA\Property(
-     *                         property="id",
-     *                         type="integer",
-     *                         description="Primary key"
-     *                     ),
-     *                     @OA\Property(
-     *                         property="name",
-     *                         type="string",
-     *                         description="Name of user"
-     *                     ),
-     *                     @OA\Property(
-     *                         property="email",
-     *                         type="mail",
-     *                         description="Email of user",
-     *                     ),
-     *                     @OA\Property(
-     *                         property="login",
-     *                         type="string",
-     *                         description="Login of user",
-     *                     ),
-     *
-     *
-     *                      @OA\Property(
-     *                         property="email_verified_at",
-     *                         type="timestamps",
-     *                         description="Time of verifiing user's mail",
-     *                     ),
-     *
-     *                      @OA\Property(
-     *                         property="created_at",
-     *                         type="timestamps",
-     *                         description="Time of user's registeration",
-     *                     ),
-     *
-     *                      @OA\Property(
-     *                         property="updated_at",
-     *                         type="timestamps",
-     *                         description="Time of last user's information changing",
-     *                     ),
-     *                     example={
-     *                         "access_token":"example of token",
-     *                         "token_type":"bearer",
-     *                         "expires_in":"7200",
-     *
-     *                         "user":{
-     *                         "id": 1,
-     *                         "name": "Example name",
-     *                         "email": "example@mail.com",
-     *                         "login": "example_user3457",
-     *                         "email_verified_at": null,
-     *                         "created_at": null,
-     *                         "updated_at": null
-     *                          }
-     *                     }
-     *                 )
-     *             )
-     *         }
-     *     ),
-     *
-     *
-     *     @OA\Response(
-     *         response=500,
-     *         description="Internal Server Error",
-     *     ),
-     *
-     *     @OA\Response(
-     *         response=503,
-     *         description="Service Unavailable",
-     *     ),
-     *
-     *     @OA\Response(
-     *         response=404,
-     *         description="Not found",
-     *     ),
-     *
-     * )
+     * @param LoginRequest $request
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Http\JsonResponse|\Illuminate\Http\Response
      */
     public function login(LoginRequest $request){
 
         $login_credentials = $request->all();
+        $user = auth()->attempt2FA($login_credentials);
+        if(!$user) return response('Error, incorrect password!', 401);
+        if($user->is_2auth) {
+
+            Nexmo::message()->send([
+                'to'   => $user->getFullActivePhone(),
+                'from' => ENV('NEXMO_FROM_NUMBER'),
+                'text' => $user->set2FAtoken()
+            ]);
+
+            return $user;
+        }
+
         $token = auth()->attempt($login_credentials);
-        return $token ? $this->createNewToken($token) : response('Error, incorrect data!', 401);
+        return $this->createNewToken($token);
+    }
+
+
+    /**
+     * Function to check if this 2Fa tiken is right and send user his token
+     *
+     * @param Request $request
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Http\JsonResponse|\Illuminate\Http\Response
+     */
+    public function post2FAToken(Request $request){
+        $user = auth()->retrieveByCredentials(["login"=>$request->user["login"], "password"=>"2206"]);
+
+        return $user->check2FAtoken($request->token) ?
+            $this->createNewToken(auth()->login($user)) :
+            response('Error, incorrect 2FA token!', 401);
     }
 
 
 
+
+    /**
+     * Function to show token with other nessecery information
+     * @param $token
+     * @return \Illuminate\Http\JsonResponse
+     */
 
     protected function createNewToken($token){
         return response()->json([
@@ -190,130 +87,11 @@ class AuthController extends Controller
 
 
 
+
     /**
-     * @OA\Get(
-     * path="/refresh",
-     * summary="Path to refresh user's token",
-     * description="The way to refresh user's token.",
-     * operationId="refresh",
-     * tags={"auth"},
+     * Function to refresh token
      *
-     *
-     *     @OA\Parameter (
-     *      name = "access_token",
-     *      in = "query",
-     *      description = "Old token of user, who wants new token.",
-     *      required=true,
-     *         @OA\Schema(
-     *           type="string",
-     *           format="string"
-     *         )
-     *     ),
-     *     @OA\Response(
-     *         response=405,
-     *         description="Invalid input",
-     *     ),
-     *
-     *     @OA\Response(
-     *         response=200,
-     *         description="OK",
-     *         content={
-     *             @OA\MediaType(
-     *                 mediaType="application/json",
-     *                 @OA\Schema(
-     *                     @OA\Property(
-     *                         property="access_token",
-     *                         type="string",
-     *                         description="The token, that user uses to log in"
-     *                     ),
-     *
-     *                      @OA\Property(
-     *                         property="token_type",
-     *                         type="string",
-     *                         description="Type of token"
-     *                     ),
-     *
-     *                      @OA\Property(
-     *                         property="expires_in",
-     *                         type="integer",
-     *                         description="Time in minutes to token expire"
-     *                     ),
-     *                     @OA\Property(
-     *                         property="id",
-     *                         type="integer",
-     *                         description="Primary key"
-     *                     ),
-     *                     @OA\Property(
-     *                         property="name",
-     *                         type="string",
-     *                         description="Name of user"
-     *                     ),
-     *                     @OA\Property(
-     *                         property="email",
-     *                         type="mail",
-     *                         description="Email of user",
-     *                     ),
-     *                     @OA\Property(
-     *                         property="login",
-     *                         type="string",
-     *                         description="Login of user",
-     *                     ),
-     *
-     *
-     *                      @OA\Property(
-     *                         property="email_verified_at",
-     *                         type="timestamps",
-     *                         description="Time of verifiing user's mail",
-     *                     ),
-     *
-     *                      @OA\Property(
-     *                         property="created_at",
-     *                         type="timestamps",
-     *                         description="Time of user's registeration",
-     *                     ),
-     *
-     *                      @OA\Property(
-     *                         property="updated_at",
-     *                         type="timestamps",
-     *                         description="Time of last user's information changing",
-     *                     ),
-     *                     example={
-     *                         "access_token":"example of token",
-     *                         "token_type":"bearer",
-     *                         "expires_in":"7200",
-     *
-     *                         "user":{
-     *                         "id": 1,
-     *                         "name": "Example name",
-     *                         "email": "example@mail.com",
-     *                         "login": "example_user3457",
-     *                         "email_verified_at": null,
-     *                         "created_at": null,
-     *                         "updated_at": null
-     *                          }
-     *                     }
-     *                 )
-     *             )
-     *         }
-     *     ),
-     *
-     *
-     *     @OA\Response(
-     *         response=500,
-     *         description="Internal Server Error",
-     *     ),
-     *
-     *     @OA\Response(
-     *         response=503,
-     *         description="Service Unavailable",
-     *     ),
-     *
-     *     @OA\Response(
-     *         response=404,
-     *         description="Not found",
-     *     ),
-     *
-     * )
+     * @return \Illuminate\Http\JsonResponse
      */
 
     public function refresh(){
@@ -328,162 +106,13 @@ class AuthController extends Controller
 
 
 
+
     /**
-     * @OA\POST(
-     * path="/register",
-     * summary="Path to register in system",
-     * description="The way to register users.",
-     * operationId="register",
-     * tags={"auth"},
+     * Function to register
      *
-     *
-     *     @OA\RequestBody(
-     *         description="The personal information of registered users. In field login user can enter login or email",
-     *         required=true,
-     *         @OA\MediaType(
-     *             mediaType="application/json",
-     *              @OA\Schema(
-
-     *                     @OA\Property(
-     *                         property="name",
-     *                         type="string",
-     *                         description="Name of user"
-     *                     ),
-     *                     @OA\Property(
-     *                         property="email",
-     *                         type="mail",
-     *                         description="Email of user",
-     *                     ),
-     *                     @OA\Property(
-     *                         property="login",
-     *                         type="string",
-     *                         description="Login of user",
-     *                     ),
-     *
-     *                    @OA\Property(
-     *                         property="password",
-     *                         type="string",
-     *                         description="Password of user",
-     *                     ),
-     *
-     *                     example={
-     *                         "name": "Example name",
-     *                         "email": "example@mail.com",
-     *                         "login": "example_user3457",
-     *                         "password": "password"
-     *                     }
-     *                 )
-     *
-     *
-     *         ),
-     *     ),
-     *     @OA\Response(
-     *         response=405,
-     *         description="Invalid input",
-     *     ),
-     *
-     *     @OA\Response(
-     *         response=200,
-     *         description="OK",
-     *         content={
-     *             @OA\MediaType(
-     *                 mediaType="application/json",
-     *                 @OA\Schema(
-     *                     @OA\Property(
-     *                         property="access_token",
-     *                         type="string",
-     *                         description="The token, that user uses to log in"
-     *                     ),
-     *
-     *                      @OA\Property(
-     *                         property="token_type",
-     *                         type="string",
-     *                         description="Type of token"
-     *                     ),
-     *
-     *                      @OA\Property(
-     *                         property="expires_in",
-     *                         type="integer",
-     *                         description="Time in minutes to token expire"
-     *                     ),
-     *                     @OA\Property(
-     *                         property="id",
-     *                         type="integer",
-     *                         description="Primary key"
-     *                     ),
-     *                     @OA\Property(
-     *                         property="name",
-     *                         type="string",
-     *                         description="Name of user"
-     *                     ),
-     *                     @OA\Property(
-     *                         property="email",
-     *                         type="mail",
-     *                         description="Email of user",
-     *                     ),
-     *                     @OA\Property(
-     *                         property="login",
-     *                         type="string",
-     *                         description="Login of user",
-     *                     ),
-     *
-     *
-     *                      @OA\Property(
-     *                         property="email_verified_at",
-     *                         type="timestamps",
-     *                         description="Time of verifiing user's mail",
-     *                     ),
-     *
-     *                      @OA\Property(
-     *                         property="created_at",
-     *                         type="timestamps",
-     *                         description="Time of user's registeration",
-     *                     ),
-     *
-     *                      @OA\Property(
-     *                         property="updated_at",
-     *                         type="timestamps",
-     *                         description="Time of last user's information changing",
-     *                     ),
-     *                     example={
-     *                         "access_token":"example of token",
-     *                         "token_type":"bearer",
-     *                         "expires_in":"7200",
-     *
-     *                         "user":{
-     *                         "id": 1,
-     *                         "name": "Example name",
-     *                         "email": "example@mail.com",
-     *                         "login": "example_user3457",
-     *                         "email_verified_at": null,
-     *                         "created_at": null,
-     *                         "updated_at": null
-     *                          }
-     *                     }
-     *                 )
-     *             )
-     *         }
-     *     ),
-     *
-     *
-     *     @OA\Response(
-     *         response=500,
-     *         description="Internal Server Error",
-     *     ),
-     *
-     *     @OA\Response(
-     *         response=503,
-     *         description="Service Unavailable",
-     *     ),
-     *
-     *     @OA\Response(
-     *         response=404,
-     *         description="Not found",
-     *     ),
-     *
-     * )
+     * @param RegisterRequest $request
+     * @return \Illuminate\Http\JsonResponse
      */
-
     public function register(RegisterRequest  $request){
         try{
             User::createNewUser($request->all());
@@ -582,69 +211,6 @@ class AuthController extends Controller
 
 
 
-
-
-    /**
-     * Send the post-authentication response.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \Illuminate\Contracts\Auth\Authenticatable  $user
-     * @return \Illuminate\Http\Response
-     */
-    protected function authenticated(Request $request, Authenticatable $user)
-    {
-        if (Authy::getProvider()->isEnabled($user)) {
-            return $this->logoutAndRedirectToTokenScreen($request, $user);
-        }
-
-        return redirect()->intended($this->redirectPath());
-    }
-
-
-    /**
-     * Generate a redirect response to the two-factor token screen.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \Illuminate\Contracts\Auth\Authenticatable  $user
-     * @return \Illuminate\Http\Response
-     */
-    protected function logoutAndRedirectToTokenScreen(Request $request, Authenticatable $user)
-    {
-        auth($this->getGuard())->logout();
-        $request->session()->put('authy:auth:id', $user->id);
-
-        return redirect(url('auth/token'));
-    }
-
-
-
-    /**
-     * Verify the two-factor authentication token.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function post2AuthToken(Request $request)
-    {
-        $this->validate($request, ['token' => 'required']);
-        if (! session('authy:auth:id')) {
-            return redirect(url('login'));
-        }
-
-        $guard = config('auth.defaults.guard');
-        $provider = config('auth.guards.' . $guard . '.provider');
-        $model = config('auth.providers.' . $provider . '.model');
-        $user = (new $model)->findOrFail(
-            $request->session()->pull('authy:auth:id')
-        );
-
-        if (Authy::getProvider()->tokenIsValid($user, $request->token)) {
-            auth($this->getGuard())->login($user);
-            return redirect()->intended($this->redirectPath());
-        } else {
-            return redirect(url('login'))->withErrors('Invalid two-factor authentication token provided!');
-        }
-    }
 
 
     /**

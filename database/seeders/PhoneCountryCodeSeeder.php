@@ -16,12 +16,12 @@ class PhoneCountryCodeSeeder extends Seeder
    {
        DB::table('phone_country_codes')->insert([
            [
-               "code" => "+38",
+               "code" => "38",
                "country" => "Ukraine",
            ],
 
            [
-               "code" => "+7",
+               "code" => "7",
                "country" => "Russia",
            ],
 

@@ -21,4 +21,8 @@ trait CustomTrait
             User::where('login', $credentials['login'])->first());
     }
 
+
+
+
+
 }

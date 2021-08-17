@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\CustomTrait;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -10,13 +11,13 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Hash;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 use Illuminate\Contracts\Auth\CanResetPassword;
-use Srmklive\Authy\Auth\TwoFactor\Authenticatable as TwoFactorAuthenticatable;
-use Srmklive\Authy\Contracts\Auth\TwoFactor\Authenticatable as TwoFactorAuthenticatableContract;
+use App\Traits\UserTrait;
 
 
-class User extends Authenticatable implements JWTSubject, MustVerifyEmail, CanResetPassword, TwoFactorAuthenticatableContract
+
+class User extends Authenticatable implements JWTSubject, MustVerifyEmail, CanResetPassword
 {
-    use HasFactory, Notifiable, TwoFactorAuthenticatable;
+    use HasFactory, Notifiable, CustomTrait, UserTrait;
 
 
     protected $fillable = [
@@ -48,6 +49,14 @@ class User extends Authenticatable implements JWTSubject, MustVerifyEmail, CanRe
     ];
 
 
+
+
+
+/**********************************JWT-interface overriding****************************/
+
+
+
+
     public function getJWTIdentifier()
     {
         return $this->getKey();
@@ -60,6 +69,12 @@ class User extends Authenticatable implements JWTSubject, MustVerifyEmail, CanRe
 
 
 
+
+
+/**********************************Eloquent relationships****************************/
+
+
+
     /**
      * Function, that returns network, via whose user is logged in
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
@@ -68,6 +83,14 @@ class User extends Authenticatable implements JWTSubject, MustVerifyEmail, CanRe
         return $this->belongsTo(Network::class);
     }
 
+
+    /**
+     * Function, that returns 2FAtoken
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function token2fa(){
+        return $this->hasOne(Token2fa::class);
+    }
 
 
 
@@ -82,45 +105,11 @@ class User extends Authenticatable implements JWTSubject, MustVerifyEmail, CanRe
 
 
     /**
-     * Function, that returns just active phone of this user
-     * @return mixed
-     */
-    public function activePhone(){
-        return $this->phones->where('is_active', 1)->first();
-    }
-
-
-    /**
      * Function, that returns all emails of this user
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function emails(){
         return $this->hasMany(Email::class);
-    }
-
-
-    /**
-     * Function, that returns just active email of this user
-     * @return mixed
-     */
-    public function activeEmail(){
-        return $this->emails->where('is_active', 1)->first();
-    }
-
-    /**
-     * Function, that returns non active emails of this user
-     * @return mixed
-     */
-    public function disactiveEmails(){
-        return $this->emails->where('is_active', 0);
-    }
-
-    /**
-     * Function, that returns non active phones of this user
-     * @return mixed
-     */
-    public function disactivePhones(){
-        return $this->phones->where('is_active', 0);
     }
 
 
@@ -134,6 +123,11 @@ class User extends Authenticatable implements JWTSubject, MustVerifyEmail, CanRe
     }
 
 
+
+
+
+    /**********************************Authentication specials****************************/
+    /***********Simple Authentication
 
 
     /**
@@ -169,6 +163,10 @@ class User extends Authenticatable implements JWTSubject, MustVerifyEmail, CanRe
     }
 
 
+
+    /****************Authentication via Social Networks
+
+
     /**
      * Function to edit user, that login via social network and return him a token
      * @param $network_id
@@ -180,6 +178,9 @@ class User extends Authenticatable implements JWTSubject, MustVerifyEmail, CanRe
         return auth()->login($this);
     }
 
+
+
+    /****************Overriding email verification and reset password
 
     /**
      * Realize method of MustVerifyMail to check is it verified or no
@@ -223,6 +224,7 @@ class User extends Authenticatable implements JWTSubject, MustVerifyEmail, CanRe
     }
 
 
+
     /**
      * Get the route of mail
      *
@@ -232,6 +234,52 @@ class User extends Authenticatable implements JWTSubject, MustVerifyEmail, CanRe
     public function routeNotificationForMail($notification)
     {
         return $this->activeEmail()->email;
+    }
+
+
+       /**********Authentication via Social Networks
+
+        /**
+        * Function for creating anf setting 2FAtoken to database
+         * @return string
+         */
+        public function set2FAtoken(){
+        $permitted_chars = '0123456789';
+        $token ='';
+
+        for($i = 0; $i< 4; $i++){
+            $token .= $permitted_chars[rand(0,strlen($permitted_chars) - 1)];
+        }
+
+        $this->token2fa->token = $token;
+        $this->push();
+        return $token;
+    }
+
+
+    /**
+     * Check if user entered the 2fa token rightly
+     *
+     * @param $token
+     * @return bool
+     */
+    public function check2FAtoken($token){
+        $right =  $token == $this->token2fa->token;
+        $this->token2fa->token = null;
+        $this->push();
+        return $right;
+
+    }
+
+
+    /**
+     * Toggle the 2FA
+     *
+     * @param $activity
+     */
+    public function toggle2FA($activity){
+        if($this->is_2auth == $activity) $this->is_2auth = !$this->is_2auth;
+        $this->save();
     }
 
 
