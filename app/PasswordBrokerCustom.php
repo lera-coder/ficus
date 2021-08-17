@@ -1,11 +1,8 @@
 <?php
 
-
 namespace App;
 
-
 use App\Models\Email;
-use App\Models\User;
 use Illuminate\Auth\Passwords\PasswordBroker;
 use Illuminate\Support\Arr;
 

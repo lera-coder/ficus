@@ -22,6 +22,8 @@ Route::middleware('jwt.verify')->group(function () {
     //Routes in Admin Panel
     Route::middleware('verified')->group(function () {
         Route::resource("user", "App\Http\Controllers\API\UserController")->except('edit', 'create');
+        Route::post('user/auth2fa/toggle/{activity}', ["App\Http\Controllers\API\UserController", 'toggle2FAAuth']);
+        Route::post('user/email/{activity}', ["App\Http\Controllers\API\UserController", 'toggle2FAAuth']);
     });
 
     //Email verifiing
@@ -41,4 +43,4 @@ Route::get("/refresh", ['App\Http\Controllers\API\Auth\AuthController', 'refresh
 Route::get('/login/{network}/redirect', ['App\Http\Controllers\API\Auth\AuthController', 'redirectToSocialNetwork'])->name('network.redirect');
 Route::get('/login/{network}/callback', ['App\Http\Controllers\API\Auth\AuthController', 'callbackFromSocialNetwork'])->name('login.network');
 //2auth
-Route::post('2auth/token',['App\Http\Controllers\API\Auth\AuthController', 'post2AuthToken'])->name('post2auth.token');
+Route::post('2auth/token',['App\Http\Controllers\API\Auth\AuthController', 'post2FAToken'])->name('post2auth.token');

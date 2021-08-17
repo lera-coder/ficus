@@ -18,6 +18,7 @@ class CreateUsersTable extends Migration
             $table->string('name')->nullable();
             $table->string('login')->unique()->nullable();
             $table->string('password')->nullable();
+            $table->boolean('is_2auth')->default(false);
             $table->unsignedBigInteger('network_id')->nullable();
             $table->rememberToken();
             $table->timestamps();

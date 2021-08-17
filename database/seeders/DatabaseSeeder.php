@@ -22,6 +22,7 @@ class DatabaseSeeder extends Seeder
                 PhoneSeeder::class,
                 RoleSeeder::class,
                 EmailSeeder::class,
+//                Token2faSeeder::class
 
             ]
         );
