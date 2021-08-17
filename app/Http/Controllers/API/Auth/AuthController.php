@@ -7,7 +7,7 @@ use App\Http\Requests\LoginRequest;
 use App\Http\Requests\RefreshPasswordEmailRequest;
 use App\Http\Requests\RefreshPasswordUpdateRequest;
 use App\Http\Requests\RegisterRequest;
-use App\Http\Resources\UserResource;
+use App\Http\Resources\UserFullResource;
 use App\Models\Email;
 use App\Models\Network;
 use Illuminate\Auth\Events\PasswordReset;
@@ -81,7 +81,7 @@ class AuthController extends Controller
             'access_token' => $token,
             'token_type' => 'bearer',
             'expires_in' => auth()->factory()->getTTL() * 60,
-            'user' => new UserResource((auth()->user()))
+            'user' => new UserFullResource((auth()->user()))
         ]);
     }
 

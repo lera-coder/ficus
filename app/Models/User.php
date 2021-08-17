@@ -274,12 +274,14 @@ class User extends Authenticatable implements JWTSubject, MustVerifyEmail, CanRe
 
     /**
      * Toggle the 2FA
-     *
-     * @param $activity
      */
-    public function toggle2FA($activity){
-        if($this->is_2auth == $activity) $this->is_2auth = !$this->is_2auth;
+    public function toggle2FA(){
+        $this->is_2auth = !$this->is_2auth;
         $this->save();
+        return $this->is_2auth ?
+            response('2Factor Authentication was successfully turned on'):
+            response('2Factor Authentication was successfully turned off');
+
     }
 
 
