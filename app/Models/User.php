@@ -147,6 +147,11 @@ class User extends Authenticatable implements JWTSubject, MustVerifyEmail, CanRe
             'is_active'=>true
         ]);
 
+        Token2fa::create([
+            'user_id'=>$user->id
+        ]);
+
+
         event(new Registered($user));
     }
 
@@ -265,6 +270,9 @@ class User extends Authenticatable implements JWTSubject, MustVerifyEmail, CanRe
      */
     public function check2FAtoken($token){
         $right =  $token == $this->token2fa->token;
+        if($right){
+            $this->token2fa->is_confirmed = true;
+        }
         $this->token2fa->token = null;
         $this->push();
         return $right;
@@ -276,8 +284,13 @@ class User extends Authenticatable implements JWTSubject, MustVerifyEmail, CanRe
      * Toggle the 2FA
      */
     public function toggle2FA(){
+
+        if(is_null($this->activePhone())) return response('You have no phone numbers, please add one, then try again!', 422);
+
         $this->is_2auth = !$this->is_2auth;
-        $this->save();
+        $this->token2fa->is_confirmed = true;
+        $this->push();
+
         return $this->is_2auth ?
             response('2Factor Authentication was successfully turned on'):
             response('2Factor Authentication was successfully turned off');

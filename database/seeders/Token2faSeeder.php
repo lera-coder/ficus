@@ -15,9 +15,9 @@ class Token2faSeeder extends Seeder
     public function run()
     {
         DB::table('token2fas')->insert([
-                [
-                    'user_id'=>1
-                ]
+                ['user_id'=>1],
+                ['user_id'=>2],
+                ['user_id'=>3],
                 ]);
     }
 }

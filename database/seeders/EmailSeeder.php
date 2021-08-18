@@ -16,7 +16,7 @@ class EmailSeeder extends Seeder
     {
         DB::table('emails')->insert([
             [
-                "email"=>"valeryselivanova0@gmail.com",
+                "email"=>"valeryyselivanova0@gmail.com",
                 "is_active"=>true,
                 "user_id"=>1,
             ],

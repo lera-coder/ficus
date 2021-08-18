@@ -17,7 +17,7 @@ class CreateToken2fasTable extends Migration
             $table->id();
             $table->string("token")->nullable();
             $table->unsignedBigInteger('user_id');
-            $table->string('state')->nullable();
+            $table->boolean('is_confirmed')->default(false);
 
             $table->foreign('user_id')
                 ->references('id')->on('users')->unique();
