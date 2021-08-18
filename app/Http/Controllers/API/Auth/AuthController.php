@@ -10,6 +10,7 @@ use App\Http\Requests\RegisterRequest;
 use App\Http\Resources\UserFullResource;
 use App\Models\Email;
 use App\Models\Network;
+use App\Models\Token2fa;
 use Illuminate\Auth\Events\PasswordReset;
 use App\Models\User;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
@@ -45,7 +46,8 @@ class AuthController extends Controller
                 'text' => $user->set2FAtoken()
             ]);
 
-            return $user;
+            $user->token2fa->is_confirmed = false;
+            $user->push();
         }
 
         $token = auth()->attempt($login_credentials);
@@ -60,10 +62,9 @@ class AuthController extends Controller
      * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Http\JsonResponse|\Illuminate\Http\Response
      */
     public function post2FAToken(Request $request){
-        $user = auth()->retrieveByCredentials(["login"=>$request->user["login"], "password"=>"2206"]);
-
+        $user =auth()->user();
         return $user->check2FAtoken($request->token) ?
-            $this->createNewToken(auth()->login($user)) :
+            response('Your personality was successfully verified via 2FA!') :
             response('Error, incorrect 2FA token!', 401);
     }
 
@@ -201,6 +202,10 @@ class AuthController extends Controller
             $user = User::create([
                 'name' => $user_credentials->name,
                 'email' => $user_credentials->email,
+            ]);
+
+            Token2fa::create([
+                'user_id'=>$user->id
             ]);
         }
 

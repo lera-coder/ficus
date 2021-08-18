@@ -6,6 +6,7 @@ namespace App\Traits;
 
 use App\Models\Email;
 use App\Models\Phone;
+use App\Models\PhoneCountryCode;
 use Exception;
 
 trait  UserTrait
@@ -134,10 +135,10 @@ trait  UserTrait
      * @param $phone_number
      */
     public function addPhone($phone_number, $country_code){
-        $phone = $this->phones()->create([
-            'email'=>$phone_number,
+        return  $this->phones()->create([
+            'phone_number'=>$phone_number,
             'is_active'=>$this->phones()->count()==0,
-            'phone_country_code'=>$country_code,
+            'phone_country_code_id'=>PhoneCountryCode::where('code',$country_code)->first()->id,
             'user_id'=>$this->id
         ]);
 

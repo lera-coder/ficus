@@ -71,7 +71,7 @@ class PhoneController extends Controller
      * @return mixed
      */
     public function store(PhoneRequest $request){
-        return auth()->user()->addPhone($request->email);
+        return auth()->user()->addPhone($request->phone, $request->phone_country_code);
     }
 
 

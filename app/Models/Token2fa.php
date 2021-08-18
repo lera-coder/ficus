@@ -9,6 +9,12 @@ class Token2fa extends Model
 {
     use HasFactory;
 
+    protected $fillable = [
+        "token",
+        "user_id",
+        "is_confirmed"
+    ];
+
 
     /**
      * Function, that returns user
