@@ -17,8 +17,10 @@ class RoleSeeder extends Seeder
 
         DB::table('roles')->insert([
             ["name" => "manager"],
-            ["name" => "editor"],
+            ["name" => "designer"],
+            ["name" => "team lead"],
             ["name" => "god"],
+
         ]);
 
         DB::table('role_user')->insert([
@@ -38,6 +40,8 @@ class RoleSeeder extends Seeder
             ],
 
         ]);
+
+
 
     }
 }

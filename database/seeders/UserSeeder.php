@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -37,5 +38,14 @@ class UserSeeder extends Seeder
                 "password"=>Hash::make("2206"),
             ],
         ]);
+
+        $user_quantity = 1000;
+
+        for($i = 0; $i<$user_quantity; $i++){
+            User::factory()->count(1)->state([
+                'login'=>'user'.$i,
+            ])->create();
+        }
+
     }
 }

@@ -161,8 +161,7 @@ return [
         Illuminate\Translation\TranslationServiceProvider::class,
         Illuminate\Validation\ValidationServiceProvider::class,
         Illuminate\View\ViewServiceProvider::class,
-        \App\Providers\LaravelCustomServiceProvider::class,
-//        Tymon\JWTAuth\Providers\JWTAuthServiceProvider::class
+
 
         /*
          * Package Service Providers...
@@ -173,9 +172,15 @@ return [
          */
         App\Providers\AppServiceProvider::class,
         App\Providers\AuthServiceProvider::class,
-        // App\Providers\BroadcastServiceProvider::class,
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
+
+        /*
+         * Custom Service Providers
+         */
+        App\Providers\LaravelCustomServiceProvider::class,
+        App\Providers\RepositoryServiceProvider::class,
+        App\Providers\ModelServiceProvider::class,
 
     ],
 
