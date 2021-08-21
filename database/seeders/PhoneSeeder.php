@@ -2,6 +2,8 @@
 
 namespace Database\Seeders;
 
+use App\Models\Phone;
+use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
@@ -44,5 +46,8 @@ class PhoneSeeder extends Seeder
                 "phone_country_code_id"=>1,
             ],
         ]);
+
+
+
     }
 }

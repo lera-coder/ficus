@@ -1,0 +1,33 @@
+<?php
+
+
+namespace App\Repositories;
+
+
+use App\Models\Email;
+use App\Repositories\Interfaces\EmailRepositoryInterface;
+
+class EmailRepository implements EmailRepositoryInterface
+{
+    protected $email;
+
+    public function __construct(Email $email)
+    {
+        $this->email = $email;
+    }
+
+    public function all($n)
+    {
+        return $this->email->paginate($n);
+    }
+
+    public function getById($id)
+    {
+        return $this->email->findOrFail($id);
+    }
+
+    public function activeEmail($user_id)
+    {
+        return $this->email->where('user_id', $user_id)->where('is_active', 1)->first();
+    }
+}

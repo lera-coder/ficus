@@ -17,7 +17,7 @@ use App\Traits\UserTrait;
 
 class User extends Authenticatable implements JWTSubject, MustVerifyEmail, CanResetPassword
 {
-    use HasFactory, Notifiable, CustomTrait, UserTrait;
+    use HasFactory, Notifiable, CustomTrait;
 
 
     protected $fillable = [
@@ -38,17 +38,6 @@ class User extends Authenticatable implements JWTSubject, MustVerifyEmail, CanRe
         'remember_token',
         'two_factor_options'
     ];
-
-    /**
-     * The attributes that should be cast to native types.
-     *
-     * @var array
-     */
-    protected $casts = [
-        'email_verified_at' => 'datetime',
-    ];
-
-
 
 
 
@@ -92,8 +81,6 @@ class User extends Authenticatable implements JWTSubject, MustVerifyEmail, CanRe
         return $this->hasOne(Token2fa::class);
     }
 
-
-
     /**
      * Function, that returns all phones, that user have
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
@@ -101,8 +88,6 @@ class User extends Authenticatable implements JWTSubject, MustVerifyEmail, CanRe
     public function phones(){
         return $this->hasMany(Phone::class);
     }
-
-
 
     /**
      * Function, that returns all emails of this user
@@ -121,52 +106,6 @@ class User extends Authenticatable implements JWTSubject, MustVerifyEmail, CanRe
     {
         return $this->belongsToMany(Role::class);
     }
-
-
-
-
-
-    /**********************************Authentication specials****************************/
-    /***********Simple Authentication
-
-
-    /**
-     * Static function for creating new User and firing event of registration
-     * @param $credentials
-     */
-    public static function createNewUser($credentials){
-        $credentials_edited = $credentials;
-        unset($credentials_edited['email']);
-        $credentials_edited['password'] = Hash::make($credentials_edited['password']);
-
-        $user = self::create($credentials_edited);
-
-        Email::create([
-            'email'=>$credentials['email'],
-            'user_id'=>$user->id,
-            'is_active'=>true
-        ]);
-
-        Token2fa::create([
-            'user_id'=>$user->id
-        ]);
-
-
-        event(new Registered($user));
-    }
-
-
-    /**
-     * Static function to get email from login field even, if user entered login
-     * @param $login
-     * @return array
-     */
-    public static function getEmail($login){
-        return str_contains($login, '@')
-            ? ['email' => $login]
-            : ['email' => Email::where('email', $login)->first()->email];
-    }
-
 
 
     /****************Authentication via Social Networks
@@ -242,60 +181,7 @@ class User extends Authenticatable implements JWTSubject, MustVerifyEmail, CanRe
     }
 
 
-       /**********Authentication via Social Networks
 
-        /**
-        * Function for creating anf setting 2FAtoken to database
-         * @return string
-         */
-        public function set2FAtoken(){
-        $permitted_chars = '0123456789';
-        $token ='';
-
-        for($i = 0; $i< 4; $i++){
-            $token .= $permitted_chars[rand(0,strlen($permitted_chars) - 1)];
-        }
-
-        $this->token2fa->token = $token;
-        $this->push();
-        return $token;
-    }
-
-
-    /**
-     * Check if user entered the 2fa token rightly
-     *
-     * @param $token
-     * @return bool
-     */
-    public function check2FAtoken($token){
-        $right =  $token == $this->token2fa->token;
-        if($right){
-            $this->token2fa->is_confirmed = true;
-        }
-        $this->token2fa->token = null;
-        $this->push();
-        return $right;
-
-    }
-
-
-    /**
-     * Toggle the 2FA
-     */
-    public function toggle2FA(){
-
-        if(is_null($this->activePhone())) return response('You have no phone numbers, please add one, then try again!', 422);
-
-        $this->is_2auth = !$this->is_2auth;
-        $this->token2fa->is_confirmed = true;
-        $this->push();
-
-        return $this->is_2auth ?
-            response('2Factor Authentication was successfully turned on'):
-            response('2Factor Authentication was successfully turned off');
-
-    }
 
 
 

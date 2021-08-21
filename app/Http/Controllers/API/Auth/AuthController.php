@@ -11,6 +11,8 @@ use App\Http\Resources\UserFullResource;
 use App\Models\Email;
 use App\Models\Network;
 use App\Models\Token2fa;
+use App\Repositories\Interfaces\UserRepositoryInterface;
+use App\Services\ModelService\UserService\UserServiceInterface;
 use Illuminate\Auth\Events\PasswordReset;
 use App\Models\User;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
@@ -25,6 +27,12 @@ use Tymon\JWTAuth\Exceptions\TokenInvalidException;
 
 class AuthController extends Controller
 {
+    protected $user_repository;
+
+    public function __construct(UserRepositoryInterface $user_repository)
+    {
+        $this->user_repository = $user_repository;
+    }
 
 
     /**
@@ -114,9 +122,9 @@ class AuthController extends Controller
      * @param RegisterRequest $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function register(RegisterRequest  $request){
+    public function register(RegisterRequest  $request, UserServiceInterface $service){
         try{
-            User::createNewUser($request->all());
+            $service->createUser($request->all());
             $token = auth()->attempt($request->only('login', 'password'));
             return $this->createNewToken($token);
         }

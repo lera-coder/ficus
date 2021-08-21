@@ -6,12 +6,23 @@ use App\Http\Requests\ContactRequest;
 use App\Http\Requests\EmailRequest;
 use App\Http\Requests\PhoneRequest;
 use App\Models\User;
+use App\Repositories\Interfaces\UserRepositoryInterface;
+use App\Services\ModelService\ModelServiceInterface;
+use App\Services\ModelService\UserService\UserServiceInterface;
 use Illuminate\Http\Request;
 
 
 
 class UserController extends Controller
 {
+    protected $repository;
+    protected $service;
+
+    public function __construct(UserRepositoryInterface $repository, UserServiceInterface $service)
+    {
+        $this->repository = $repository;
+        $this->service = $service;
+    }
 
 
     /**
@@ -21,7 +32,7 @@ class UserController extends Controller
      */
     public function index()
     {
-        return User::all();
+        return $this->repository->all(20);
     }
 
 
@@ -32,7 +43,7 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        User::createNewUser($request->all());
+        return $this->service->create($request->all());
     }
 
 
@@ -44,7 +55,7 @@ class UserController extends Controller
      */
     public function show($id)
     {
-        return User::find($id);
+        return $this->repository->getById($id);
     }
 
 
@@ -57,7 +68,7 @@ class UserController extends Controller
      */
     public function update(Request $request, $id)
     {
-        return User::find($id)->update($request->all());
+        return $this->service->update($id, $request->all());
     }
 
 
@@ -68,7 +79,7 @@ class UserController extends Controller
      */
     public function destroy($id)
     {
-        User::destroy($id);
+        $this->service->destroy($id);
     }
 
 
@@ -81,34 +92,10 @@ class UserController extends Controller
      * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Http\Response
      */
     public function toggle2FAAuth(){
-        return auth()->user()->toggle2FA();
+        return $this->service->toggle2FA(auth()->user()->id);
     }
 
 
-    /**
-     * Function to add new email
-     *
-     * @param EmailRequest $request
-     */
-    public function addEmail(EmailRequest $request){
-
-    }
-
-
-    /**
-     * @param PhoneRequest $request
-     */
-    public function addPhone(PhoneRequest $request){
-        auth()->user()->addPhone($request->phone_number, $request->phone_country_code);
-    }
-//
-//
-//    /**
-//     * @param PhoneRequest $request
-//     */
-//    public function makeActive(PhoneRequest $request){
-//        auth()->user()->addPhone($request);
-//    }
 
 
 }

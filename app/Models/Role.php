@@ -8,8 +8,9 @@ use Illuminate\Database\Eloquent\Model;
 class Role extends Model
 {
 
-    use HasFactory;
+    public $timestamps = false;
 
+    use HasFactory;
 
     /**
      * Function, that returns all users, that have this role

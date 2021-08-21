@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\WorkerPhone;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -21,8 +22,19 @@ class DatabaseSeeder extends Seeder
                 PhoneCountryCodeSeeder::class,
                 PhoneSeeder::class,
                 RoleSeeder::class,
+                Token2faSeeder::class,
                 EmailSeeder::class,
-                Token2faSeeder::class
+                ApplicantStatusSeeder::class,
+                LevelSeeder::class,
+                TechnologySeeder::class,
+                WorkerStatusSeeder::class,
+                WorkerPositionSeeder::class,
+                ProjectStatusSeeder::class,
+                CompanySeeder::class,
+                WorkerSeeder::class,
+                ApplicantSeeder::class,
+                ProjectSeeder::class,
+                KnowledgeSeeder::class
             ]
         );
     }

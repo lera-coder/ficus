@@ -6,12 +6,23 @@ use App\Http\Requests\EmailRequest;
 use App\Http\Resources\EmailFullCollection;
 use App\Http\Resources\EmailFullResource;
 use App\Models\Email;
+use App\Repositories\Interfaces\EmailRepositoryInterface;
+use App\Services\ModelService\EmailService\EmailServiceInterface;
 use Illuminate\Http\Resources\Json\ResourceCollection;
 use Illuminate\Support\Facades\Gate;
 use Symfony\Component\HttpFoundation\Exception\JsonException;
 
 class EmailController extends Controller
 {
+    protected $repository;
+    protected $service;
+
+
+    public function __construct(EmailRepositoryInterface $repository, EmailServiceInterface $service)
+    {
+        $this->repository = $repository;
+        $this->service = $service;
+    }
 
 
     /**
@@ -20,7 +31,7 @@ class EmailController extends Controller
      * @return mixed
      */
     public function index(){
-        return new EmailFullCollection(EmailFullResource::collection(auth()->user()->emails));
+        return new EmailFullCollection(EmailFullResource::collection($this->repository->all(20)));
 
     }
 
@@ -31,7 +42,7 @@ class EmailController extends Controller
      * @return mixed
      */
     public function activeEmail(){
-        return auth()->user()->activeEmail();
+        return $this->repository->activeEmail(auth()->user()->id);
     }
 
 
@@ -39,11 +50,10 @@ class EmailController extends Controller
      * Function to show the email of user by id
      *
      * @param $id
-     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Http\Response
+     * @return EmailFullResource
      */
     public function show($id){
-        $email  = auth()->user()->emails->find($id);
-        return $email ?: response("Email is not found", 404);
+        return new EmailFullResource($this->repository->getById($id));
     }
 
 
@@ -54,11 +64,7 @@ class EmailController extends Controller
      * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Http\Response
      */
     public function destroy($id){
-        try {
-            Email::destroy($id);
-        }catch (JsonException $e){
-            return response(['error'=>$e->getMessage()], 404);
-        }
+        return $this->service->destroy($id);
 
     }
 
@@ -70,7 +76,7 @@ class EmailController extends Controller
      * @return mixed
      */
     public function store(EmailRequest $request){
-        return auth()->user()->addEmail($request->email);
+        return $this->service->create($request->email, auth()->user()->id);
     }
 
 
@@ -81,7 +87,7 @@ class EmailController extends Controller
      * @return mixed
      */
     public function setActive($id){
-        return auth()->user()->makeEmailActive($id);
+        return $this->service->makeActive($id, auth()->user()->id);
     }
 
 
@@ -96,13 +102,6 @@ class EmailController extends Controller
             return response('You cannot edit not your email!', 401);
         }
 
-        $email = Email::find($id);
-
-        if($email->is_active){
-            $email->email_verified_at = null;
-        }
-
-        $email->update($request->all());
-        return $email;
+        return $this->service->update($id, $request->all());
     }
 }
