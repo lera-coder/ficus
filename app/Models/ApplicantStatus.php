@@ -16,7 +16,6 @@ class ApplicantStatus extends Model
     ];
 
     /**
-     * Relationship with applicant class
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function applicants(){

@@ -17,7 +17,6 @@ class Token2fa extends Model
 
 
     /**
-     * Function, that returns user
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function user(){

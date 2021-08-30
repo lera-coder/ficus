@@ -14,86 +14,72 @@ use Symfony\Component\HttpFoundation\Exception\JsonException;
 
 class EmailController extends Controller
 {
-    protected $repository;
-    protected $service;
+    protected $email_repository;
+    protected $email_service;
 
 
-    public function __construct(EmailRepositoryInterface $repository, EmailServiceInterface $service)
+    public function __construct(EmailRepositoryInterface $email_repository, EmailServiceInterface $email_service)
     {
-        $this->repository = $repository;
-        $this->service = $service;
+        $this->email_repository = $email_repository;
+        $this->email_service = $email_service;
     }
 
 
     /**
-     * Function returns all emails of user
-     *
      * @return mixed
      */
     public function index(){
-        return new EmailFullCollection(EmailFullResource::collection($this->repository->all(20)));
+        return new EmailFullCollection(EmailFullResource::collection($this->email_repository->all(20)));
 
     }
 
 
     /**
-     * Function to get the active mail of user
-     *
      * @return mixed
      */
     public function activeEmail(){
-        return $this->repository->activeEmail(auth()->user()->id);
+        return $this->email_repository->activeEmail(auth()->user()->id);
     }
 
 
     /**
-     * Function to show the email of user by id
-     *
      * @param $id
      * @return EmailFullResource
      */
     public function show($id){
-        return new EmailFullResource($this->repository->getById($id));
+        return new EmailFullResource($this->email_repository->getById($id));
     }
 
 
     /**
-     * Function to delete model object
-     *
      * @param $id
      * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Http\Response
      */
     public function destroy($id){
-        return $this->service->destroy($id);
+        return $this->email_service->destroy($id);
 
     }
 
 
     /**
-     * Function to create model of email
-     *
      * @param EmailRequest $request
      * @return mixed
      */
     public function store(EmailRequest $request){
-        return $this->service->create($request->email, auth()->user()->id);
+        return $this->email_service->create($request->email);
     }
 
 
     /**
-     * Function to set email active
-     *
      * @param $id
      * @return mixed
      */
     public function setActive($id){
-        return $this->service->makeActive($id, auth()->user()->id);
+        return $this->email_service->makeActive($id);
     }
 
 
     /**
-     * Function to update email
-     *
      * @param EmailRequest $request
      * @param $id
      */
@@ -102,6 +88,7 @@ class EmailController extends Controller
             return response('You cannot edit not your email!', 401);
         }
 
-        return $this->service->update($id, $request->all());
+        return $this->email_service->update($id, $request->only(['email']));
     }
+
 }

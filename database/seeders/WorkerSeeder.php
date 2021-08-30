@@ -16,7 +16,7 @@ class WorkerSeeder extends Seeder
      */
     public function run()
     {
-        Worker::factory()->count(1000)
+        Worker::factory()->count(20)
             ->has(WorkerPhone::factory()->count(rand(1,3)), 'phones')
             ->has(WorkerEmail::factory()->count(rand(1,3)), 'emails')
             ->create();

@@ -4,31 +4,29 @@
 namespace App\Services\ModelService\UserService;
 
 
+use App\Models\User;
+use App\Services\ModelService\EmailService\EmailServiceInterface;
 use App\Services\ModelService\ModelServiceInterface;
 
 interface UserServiceInterface extends ModelServiceInterface
 {
 
+    public function create($credentials);
 
-//    public function makeEmailActive($email_id);
+    public function toggle2FA();
 
-//    public function addEmail($email);
+    public function check2FAtoken($token);
 
-//    public function makePhoneActive($phone_id);
+    public function set2FAtoken();
 
-//    public function addPhone($phone);
-
-    public function toggle2FA($id);
-
-    public function check2FAtoken($token, $id);
-
-    public function set2FAtoken($id);
-
-    public function updateUserAfterSocialNetworkLoggedIn($network_id, $user_id);
+    public function updateUserAfterSocialNetworkLoggedIn($network, $user_credentials);
 
     public function getEmailViaLogin($login);
 
-    public function create($credentials);
+    public function send2FACode();
+
+    public function returnResetPasswordStatus($reset_password_data);
+
 
 
 

@@ -18,7 +18,6 @@ class PhoneCountryCode extends Model
 
 
     /**
-     * Function to return all phones, that have this country code
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function phones(){

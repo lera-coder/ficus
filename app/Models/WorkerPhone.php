@@ -16,10 +16,9 @@ class WorkerPhone extends Model
     ];
 
     /**
-     * Relationship with Worker class
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function user(){
-        return $this->belongsTo(User::class);
+    public function worker(){
+        return $this->belongsTo(Worker::class);
     }
 }

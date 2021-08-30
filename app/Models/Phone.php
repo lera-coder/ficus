@@ -19,7 +19,6 @@ class Phone extends Model
 
 
     /**
-     * Function to get User, that have this email
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function user(){

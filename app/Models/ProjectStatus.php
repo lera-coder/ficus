@@ -16,7 +16,6 @@ class ProjectStatus extends Model
     ];
 
     /**
-     * Relationship with Project class
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function projects(){

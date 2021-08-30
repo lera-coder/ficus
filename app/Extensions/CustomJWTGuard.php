@@ -1,7 +1,7 @@
 <?php
 
 
-namespace App;
+namespace App\Extensions;
 
 use Illuminate\Support\Facades\Hash;
 use Tymon\JWTAuth\JWTGuard;
@@ -32,28 +32,21 @@ class CustomJWTGuard extends JWTGuard
 
 
     /**
-     * Attempt function for auth2fa
-     *
      * @param $credentials
      * @return false|mixed
      */
     public function attempt2FA($credentials){
         $user = $this->retrieveByCredentials($credentials);
-
         if ($this->hasValidCredentials($user, $credentials)) {
             return $user;
         }
-
         return false;
     }
 
 
     /**
-     * Determine if the user matches the credentials.
-     *
      * @param  mixed  $user
      * @param  array  $credentials
-     *
      * @return bool
      */
     protected function hasValidCredentials($user, $credentials)

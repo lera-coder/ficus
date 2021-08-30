@@ -40,8 +40,31 @@ class Handler extends ExceptionHandler
             //
         });
 
-//        $this->reportable(function (ValidationException $exception){
-//            return new JsonResponse($exception->errors(), 422);
-//        });
+        $this->reportable(function (TransactionFailedException $exception){
+            return response()->json('This operation was stopped', 500);
+        });
+
+
+    }
+
+    public function render($request, Throwable $e)
+    {
+        if ($e instanceof UsedTechnologyTypeInKnowledgesException) {
+            return response()->json($e->getMessage(), 405);
+        }
+
+        else if($e instanceof TransactionFailedException){
+            return response()->json('This operation was stopped', 500);
+        }
+
+        else if($e instanceof WorkerNotInThisCompanyException){
+            return response()->json('Worker is not in this company', 405);
+        }
+
+        else if($e instanceof InvalidNetworkConnectException){
+            return response()->json('Invalid network connection!', 404);
+        }
+
+        return parent::render($request, $e);
     }
 }

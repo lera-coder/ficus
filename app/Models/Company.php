@@ -17,7 +17,6 @@ class Company extends Model
 
 
     /**
-     * Relationship with Worker class
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function workers(){
@@ -26,7 +25,6 @@ class Company extends Model
 
 
     /**
-     * Relationship with Project class
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function projects(){

@@ -16,7 +16,7 @@ class PhoneRequest extends ParentRequest
     {
         return [
             "phone"=>"numeric|required",
-            "phone_country_code"=>"required"
+            "phone_country_code_id"=>"required|exists:phone_country_codes,id"
         ];
     }
 }

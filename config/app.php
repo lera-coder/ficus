@@ -137,6 +137,13 @@ return [
     'providers' => [
 
         /*
+         * Custom Service Providers
+         */
+
+        App\Providers\RepositoryServiceProvider::class,
+        App\Providers\ModelServiceProvider::class,
+
+        /*
          * Laravel Framework Service Providers...
          */
         Illuminate\Auth\AuthServiceProvider::class,
@@ -156,11 +163,13 @@ return [
         Illuminate\Pipeline\PipelineServiceProvider::class,
         Illuminate\Queue\QueueServiceProvider::class,
         Illuminate\Redis\RedisServiceProvider::class,
-        Illuminate\Auth\Passwords\PasswordResetServiceProvider::class,
+//        Illuminate\Auth\Passwords\PasswordResetServiceProvider::class,
         Illuminate\Session\SessionServiceProvider::class,
         Illuminate\Translation\TranslationServiceProvider::class,
         Illuminate\Validation\ValidationServiceProvider::class,
         Illuminate\View\ViewServiceProvider::class,
+        App\Providers\LaravelCustomServiceProvider::class,
+
 
 
         /*
@@ -175,12 +184,7 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
 
-        /*
-         * Custom Service Providers
-         */
-        App\Providers\LaravelCustomServiceProvider::class,
-        App\Providers\RepositoryServiceProvider::class,
-        App\Providers\ModelServiceProvider::class,
+
 
     ],
 

@@ -3,8 +3,10 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Requests\ContactRequest;
+use App\Http\Requests\CreateUserRequest;
 use App\Http\Requests\EmailRequest;
 use App\Http\Requests\PhoneRequest;
+use App\Http\Requests\UpdateUserRequest;
 use App\Models\User;
 use App\Repositories\Interfaces\UserRepositoryInterface;
 use App\Services\ModelService\ModelServiceInterface;
@@ -26,8 +28,6 @@ class UserController extends Controller
 
 
     /**
-     * Function to retrieve all users
-     *
      * @return User[]|\Illuminate\Database\Eloquent\Collection
      */
     public function index()
@@ -37,13 +37,11 @@ class UserController extends Controller
 
 
     /**
-     * Function to create new user
-     *
      * @param Request $request
      */
-    public function store(Request $request)
+    public function store(CreateUserRequest $request)
     {
-        return $this->service->create($request->all());
+        return $this->service->create($request->only(['name', 'login', 'email', 'password']));
     }
 
 
@@ -66,7 +64,7 @@ class UserController extends Controller
      * @param $id
      * @return mixed
      */
-    public function update(Request $request, $id)
+    public function update(UpdateUserRequest $request, $id)
     {
         return $this->service->update($id, $request->all());
     }
@@ -84,7 +82,6 @@ class UserController extends Controller
 
 
 
-
     /**
      * Function to turn on 2FA
      *
@@ -92,10 +89,8 @@ class UserController extends Controller
      * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Http\Response
      */
     public function toggle2FAAuth(){
-        return $this->service->toggle2FA(auth()->user()->id);
+        return $this->service->toggle2FA(auth()->user());
     }
-
-
 
 
 }

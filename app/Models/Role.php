@@ -13,7 +13,6 @@ class Role extends Model
     use HasFactory;
 
     /**
-     * Function, that returns all users, that have this role
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
     public function users()

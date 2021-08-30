@@ -3,7 +3,6 @@
 
 namespace App\Repositories\Interfaces;
 
-
 interface UserRepositoryInterface extends RepositoryInterface
 {
     public function emails($id);
@@ -19,8 +18,6 @@ interface UserRepositoryInterface extends RepositoryInterface
     public function network($id);
 
     public function token2fa($id);
-
-    public function getActivePhoneCountryCode($id);
 
     public function roles($id);
 

@@ -2,84 +2,69 @@
 
 namespace App\Http\Controllers\API;
 
-use App\Models\Company;
+use App\Http\Requests\CreateCompanyRequest;
+use App\Repositories\Interfaces\CompanyRepositoryInterface;
+use App\Services\ModelService\CompanyService\CompanyServiceInterface;
 use Illuminate\Http\Request;
 
 class CompanyController extends Controller
 {
+    protected $company_repository;
+    protected $company_service;
+
+    public function __construct(CompanyRepositoryInterface $company_repository,
+                                CompanyServiceInterface $company_service)
+    {
+        $this->company_repository = $company_repository;
+        $this->company_service = $company_service;
+    }
+
     /**
-     * Display a listing of the resource.
-     *
      * @return \Illuminate\Http\Response
      */
     public function index()
     {
-        //
+        return $this->company_repository->all(20);
+    }
+
+
+    /**
+     * @param Request $request
+     * @return mixed
+     */
+    public function store(CreateCompanyRequest $request)
+    {
+        return $this->company_service->create(
+            $request->only(['name', 'description', 'contact_information']));
     }
 
     /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
+     * @param $id
+     * @return mixed
      */
-    public function create()
+    public function show($id)
     {
-        //
+        return $this->company_repository->getById($id);
+    }
+
+
+    /**
+     * @param Request $request
+     * @param $id
+     * @return mixed
+     */
+    public function update(Request $request, $id)
+    {
+        return $this->company_service->update(
+            $id, $request->only(['name', 'description', 'contact_information']));
     }
 
     /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @param $id
+     * @return mixed
      */
-    public function store(Request $request)
+    public function destroy($id)
     {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Company  $company
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Company $company)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Company  $company
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Company $company)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Company  $company
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, Company $company)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\Company  $company
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Company $company)
-    {
-        //
+        return $this->company_service->destroy($id);
     }
 }

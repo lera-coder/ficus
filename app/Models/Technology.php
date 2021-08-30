@@ -17,7 +17,6 @@ class Technology extends Model
     ];
 
     /**
-     * Relationship with Knowledge class
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function knowledges(){
@@ -26,7 +25,6 @@ class Technology extends Model
 
 
     /**
-     * Relationship with Project class
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
     public function projects(){

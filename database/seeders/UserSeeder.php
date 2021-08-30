@@ -39,7 +39,7 @@ class UserSeeder extends Seeder
             ],
         ]);
 
-        $user_quantity = 1000;
+        $user_quantity = 10;
 
         for($i = 0; $i<$user_quantity; $i++){
             User::factory()->count(1)->state([

@@ -2,7 +2,8 @@
 
 namespace App\Providers;
 
-use Illuminate\Support\Facades\Validator;
+use App\Extensions\PasswordBrokerManagerCustom;
+use Illuminate\Auth\Passwords\PasswordBrokerManager;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -14,7 +15,13 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        //
+        $this->app->singleton('auth.password', function ($app) {
+            return new PasswordBrokerManagerCustom($app);
+        });
+
+        $this->app->bind('auth.password.broker', function ($app) {
+            return $app->make('auth.password')->broker();
+        });
     }
 
     /**
@@ -24,5 +31,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+
     }
 }

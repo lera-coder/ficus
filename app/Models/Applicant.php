@@ -20,7 +20,6 @@ class Applicant extends Model
 
 
     /**
-     * RelationShip with Status
      * @return BelongsTo
      */
     public function status(){

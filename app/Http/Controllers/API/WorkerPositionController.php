@@ -2,84 +2,69 @@
 
 namespace App\Http\Controllers\API;
 
+use App\Http\Requests\WorkerPositionRequest;
 use App\Models\WorkerPosition;
+use App\Repositories\Interfaces\WorkerPositionRepositoryInterface;
+use App\Services\ModelService\WorkerPositionService\WorkerPositionServiceInterface;
 use Illuminate\Http\Request;
 
 class WorkerPositionController extends Controller
 {
+
+    protected $worker_position_repository;
+    protected $worker_position_service;
+
+    public function __construct(WorkerPositionRepositoryInterface $worker_position_repository,
+                                WorkerPositionServiceInterface $worker_position_service)
+    {
+        $this->worker_position_repository = $worker_position_repository;
+        $this->worker_position_service = $worker_position_service;
+    }
+
     /**
-     * Display a listing of the resource.
-     *
      * @return \Illuminate\Http\Response
      */
     public function index()
     {
-        //
+        return $this->worker_position_repository->all(20);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
 
     /**
-     * Store a newly created resource in storage.
-     *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(WorkerPositionRequest $request)
     {
-        //
+        return $this->worker_position_service->create($request->only(['name']));
     }
 
     /**
-     * Display the specified resource.
-     *
      * @param  \App\Models\WorkerPosition  $workerPosition
      * @return \Illuminate\Http\Response
      */
-    public function show(WorkerPosition $workerPosition)
+    public function show($id)
     {
-        //
+        return $this->worker_position_repository->getById($id);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\WorkerPosition  $workerPosition
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(WorkerPosition $workerPosition)
-    {
-        //
-    }
 
     /**
-     * Update the specified resource in storage.
-     *
      * @param  \Illuminate\Http\Request  $request
      * @param  \App\Models\WorkerPosition  $workerPosition
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, WorkerPosition $workerPosition)
+    public function update(WorkerPositionRequest $request, $id)
     {
-        //
+        return $this->worker_position_service->update($id, $request->only(['name']));
     }
 
     /**
-     * Remove the specified resource from storage.
-     *
      * @param  \App\Models\WorkerPosition  $workerPosition
      * @return \Illuminate\Http\Response
      */
-    public function destroy(WorkerPosition $workerPosition)
+    public function destroy($id)
     {
-        //
+        return $this->worker_position_service->destroy($id);
     }
 }

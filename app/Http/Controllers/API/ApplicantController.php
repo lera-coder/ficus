@@ -2,84 +2,69 @@
 
 namespace App\Http\Controllers\API;
 
-use App\Models\Applicant;
-use Illuminate\Http\Request;
+use App\Http\Requests\CreateApplicantRequest;
+use App\Http\Requests\UpdateApplicantRequest;
+use App\Repositories\Interfaces\ApplicantRepositoryInterface;
+use App\Services\ModelService\ApplicantService\ApplicantServiceInterface;
 
 class ApplicantController extends Controller
 {
+    protected $applicant_repository;
+    protected $applicant_service;
+
+    public function __construct(ApplicantRepositoryInterface $applicant_repository,
+                                ApplicantServiceInterface $applicant_service)
+    {
+        $this->applicant_repository = $applicant_repository;
+        $this->applicant_service = $applicant_service;
+    }
+
     /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
+     * @return mixed
      */
     public function index()
     {
-        //
+        return $this->applicant_repository->all(20);
     }
 
+
     /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
+     * @param Request $request
+     * @return mixed
      */
-    public function create()
+    public function store(CreateApplicantRequest $request)
     {
-        //
+        return $this->applicant_service->create($request->
+        only(["name", "email", "phone", "description", "status_id"]));
     }
 
     /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     *
      * @param  \App\Models\Applicant  $applicant
      * @return \Illuminate\Http\Response
      */
-    public function show(Applicant $applicant)
+    public function show($id)
     {
-        //
+        return $this->applicant_repository->getById($id);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Applicant  $applicant
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Applicant $applicant)
-    {
-        //
-    }
 
     /**
-     * Update the specified resource in storage.
-     *
      * @param  \Illuminate\Http\Request  $request
      * @param  \App\Models\Applicant  $applicant
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Applicant $applicant)
+    public function update(UpdateApplicantRequest $request, $id)
     {
-        //
+        return $this->applicant_service->update($id, $request->
+        only(["name", "email", "phone", "description", "status_id"]));
     }
 
     /**
-     * Remove the specified resource from storage.
-     *
      * @param  \App\Models\Applicant  $applicant
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Applicant $applicant)
+    public function destroy($id)
     {
-        //
+        return $this->applicant_service->destroy($id);
     }
 }
