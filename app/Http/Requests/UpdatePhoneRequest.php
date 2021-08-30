@@ -15,7 +15,7 @@ class UpdatePhoneRequest extends ParentRequest
     {
         return [
             "phone_number"=>"numeric",
-            "phone_country_code"=>"numeric"
+            "phone_country_code_id"=>"exists:phone_country_codes,id"
         ];
     }
 }

@@ -22,7 +22,6 @@ class Knowledge extends Model
 
 
     /**
-     * Relationship with Level class
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function level(){
@@ -30,7 +29,6 @@ class Knowledge extends Model
     }
 
     /**
-     * Relationship to applicants and users
      * @return \Illuminate\Database\Eloquent\Relations\MorphTo
      */
     public function knowledgable(){
@@ -38,7 +36,6 @@ class Knowledge extends Model
     }
 
     /**
-     * Relationship with Technology class
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function technology(){

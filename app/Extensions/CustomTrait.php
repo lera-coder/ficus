@@ -1,7 +1,7 @@
 <?php
 
 
-namespace App;
+namespace App\Extensions;
 
 use App\Models\Email;
 use App\Models\User;

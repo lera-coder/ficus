@@ -28,8 +28,8 @@ class CreatePhonesTable extends Migration
                 ->references('id')->on('users');
 
             $table->foreign('phone_country_code_id')
-            ->references('id')->on('phone_country_codes');
-    });
+                ->references('id')->on('phone_country_codes');
+        });
     }
 
     /**

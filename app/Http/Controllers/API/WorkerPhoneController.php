@@ -2,84 +2,67 @@
 
 namespace App\Http\Controllers\API;
 
-use App\Models\WorkerPhone;
-use Illuminate\Http\Request;
+use App\Http\Requests\CreateWorkerPhoneRequest;
+use App\Http\Requests\UpdateWorkerPhoneRequest;
+use App\Repositories\Interfaces\WorkerPhoneRepositoryInterface;
+use App\Services\ModelService\WorkerPhoneService\WorkerPhoneServiceInterface;
 
 class WorkerPhoneController extends Controller
 {
+    protected $worker_phone_repository;
+    protected $worker_phone_service;
+
+    public function __construct(WorkerPhoneRepositoryInterface $worker_phone_repository,
+                                WorkerPhoneServiceInterface  $worker_phone_service)
+    {
+        $this->worker_phone_repository = $worker_phone_repository;
+        $this->worker_phone_service = $worker_phone_service;
+    }
+
     /**
-     * Display a listing of the resource.
-     *
      * @return \Illuminate\Http\Response
      */
     public function index()
     {
-        //
+        return $this->worker_phone_repository->all(20);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
 
     /**
-     * Store a newly created resource in storage.
-     *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(CreateWorkerPhoneRequest $request)
     {
-        //
+        return $this->worker_phone_service->create($request->only("phone_number", "operator", "worker_id"));
     }
 
     /**
-     * Display the specified resource.
-     *
      * @param  \App\Models\WorkerPhone  $workerPhone
      * @return \Illuminate\Http\Response
      */
-    public function show(WorkerPhone $workerPhone)
+    public function show($id)
     {
-        //
+        return $this->worker_phone_repository->getById($id);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\WorkerPhone  $workerPhone
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(WorkerPhone $workerPhone)
-    {
-        //
-    }
 
     /**
-     * Update the specified resource in storage.
-     *
      * @param  \Illuminate\Http\Request  $request
      * @param  \App\Models\WorkerPhone  $workerPhone
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, WorkerPhone $workerPhone)
+    public function update(UpdateWorkerPhoneRequest $request, $id)
     {
-        //
+        return $this->worker_phone_service->update($id, $request->only(["phone_number", "operator"]));
     }
 
     /**
-     * Remove the specified resource from storage.
-     *
      * @param  \App\Models\WorkerPhone  $workerPhone
      * @return \Illuminate\Http\Response
      */
-    public function destroy(WorkerPhone $workerPhone)
+    public function destroy($id)
     {
-        //
+        return $this->worker_phone_service->destroy($id);
     }
 }

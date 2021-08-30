@@ -19,7 +19,6 @@ class Project extends Model
     ];
 
     /**
-     * Relationship with Company class
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function company(){

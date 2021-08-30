@@ -5,24 +5,25 @@ namespace App\Services\ModelService\EmailService;
 
 
 use App\Models\Email;
+use App\Models\User;
 use App\Repositories\Interfaces\EmailRepositoryInterface;
 use App\Repositories\Interfaces\UserRepositoryInterface;
 use Symfony\Component\HttpFoundation\Exception\JsonException;
 
 class EmailService implements EmailServiceInterface
 {
-    protected $repository;
+    protected $email_repository;
     protected $user_repository;
 
     public function __construct(EmailRepositoryInterface $repository, UserRepositoryInterface $user_repository)
     {
-        $this->repository = $repository;
+        $this->email_repository = $repository;
         $this->user_repository = $user_repository;
     }
 
     public function update($id, $data)
     {
-        $email = $this->repository->getById($id)->update($data);
+        $email = $this->email_repository->getById($id)->update($data);
 
         if($email->is_active){
             $email->email_verified_at = null;
@@ -42,29 +43,29 @@ class EmailService implements EmailServiceInterface
         }
     }
 
-    public function create($credentials, $user_id,)
+    public function create($data)
     {
-
+        $user = auth()->user();
         return Email::create([
-            'email'=>$credentials['email_name'],
-            'is_active'=>$this->user_repository->emails($user_id)->count()==0,
-            'user_id'=>$user_id
+            'email'=>$data['email'],
+            'is_active'=>$this->user_repository->emails($user->id)->count()==0,
+            'user_id'=>$user->id
         ]);
     }
 
 
 
-    public function makeActive($email_id, $user_id)
+    public function makeActive($id)
     {
-        $email = $this->repository->getById($email_id);
-        if($email->is_active) return response('This email was already active');
-
-        $old_active_email = $userRepository->activeEmail($user_id)->activeEmail();
-        $old_active_email->is_active = false;
-        $old_active_email->save();
-
-        $email->is_active = true;
-        $email->save();
+        $user = auth()->user();
+        $active_email = $this->email_repository->activeEmail($user->id);
+        if(!is_null($active_email)){
+            $active_email->is_active = 0;
+            $this->email_repository->getById($id)->is_active = 1;
+            $user->push();
+            return true;
+        }
+        return false;
     }
 
 

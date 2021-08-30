@@ -18,7 +18,6 @@ class Level extends Model
 
 
     /**
-     * Relationship with Knowledge class
      * @return Level|\Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function knowledges(){

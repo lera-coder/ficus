@@ -8,70 +8,65 @@ use App\Http\Resources\PhoneFullCollection;
 use App\Http\Resources\PhoneFullResource;
 use App\Models\Phone;
 use App\Models\PhoneCountryCode;
+use App\Repositories\Interfaces\PhoneRepositoryInterface;
+use App\Services\ModelService\PhoneService\PhoneServiceInterface;
 use Illuminate\Support\Facades\Gate;
 use Symfony\Component\HttpFoundation\Exception\JsonException;
 
 class PhoneController extends Controller
 {
+    protected $phone_repository;
+    protected $phone_service;
+
+    public function __construct(PhoneServiceInterface $phone_service,
+                                PhoneRepositoryInterface $phone_repository)
+    {
+        $this->phone_repository = $phone_repository;
+        $this->phone_service = $phone_service;
+    }
 
     /**
-     * Function returns all phones of user
-     *
      * @return mixed
      */
     public function index(){
-        return new PhoneFullCollection(PhoneFullResource::collection(auth()->user()->phones));
+        return new PhoneFullCollection(PhoneFullResource::collection($this->phone_repository->all(20)));
     }
 
 
 
     /**
-     * Function to get the active mail of user
-     *
      * @return mixed
      */
     public function activePhone(){
-        return auth()->user()->activePhone();
+        return $this->phone_repository->activePhone(auth()->user());
     }
 
 
     /**
-     * Function to show the phone of user by id
-     *
      * @param $id
      * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Http\Response
      */
     public function show($id){
-        $phone  = auth()->user()->phones->find($id);
-        return $phone ?: response("Phone is not found", 404);
+       return $this->phone_repository->getById($id);
     }
 
 
 
     /**
-     * Function to delete model object
-     *
      * @param $id
      * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Http\Response
      */
     public function destroy($id){
-        try {
-            Phone::destroy($id);
-        }catch (JsonException $e){
-            return response(['error'=>$e->getMessage()], 404);
-        }
-
+        $this->phone_service->destroy(($id));
     }
 
 
     /**
-     * Function to create model of phone
-     *
-     * @param EmailRequest $request
+     * @param PhoneRequest $request
      * @return mixed
      */
     public function store(PhoneRequest $request){
-        return auth()->user()->addPhone($request->phone, $request->phone_country_code);
+        return $this->phone_service->create($request->only(['phone_number', 'phone_country_code_id']));
     }
 
 
@@ -82,13 +77,14 @@ class PhoneController extends Controller
      * @return mixed
      */
     public function setActive($id){
-        return auth()->user()->makePhoneActive($id);
+        return $this->phone_service->makeActive($id) ?
+            response('Phone was successfully turned to active'):
+            response('This action is not allowed', 403);
+
     }
 
 
     /**
-     * Function to update phone
-     *
      * @param UpdatePhoneRequest $request
      * @param $id
      */
@@ -97,21 +93,6 @@ class PhoneController extends Controller
             return response('You cannot edit not your phone!', 401);
         }
 
-        $phone = Phone::find($id);
-        $phone->update($request->all());
-
-        if(array_key_exists('phone_country_code', $request->all()))
-            {
-                try{
-                    $countryCode = PhoneCountryCode::where('code', $request->phone_country_code)->first();
-                    $phone->phone_country_code_id = $countryCode->id;
-                    $phone->push();
-                }
-                catch(\Exception $e){
-                    return response('Country code is not found!', 404);
-                }
-            }
-
-        return $phone;
+        return $this->phone_service->update($id, $request->only(['phone_number', 'phone_country_code_id']));
     }
 }

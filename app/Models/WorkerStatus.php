@@ -17,7 +17,6 @@ class WorkerStatus extends Model
 
 
     /**
-     * Relationship with Worker class
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function workers(){

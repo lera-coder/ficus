@@ -18,7 +18,6 @@ class Email extends Model
 
 
     /**
-     * Function, that returns user, that is the owner of this mail
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function user(){

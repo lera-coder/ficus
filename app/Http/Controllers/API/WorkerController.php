@@ -2,84 +2,67 @@
 
 namespace App\Http\Controllers\API;
 
-use App\Models\Worker;
-use Illuminate\Http\Request;
+use App\Http\Requests\CreateWorkerRequest;
+use App\Http\Requests\UpdateWorkerRequest;
+use App\Repositories\Interfaces\WorkerRepositoryInterface;
+use App\Services\ModelService\WorkerService\WorkerServiceInterface;
 
 class WorkerController extends Controller
 {
+    protected $worker_repository;
+    protected $worker_service;
+
+    public function __construct(WorkerRepositoryInterface $worker_repository,
+                                WorkerServiceInterface $worker_service)
+    {
+        $this->worker_repository = $worker_repository;
+        $this->worker_service = $worker_service;
+    }
+
     /**
-     * Display a listing of the resource.
-     *
      * @return \Illuminate\Http\Response
      */
     public function index()
     {
-        //
+        return $this->worker_repository->all(20);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
 
     /**
-     * Store a newly created resource in storage.
-     *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(CreateWorkerRequest $request)
     {
-        //
+        return $this->worker_service->create($request->only(["name", "company_id", "position_id", "status_id"]));
     }
 
     /**
-     * Display the specified resource.
-     *
      * @param  \App\Models\Worker  $worker
      * @return \Illuminate\Http\Response
      */
-    public function show(Worker $worker)
+    public function show($id)
     {
-        //
+        return $this->worker_repository->getById($id);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Worker  $worker
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Worker $worker)
-    {
-        //
-    }
 
     /**
-     * Update the specified resource in storage.
-     *
      * @param  \Illuminate\Http\Request  $request
      * @param  \App\Models\Worker  $worker
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Worker $worker)
+    public function update(UpdateWorkerRequest $request, $id)
     {
-        //
+        return $this->worker_service->update($id, $request->only(["name", "company_id", "position_id", "status_id"]));
     }
 
     /**
-     * Remove the specified resource from storage.
-     *
      * @param  \App\Models\Worker  $worker
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Worker $worker)
+    public function destroy($id)
     {
-        //
+        return $this->worker_service->destroy($id);
     }
 }

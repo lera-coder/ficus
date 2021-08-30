@@ -4,70 +4,118 @@
 namespace App\Services\ModelService\UserService;
 
 
-use App\Models\Email;
-use App\Models\Token2fa;
+use App\Exceptions\TransactionFailedException;
 use App\Models\User;
+use App\Repositories\Interfaces\EmailRepositoryInterface;
+use App\Repositories\Interfaces\NetworkRepositoryInterface;
 use App\Repositories\Interfaces\UserRepositoryInterface;
+use App\Services\ModelService\EmailService\EmailServiceInterface;
+use App\Services\ModelService\Token2FAService\Token2FAServiceInterface;
+use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Auth\Events\Registered;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Password;
+use Illuminate\Support\Str;
+use Nexmo\Laravel\Facade\Nexmo;
 
 class UserService implements UserServiceInterface
 {
-    protected  $repository;
+    protected $user_repository;
+    protected $email_repository;
+    protected $email_service;
+    protected $network_repository;
+    protected $token2FA_service;
 
 
-    public function __construct(UserRepositoryInterface $repository)
-    {
-        $this->repository = $repository;
+    public function __construct(UserRepositoryInterface $user_repository,
+                                EmailRepositoryInterface $email_repository,
+                                EmailServiceInterface $email_service,
+                                NetworkRepositoryInterface $network_repository,
+                                Token2FAServiceInterface $token2FA_service){
+
+        $this->user_repository = $user_repository;
+        $this->email_repository = $email_repository;
+        $this->email_service = $email_service;
+        $this->network_repository = $network_repository;
+        $this->token2FA_service = $token2FA_service;
     }
 
 
+    /**
+     * @param $credentials
+     */
     public function create($credentials)
     {
-        $user = User::create([
-            'name'=>$credentials['name'],
-            'login'=>$credentials['login'],
-            'password'=>Hash::make($credentials['password'])
-        ]);
 
-        $this->createEmailForUser($credentials['email'], $user->id);
-        $this->createTokenForUser( $user->id);
+        $user = $this->createUserModelByCredentials($credentials);
 
-        event(new Registered($user));
+        try{
+            DB::beginTransaction();
+            if(array_key_exists('email', $credentials)) {
+                $this->email_service->create(['email'=>$credentials['email'], 'user_id'=>$user->id]);
+            }
+            $this->token2FA_service->create($user->id);
+            DB::commit();
+            event(new Registered($user));
+        }
+        catch(TransactionFailedException $exception){
+            DB::rollBack();
+        }
+
+    }
+
+    /**
+     * @param $credentials
+     * @return mixed
+     */
+    protected function createUserModelByCredentials($credentials){
+        return $this->user_repository->user->create($this->modifyArrayOfUserCredentials($credentials));
     }
 
 
-    protected function createEmailForUser($email, $user_id){
-        Email::create([
-            'email'=>$email,
-            'user_id'=>$user_id,
-            'is_active'=>true
-        ]);
+    /**
+     * @param $credentials
+     * @return mixed
+     */
+    protected function modifyArrayOfUserCredentials($credentials){
+        if(array_key_exists('password', $credentials)){
+            $credentials['password'] = Hash::make($credentials['password']);
+        }
+        unset($credentials['email']);
+        return $credentials;
     }
 
-
-    protected function createTokenForUser($user_id){
-        Token2fa::create([
-            'user_id'=>$user_id
-        ]);
-    }
-
+    /**
+     * @param $id
+     * @param $data
+     * @return mixed
+     */
     public function update($id, $data){
-        return $user = $this->repository->getById($id)->update($data);
+        return $this->user_repository->getById($id)->update($data);
     }
 
+
+    /**
+     * @param $id
+     * @return mixed
+     */
     public function destroy($id){
-        return $this->repository->getById($id)->destroy();
+        return $this->user_repository->getById($id)->destroy();
     }
 
 
-
-    public function toggle2FA($id)
+    /**
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Http\Response
+     */
+    public function toggle2FA()
     {
-        $user = $this->repository->getById($id);
+        $user = auth()->user();
+        $this->checkActivePhoneAvalability($user->id);
 
-        $this->checkActivePhoneAvalability($id);
-        $this->changeToken2FA($user);
+        $user->is_2auth = !$user->is_2auth;
+        $user->token2fa->is_confirmed = true;
+        $user->push();
 
         return $user->is_2auth ?
             response('2Factor Authentication was successfully turned on'):
@@ -75,43 +123,71 @@ class UserService implements UserServiceInterface
     }
 
 
-
+    /**
+     * @param $id
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Http\Response
+     */
     protected function checkActivePhoneAvalability($id){
-        if(is_null($this->repository->activePhone($id))) return response('You have no phone numbers, please add one, then try again!', 422);
+        if(is_null($this->user_repository->activePhone($id))) return response('You have no phone numbers, please add one, then try again!', 422);
     }
 
 
-    protected function changeToken2FA(User $user){
-        $user->is_2auth = !$user->is_2auth;
-        $user->token2fa->is_confirmed = true;
-        $user->push();
-    }
 
 
-    public function check2FAtoken($token, $id)
+    /**
+     * @param $token
+     * @return bool
+     */
+    public function check2FAtoken($token)
     {
-        $user = $this->repository->getById($id);
-        $right =  $token == $user->token2fa->token;
-        if($right){
-            $user->token2fa->is_confirmed = true;
+        $user = auth()->user();
+        $right =  $token == $this->user_repository->token2fa($user)->token;
+
+        try {
+            DB::beginTransaction();
+            if ($right) {
+                $user->token2fa->is_confirmed = true;
+            }
+            $this->deleteToken2FAIfUserIsVerified();
+            DB::commit();
         }
-        $user->token2fa->token = null;
-        $user->push();
+        catch(TransactionFailedException $exception){
+            DB::rollBack();
+        }
         return $right;
     }
 
 
-    public function set2FAtoken($id)
-    {
-        $token = $this->generate2FAtoken();
-        $token2fa_model = $this->repository->token2fa($id);
-        $token2fa_model->token = $token;
-        $this->save();
-
-        return $token;
+    protected function deleteToken2FAIfUserIsVerified(){
+        $user = auth()->user();
+        $user->token2fa->token = null;
+        $user->push();
     }
 
 
+    /**
+     * @return string
+     */
+    public function set2FAtoken()
+    {
+        try {
+            DB::beginTransaction();
+            $user = auth()->user();
+            $token = $this->generate2FAtoken();
+            $token2fa_model = $this->repository->token2fa($user);
+            $token2fa_model->token = $token;
+            $user->push();
+            DB::commit();
+        }
+        catch (TransactionFailedException $exception){
+            DB::rollBack();
+        }
+        return $token;
+    }
+
+    /**
+     * @return string
+     */
     protected function generate2FAtoken(){
         $permitted_chars = '0123456789';
         $token ='';
@@ -123,18 +199,88 @@ class UserService implements UserServiceInterface
         return $token;
     }
 
-    public function updateUserAfterSocialNetworkLoggedIn($network_id, $user_id)
-    {
-        $user = $this->repository->getById($user_id);
-        $user->network_id = $network_id;
-        $user->activeEmail()->email_verified_at = now();
+
+
+    public function send2FACode(){
+        $user = auth()->user();
+
+        Nexmo::message()->send([
+            'to'   => $this->repository->getFullActivePhone($user),
+            'from' => ENV('NEXMO_FROM_NUMBER'),
+            'text' => $this->set2FAtoken($user)
+        ]);
+
+        $this->markUserAfterSending2FAToken();
+
+    }
+
+
+    protected function markUserAfterSending2FAToken(){
+        $user = auth()->user();
+        $user->token2fa->is_confirmed = false;
         $user->push();
+
+    }
+
+
+    /**
+     * @param $network
+     * @param $user_credentials
+     */
+    public function updateUserAfterSocialNetworkLoggedIn($network, $user_credentials)
+    {
+        $email = $this->email_repository->getModelByEmail($user_credentials->email);
+
+        if($email){
+            $user = $this->email_repository->user($email);
+        }
+        else {
+            $this->create($user_credentials);
+        }
+
+        try {
+            DB::beginTransaction();
+            $user->network_id = $this->network_repository->getModelByName($network)->id;
+            $this->email_repository->activeEmail($user->id)->email_verified_at = now();
+            $user->push();
+            DB::commit();
+        }
+        catch (TransactionFailedException $exception){
+            DB::rollBack();
+        }
         return auth()->login($user);
     }
 
+
+    /**
+     * @param $login
+     * @return mixed
+     */
     public function getEmailViaLogin($login)
     {
-        return $this->repository->getById($this->repository->getIdViaLogin($login))->email->email;
+        return $this->user_repository->getById($this->user_repository->getIdViaLogin($login))->email->email;
 
     }
+
+    /**
+     * @param $reset_password_data
+     * @return mixed
+     */
+    public function returnResetPasswordStatus($reset_password_data){
+        $user = auth()->user();
+
+        return  Password::reset(
+            $reset_password_data,
+            function ($user, $password) {
+                $user->forceFill([
+                    'password' => Hash::make($password)
+                ])->setRememberToken(Str::random(60));
+
+                $user->save();
+
+                event(new PasswordReset($user));
+            }
+        );
+    }
+
 }

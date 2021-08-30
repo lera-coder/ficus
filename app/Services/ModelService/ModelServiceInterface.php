@@ -4,8 +4,6 @@
 namespace App\Services\ModelService;
 
 
-use App\Repositories\Interfaces\UserRepositoryInterface;
-
 interface ModelServiceInterface
 {
 
@@ -13,5 +11,6 @@ interface ModelServiceInterface
 
     public function destroy($id);
 
+    public function create($data);
 
 }

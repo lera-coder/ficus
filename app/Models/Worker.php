@@ -18,7 +18,6 @@ class Worker extends Model
 
 
     /**
-     * Relationship with Email class
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function emails(){
@@ -26,7 +25,6 @@ class Worker extends Model
     }
 
     /**
-     * Relationship with Phone class
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function phones(){
@@ -34,7 +32,6 @@ class Worker extends Model
     }
 
     /**
-     * Relationship with Status class
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function status(){
@@ -42,7 +39,6 @@ class Worker extends Model
     }
 
     /**
-     * Relationship with WorkerPosition class
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function position(){
@@ -50,7 +46,6 @@ class Worker extends Model
     }
 
     /**
-     * Relationship with Company class
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function company(){
@@ -58,7 +53,6 @@ class Worker extends Model
     }
 
     /**
-     * Relationship with Project class
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function projects(){

@@ -71,3 +71,8 @@ Route::post("/register", ['App\Http\Controllers\API\Auth\AuthController', 'regis
 Route::get("/refresh", ['App\Http\Controllers\API\Auth\AuthController', 'refresh'])->name('refresh');
 Route::get('/login/{network}/redirect', ['App\Http\Controllers\API\Auth\AuthController', 'redirectToSocialNetwork'])->name('network.redirect');
 Route::get('/login/{network}/callback', ['App\Http\Controllers\API\Auth\AuthController', 'callbackFromSocialNetwork'])->name('login.network');
+
+Route::resource('company', 'App\Http\Controllers\API\CompanyController');
+Route::resource('knowledge', 'App\Http\Controllers\API\KnowledgeController');
+Route::resource('project', 'App\Http\Controllers\API\ProjectController');
+

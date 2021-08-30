@@ -23,11 +23,15 @@ class ProjectFactory extends Factory
      */
     public function definition()
     {
+        $worker_id = rand(1, Worker::all()->count());
+
         return [
             "name"=>$this->faker->sentence($nbWords = 4, $variableNbWords = true),
             "description"=>$this->faker->realText,
             "price"=>rand(10000, 1000000),
-            "status_id"=>rand(1, ProjectStatus::all()->count() - 1),
+            "status_id"=>rand(1, ProjectStatus::all()->count()),
+            "worker_id"=>$worker_id,
+            "company_id"=>Worker::find($worker_id)->company_id
         ];
     }
 }

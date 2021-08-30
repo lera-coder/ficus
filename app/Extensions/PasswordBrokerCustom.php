@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace App\Extensions;
 
 use App\Models\Email;
 use Illuminate\Auth\Passwords\PasswordBroker;
@@ -9,6 +9,7 @@ use Illuminate\Support\Arr;
 class PasswordBrokerCustom extends PasswordBroker
 {
     use CustomTrait;
+
 
     /**
      * Override method of Password Broker get User

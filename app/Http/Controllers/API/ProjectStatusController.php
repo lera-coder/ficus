@@ -2,84 +2,66 @@
 
 namespace App\Http\Controllers\API;
 
-use App\Models\ProjectStatus;
-use Illuminate\Http\Request;
+use App\Http\Requests\ProjectStatusRequest;
+use App\Repositories\Interfaces\ProjectStatusRepositoryInterface;
+use App\Services\ModelService\ProjectStatusService\ProjectStatusServiceInterface;
 
 class ProjectStatusController extends Controller
 {
+    protected $project_status_repository;
+    protected $project_status_service;
+
+    public function __construct(ProjectStatusRepositoryInterface $project_status_repository,
+                                ProjectStatusServiceInterface $project_status_service)
+    {
+        $this->project_status_repository = $project_status_repository;
+        $this->project_status_service = $project_status_service;
+    }
+
     /**
-     * Display a listing of the resource.
-     *
      * @return \Illuminate\Http\Response
      */
     public function index()
     {
-        //
+        return $this->project_status_repository->all(20);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
 
     /**
-     * Store a newly created resource in storage.
-     *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(ProjectStatusRequest $request)
     {
-        //
+        return $this->project_status_service->create($request->only(['name']));
     }
 
     /**
-     * Display the specified resource.
-     *
      * @param  \App\Models\ProjectStatus  $projectStatus
      * @return \Illuminate\Http\Response
      */
-    public function show(ProjectStatus $projectStatus)
+    public function show($id)
     {
-        //
+        return $this->project_status_repository->getById($id);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\ProjectStatus  $projectStatus
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(ProjectStatus $projectStatus)
-    {
-        //
-    }
 
     /**
-     * Update the specified resource in storage.
-     *
      * @param  \Illuminate\Http\Request  $request
      * @param  \App\Models\ProjectStatus  $projectStatus
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, ProjectStatus $projectStatus)
+    public function update(ProjectStatusRequest $request, $id)
     {
-        //
+        return $this->project_status_service->update($id, $request->only('name'));
     }
 
     /**
-     * Remove the specified resource from storage.
-     *
      * @param  \App\Models\ProjectStatus  $projectStatus
      * @return \Illuminate\Http\Response
      */
-    public function destroy(ProjectStatus $projectStatus)
+    public function destroy($id)
     {
-        //
+        return $this->project_status_service->destroy($id);
     }
 }

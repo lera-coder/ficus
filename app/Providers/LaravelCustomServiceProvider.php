@@ -2,7 +2,7 @@
 
 namespace App\Providers;
 
-use App\CustomJWTGuard;
+use App\Extensions\CustomJWTGuard;
 use Tymon\JWTAuth\Providers\LaravelServiceProvider;
 
 class LaravelCustomServiceProvider extends LaravelServiceProvider
