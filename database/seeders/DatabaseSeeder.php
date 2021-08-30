@@ -34,7 +34,10 @@ class DatabaseSeeder extends Seeder
                 WorkerSeeder::class,
                 ApplicantSeeder::class,
                 ProjectSeeder::class,
-                KnowledgeSeeder::class
+                KnowledgeSeeder::class,
+                InterviewStatusSeeder::class,
+                UserPermissionSeeder::class,
+
             ]
         );
     }

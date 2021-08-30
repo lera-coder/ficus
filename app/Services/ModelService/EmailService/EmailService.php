@@ -37,7 +37,7 @@ class EmailService implements EmailServiceInterface
     public function destroy($id)
     {
         try {
-            Email::destroy($id);
+            $this->email_repository->email->destroy($id);
         }catch (JsonException $e){
             return response(['error'=>$e->getMessage()], 404);
         }
@@ -46,7 +46,7 @@ class EmailService implements EmailServiceInterface
     public function create($data)
     {
         $user = auth()->user();
-        return Email::create([
+        return $this->email_repository->email->create([
             'email'=>$data['email'],
             'is_active'=>$this->user_repository->emails($user->id)->count()==0,
             'user_id'=>$user->id

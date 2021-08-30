@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateWorkerEmailsTable extends Migration
+class CreateInterviewStatusesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -15,8 +15,7 @@ class CreateWorkerEmailsTable extends Migration
     {
         Schema::create('interview_statuses', function (Blueprint $table) {
             $table->id();
-
-            $table->timestamps();
+            $table->string('name');
         });
     }
 
