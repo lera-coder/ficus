@@ -89,7 +89,9 @@ class UserController extends Controller
      * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Http\Response
      */
     public function toggle2FAAuth(){
-        return $this->service->toggle2FA(auth()->user());
+        return $this->service->toggle2FA(auth()->user()) ?
+            response('Your 2Auth was successfully turned on'):
+            response('Your 2Auth was successfully turned down');
     }
 
 

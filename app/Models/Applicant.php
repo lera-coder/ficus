@@ -25,4 +25,22 @@ class Applicant extends Model
     public function status(){
         return $this->BelongsTo(ApplicantStatus::class);
     }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function users(){
+        return $this->belongsToMany(User::class, 'users_applicants')->withPivotValue('');
+    }
+
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function interviews(){
+        return $this->belongsToMany(Applicant::class, 'applicants_interviews');
+    }
+
+
+
 }

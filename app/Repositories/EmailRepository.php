@@ -9,7 +9,7 @@ use App\Repositories\Interfaces\EmailRepositoryInterface;
 
 class EmailRepository implements EmailRepositoryInterface
 {
-    protected $email;
+    public $email;
 
     public function __construct(Email $email)
     {

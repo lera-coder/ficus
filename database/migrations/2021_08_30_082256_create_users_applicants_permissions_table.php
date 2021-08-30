@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateWorkerEmailsTable extends Migration
+class CreateUsersApplicantsPermissionsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -15,8 +15,17 @@ class CreateWorkerEmailsTable extends Migration
     {
         Schema::create('users_applicants_permissions', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('applicant_id');
+            $table->unsignedBigInteger('user_id');
+            $table->unsignedBigInteger('permission_id');
 
-            $table->timestamps();
+            $table->foreign('applicant_id')
+                ->references('id')->on('applicants');
+            $table->foreign('user_id')
+                ->references('id')->on('users');
+            $table->foreign('permission_id')
+                ->references('id')->on('user_permissions');
+
         });
     }
 

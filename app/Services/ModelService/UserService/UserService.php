@@ -117,18 +117,16 @@ class UserService implements UserServiceInterface
         $user->token2fa->is_confirmed = true;
         $user->push();
 
-        return $user->is_2auth ?
-            response('2Factor Authentication was successfully turned on'):
-            response('2Factor Authentication was successfully turned off');
+        return $user->is_2auth;
     }
 
 
     /**
      * @param $id
-     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Http\Response
+     * @return bool
      */
     protected function checkActivePhoneAvalability($id){
-        if(is_null($this->user_repository->activePhone($id))) return response('You have no phone numbers, please add one, then try again!', 422);
+        return (is_null($this->user_repository->activePhone($id)));
     }
 
 
