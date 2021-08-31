@@ -1,10 +1,6 @@
 <?php
 
-use App\Models\UserPermission;
-use Illuminate\Foundation\Auth\EmailVerificationRequest;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\Response;
 
 /*
 |--------------------------------------------------------------------------
@@ -49,6 +45,21 @@ Route::middleware('jwt.verify')->group(function () {
         //Toggle 2FA
         Route::get('user/auth2fa/toggle', ["App\Http\Controllers\API\UserController", 'toggle2FAAuth']);
 
+        //User methods
+        Route::resource("user", "App\Http\Controllers\API\UserController")->except('edit', 'create');
+
+        //Phonebook
+        Route::get("phonebook/users", ["App\Http\Controllers\API\PhoneBookController", "users"]);
+        Route::get("phonebook/applicants", ["App\Http\Controllers\API\PhoneBookController", "applicants"]);
+        Route::get("phonebook/workers", ["App\Http\Controllers\API\PhoneBookController", "workers"]);
+
+        //Check permissions
+        Route::get("applicant/permissions/{id}", ["App\Http\Controllers\API\ApplicantController", "permissions"]);
+        Route::get("user/permissions/{id}", ["App\Http\Controllers\API\UserController", "permissions"]);
+        Route::get("interview/permissions/{id}", ["App\Http\Controllers\API\InterviewController", "permissions"]);
+
+
+
 
     });
 
@@ -76,8 +87,6 @@ Route::resource('company', 'App\Http\Controllers\API\CompanyController');
 Route::resource('knowledge', 'App\Http\Controllers\API\KnowledgeController');
 Route::resource('project', 'App\Http\Controllers\API\ProjectController');
 
-//User methods
-Route::resource("user", "App\Http\Controllers\API\UserController")->except('edit', 'create');
 
 //Route::get('user-applicant/{id}', function ($id){
 //    return new \App\Http\Resources\UserApplicantPermissionResource(\App\Models\UserApplicantPermission::find($id));

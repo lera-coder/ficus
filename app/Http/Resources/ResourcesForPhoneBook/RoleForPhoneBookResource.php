@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Resources;
+namespace App\Http\Resources\ResourcesForPhoneBook;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class EmailResource extends JsonResource
+class RoleForPhoneBookResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -15,8 +15,8 @@ class EmailResource extends JsonResource
     public function toArray($request)
     {
         return [
-            'email'=>$this->email,
-            'email_verified_at'=>$this->email_verified_at,
+            "id"=>$this->id,
+            "name"=>$this->name
         ];
     }
 }

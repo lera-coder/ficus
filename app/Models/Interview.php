@@ -33,10 +33,11 @@ class Interview extends Model
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
     public function applicants(){
-        return $this->hasMany(Applicant::class, 'applicants_interviews');
+        return $this->belongsToMany(Applicant::class, 'applicants_interviews');
     }
+
 
 }

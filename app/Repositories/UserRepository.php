@@ -25,7 +25,7 @@ class UserRepository implements UserRepositoryInterface
      */
     public function all($n)
     {
-        return UserFullResource::collection($this->user->paginate($n));
+        return $this->user->query()->paginate($n);
     }
 
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Resources;
+namespace App\Http\Resources\UserResources;
 
 use App\Repositories\Interfaces\EmailRepositoryInterface;
 use App\Repositories\Interfaces\UserRepositoryInterface;

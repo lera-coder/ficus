@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Resources;
+namespace App\Http\Resources\UserApplicantPermissionResources;
 
+use App\Http\Resources\UserResources\UserResource;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class UserApplicantPermissionResource extends JsonResource
@@ -16,7 +17,7 @@ class UserApplicantPermissionResource extends JsonResource
     public function toArray($request)
     {
         return [
-            "user"=>new UserResource($this->user),
+            "user"=> new UserResource($this->user),
             "applicant"=>$this->applicant,
             "permission"=>$this->permission
         ];

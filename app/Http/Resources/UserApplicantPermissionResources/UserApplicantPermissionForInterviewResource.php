@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Resources;
+namespace App\Http\Resources\UserApplicantPermissionResources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class NetworkResource extends JsonResource
+class UserApplicantPermissionForInterviewResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -14,6 +14,8 @@ class NetworkResource extends JsonResource
      */
     public function toArray($request)
     {
-        return parent::toArray($request);
+        return [
+
+        ];
     }
 }

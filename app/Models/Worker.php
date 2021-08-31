@@ -28,7 +28,7 @@ class Worker extends Model
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function phones(){
-        return $this->hasMany(WorkerEmail::class);
+        return $this->hasMany(WorkerPhone::class);
     }
 
     /**

@@ -1,11 +1,21 @@
 <?php
 
-namespace App\Http\Resources;
+namespace App\Http\Resources\PhoneResources;
 
+use App\Repositories\Interfaces\PhoneRepositoryInterface;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\App;
 
 class PhoneResource extends JsonResource
 {
+    protected $phone_repository;
+
+    public function __construct($resource)
+    {
+        $this->phone_repository = App::make(PhoneRepositoryInterface::class);
+        parent::__construct($resource);
+    }
+
     /**
      * Transform the resource into an array.
      *
