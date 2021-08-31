@@ -4,11 +4,9 @@
 namespace App\Repositories\Interfaces;
 
 
-use App\Models\Network;
-
 interface NetworkRepositoryInterface extends RepositoryInterface
 {
-    public static function users(Network $network);
+    public function users($id);
 
     public function getModelByName($name);
 

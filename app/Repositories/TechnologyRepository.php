@@ -26,12 +26,12 @@ class TechnologyRepository implements TechnologyRepositoryInterface
         return $this->technology->findOrFail($id);
     }
 
-    public static function knowledges(Technology $technology){
-        return $technology->knowledges();
+    public function knowledges($id){
+        return $this->getById($id)->knowledges;
     }
 
-    public static function projects(Technology $technology){
-        return $technology->projects;
+    public function projects($id){
+        return $this->getById($id)->projects;
     }
 
 

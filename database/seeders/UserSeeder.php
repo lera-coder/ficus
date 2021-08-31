@@ -22,6 +22,7 @@ class UserSeeder extends Seeder
                 "login"=>"lera6606",
                 "is_2auth"=>false,
                 "password"=>Hash::make("2206"),
+
             ],
 
             [

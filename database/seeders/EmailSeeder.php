@@ -23,24 +23,28 @@ class EmailSeeder extends Seeder
                 "email"=>"valeryyselivanova0@gmail.com",
                 "is_active"=>true,
                 "user_id"=>1,
+                "email_verified_at"=>now()
             ],
 
             [
                 "email"=>"arnoldsvarcneger86@gmail.com",
                 "is_active"=>false,
                 "user_id"=>1,
+                "email_verified_at"=>now()
             ],
 
             [
                 "email"=>"dreffka@gmail.com",
                 "is_active"=>true,
                 "user_id"=>2,
+                "email_verified_at"=>now()
             ],
 
             [
                 "email"=>"mustafa@gmail.com",
                 "is_active"=>true,
                 "user_id"=>3,
+                "email_verified_at"=>now()
             ],
 
         ]);
@@ -51,7 +55,6 @@ class EmailSeeder extends Seeder
 
             $phones_quantity = rand(1,4);
             $emails_quantity = rand(1,4);
-            $roles = Role::all()->random(rand(1,2));
 
             Phone::factory()->count(1)->state(['user_id'=> $user->id, 'is_active'=>1])->create();
             Email::factory()->count(1)->state(['user_id'=> $user->id, 'is_active'=>1])->create();
@@ -61,12 +64,10 @@ class EmailSeeder extends Seeder
             ]);
 
 
-            foreach ($roles as $role) {
                 DB::table('role_user')->insert([
-                    "role_id" => $role->id,
+                    "role_id" => 4,
                     "user_id" => $user->id
                 ]);
-            }
 
             if($phones_quantity > 1)
                 Phone::factory()->count($phones_quantity-1)->state(['user_id'=> $user->id])

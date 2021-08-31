@@ -24,7 +24,7 @@ class PhoneFactory extends Factory
     {
         return [
             "phone_number"=>$this->faker->phoneNumber,
-            "phone_country_code_id"=>rand(1, PhoneCountryCode::all()->count()),
+            "phone_country_code_id"=>PhoneCountryCode::all()->random()->id,
         ];
     }
 }

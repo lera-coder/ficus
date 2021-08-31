@@ -26,9 +26,9 @@ class WorkerFactory extends Factory
     {
         return [
             "name"=>$this->faker->name,
-            "company_id"=>rand(1, Company::all()->count()),
-            "status_id"=>rand(rand(1, WorkerStatus::all()->count()), 1),
-            "position_id"=>rand(1, WorkerPosition::all()->count()),
+            "company_id"=>Company::all()->random()->id,
+            "status_id"=>rand(WorkerStatus::all()->random()->id, 1),
+            "position_id"=>WorkerPosition::all()->random()->id,
         ];
     }
 }

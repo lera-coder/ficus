@@ -18,12 +18,6 @@ class ProjectSeeder extends Seeder
      */
     public function run()
     {
-//        $worker_id = rand(1, Worker::all()->count());
-//
-//        Project::factory()->count(1000)->state([
-//            'worker_id'=>$worker_id,
-//            'company_id'=>Worker::find($worker_id)->company_id
-//        ])->create();
 
         Project::factory()->count(20)->create();
 

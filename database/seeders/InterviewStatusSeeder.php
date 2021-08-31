@@ -18,7 +18,6 @@ class InterviewStatusSeeder extends Seeder
             ["name" => "in progress"],
             ["name" => "published"],
             ["name" => "canceled"],
-
         ]);
 
     }

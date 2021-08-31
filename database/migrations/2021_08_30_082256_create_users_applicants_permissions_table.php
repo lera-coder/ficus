@@ -25,7 +25,6 @@ class CreateUsersApplicantsPermissionsTable extends Migration
                 ->references('id')->on('users');
             $table->foreign('permission_id')
                 ->references('id')->on('user_permissions');
-
         });
     }
 

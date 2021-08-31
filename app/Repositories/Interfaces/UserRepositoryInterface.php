@@ -13,6 +13,10 @@ interface UserRepositoryInterface extends RepositoryInterface
 
     public function disactivePhones($id);
 
+    public function disactiveEmails($id);
+
+    public function activeEmail($id);
+
     public function getFullActivePhone($id);
 
     public function network($id);
