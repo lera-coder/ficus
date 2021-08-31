@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Resources;
+namespace App\Http\Resources\UserApplicantPermissionResources;
 
 use Illuminate\Http\Resources\Json\ResourceCollection;
 
-class PhoneCollection extends ResourceCollection
+class UserApplicantPermissionCollection extends ResourceCollection
 {
     /**
      * Transform the resource collection into an array.

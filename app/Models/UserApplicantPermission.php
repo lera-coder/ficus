@@ -12,15 +12,15 @@ class UserApplicantPermission extends Model
     protected $table = 'users_applicants_permissions';
 
     public function user(){
-        return $this->hasOne(User::class, 'id');
+        return $this->belongsTo(User::class, 'user_id', 'id');
     }
 
     public function applicant(){
-        return $this->hasOne(Applicant::class, 'id');
+        return $this->belongsTo(Applicant::class, 'applicant_id', 'id');
     }
 
     public function permission(){
-        return $this->hasOne(UserPermission::class, 'id');
+        return $this->belongsTo(UserPermission::class, 'permission_id', 'id');
     }
 
 

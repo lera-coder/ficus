@@ -10,6 +10,8 @@ use App\Repositories\Interfaces\ApplicantRepositoryInterface;
 use App\Repositories\Interfaces\ApplicantStatusRepositoryInterface;
 use App\Repositories\Interfaces\CompanyRepositoryInterface;
 use App\Repositories\Interfaces\EmailRepositoryInterface;
+use App\Repositories\Interfaces\InterviewRepositoryInterface;
+use App\Repositories\Interfaces\InterviewStatusRepositoryInterface;
 use App\Repositories\Interfaces\KnowledgeRepositoryInterface;
 use App\Repositories\Interfaces\LevelRepositoryInterface;
 use App\Repositories\Interfaces\NetworkRepositoryInterface;
@@ -20,12 +22,16 @@ use App\Repositories\Interfaces\ProjectStatusRepositoryInterface;
 use App\Repositories\Interfaces\RoleRepositoryInterface;
 use App\Repositories\Interfaces\TechnologyRepositoryInterface;
 use App\Repositories\Interfaces\Token2FARepositoryInterface;
+use App\Repositories\Interfaces\UserApplicantPermissionRepositoryInterface;
+use App\Repositories\Interfaces\UserPermissionsRepositoryInterface;
 use App\Repositories\Interfaces\UserRepositoryInterface;
 use App\Repositories\Interfaces\WorkerEmailRepositoryInterface;
 use App\Repositories\Interfaces\WorkerPhoneRepositoryInterface;
 use App\Repositories\Interfaces\WorkerPositionRepositoryInterface;
 use App\Repositories\Interfaces\WorkerRepositoryInterface;
 use App\Repositories\Interfaces\WorkerStatusRepositoryInterface;
+use App\Repositories\InterviewRepository;
+use App\Repositories\InterviewStatusRepository;
 use App\Repositories\KnowledgeRepository;
 use App\Repositories\LevelRepository;
 use App\Repositories\NetworkRepository;
@@ -36,6 +42,8 @@ use App\Repositories\ProjectStatusRepository;
 use App\Repositories\RoleRepository;
 use App\Repositories\TechnologyRepository;
 use App\Repositories\Token2FARepository;
+use App\Repositories\UserApplicantPermissionRepository;
+use App\Repositories\UserPermissionsRepository;
 use App\Repositories\UserRepository;
 use App\Repositories\WorkerEmailRepository;
 use App\Repositories\WorkerPhoneRepository;
@@ -73,6 +81,10 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(WorkerEmailRepositoryInterface::class, WorkerEmailRepository::class);
         $this->app->bind(ProjectStatusRepositoryInterface::class, ProjectStatusRepository::class);
         $this->app->bind(NetworkRepositoryInterface::class, NetworkRepository::class);
+        $this->app->bind(InterviewRepositoryInterface::class, InterviewRepository::class);
+        $this->app->bind(InterviewStatusRepositoryInterface::class, InterviewStatusRepository::class);
+        $this->app->bind(UserPermissionsRepositoryInterface::class, UserPermissionsRepository::class);
+        $this->app->bind(UserApplicantPermissionRepositoryInterface::class, UserApplicantPermissionRepository::class);
 
     }
 

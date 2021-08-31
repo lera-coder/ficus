@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Resources;
+namespace App\Http\Resources\ResourcesForPhoneBook;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class PhoneFullResource extends JsonResource
+class WorkerPhoneForPhoneBookResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -15,11 +15,9 @@ class PhoneFullResource extends JsonResource
     public function toArray($request)
     {
         return [
+            "id"=>$this->id,
             "phone_number"=>$this->phone_number,
-            "phone_country_code"=>$this->phoneCountryCode->code,
-            "country"=>$this->phoneCountryCode->country,
-            "is_active"=>$this->is_active,
-            "user"=>new UserResource($this->user)
+            "operator"=>$this->operator
         ];
     }
 }

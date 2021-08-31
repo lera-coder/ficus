@@ -2,84 +2,83 @@
 
 namespace App\Http\Controllers\API;
 
-use App\Models\Interview;
+use App\Http\Resources\UserApplicantPermissionResources\UserApplicantPermissionCollection;
+use App\Repositories\Interfaces\InterviewRepositoryInterface;
+use App\Repositories\Interfaces\UserApplicantPermissionRepositoryInterface;
+use App\Services\ModelService\InterviewService\InterviewServiceInterface;
 use Illuminate\Http\Request;
 
 class InterviewController extends Controller
 {
+    protected $user_applicant_permission_repository;
+    protected $interview_repository;
+    protected $interview_service;
+
+    public function __construct(UserApplicantPermissionRepositoryInterface $user_applicant_permission_repository,
+                                InterviewRepositoryInterface $interview_repository,
+                                InterviewServiceInterface $interview_service)
+    {
+        $this->user_applicant_permission_repository = $user_applicant_permission_repository;
+        $this->interview_repository = $interview_repository;
+        $this->interview_service = $interview_service;
+    }
+
     /**
-     * Display a listing of the resource.
-     *
      * @return \Illuminate\Http\Response
      */
     public function index()
     {
-        //
+        return $this->interview_repository->all(20);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
 
     /**
-     * Store a newly created resource in storage.
-     *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
     {
-        //
+        return $this->interview_service->create($request
+            ->only('link', 'interview_time', 'sending_time', 'description', 'interviewer_id', 'status_id'));
+
     }
 
     /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Interview  $interview
-     * @return \Illuminate\Http\Response
+     * @param $id
+     * @return mixed
      */
-    public function show(Interview $interview)
+    public function show($id)
     {
-        //
+        return $this->interview_repository->getById($id);
+    }
+
+
+    /**
+     * @param Request $request
+     * @param $id
+     */
+    public function update(Request $request, $id)
+    {
+        return $this->interview_service->update($id, $request
+            ->only('link', 'interview_time', 'sending_time', 'description', 'interviewer_id', 'status_id'));
+
     }
 
     /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Interview  $interview
-     * @return \Illuminate\Http\Response
+     * @param $id
+     * @return mixed
      */
-    public function edit(Interview $interview)
+    public function destroy($id)
     {
-        //
+        return $this->interview_service->destroy($id);
     }
 
     /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Interview  $interview
-     * @return \Illuminate\Http\Response
+     * @param $id
+     * @return UserApplicantPermissionCollection
      */
-    public function update(Request $request, Interview $interview)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\Interview  $interview
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Interview $interview)
-    {
-        //
+    public function permissions($id){
+        return new UserApplicantPermissionCollection
+            ($this->user_applicant_permission_repository->getByInterview($id));
     }
 }

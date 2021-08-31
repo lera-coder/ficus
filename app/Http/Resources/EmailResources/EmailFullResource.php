@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Resources;
+namespace App\Http\Resources\EmailResources;
 
 use App\Repositories\Interfaces\EmailRepositoryInterface;
 use Illuminate\Http\Resources\Json\JsonResource;
