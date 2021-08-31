@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Interview;
 use App\Models\WorkerPhone;
 use Illuminate\Database\Seeder;
 
@@ -37,6 +38,7 @@ class DatabaseSeeder extends Seeder
                 KnowledgeSeeder::class,
                 InterviewStatusSeeder::class,
                 UserPermissionSeeder::class,
+                InterviewSeeder::class
 
             ]
         );

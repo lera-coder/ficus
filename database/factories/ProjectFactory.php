@@ -23,7 +23,7 @@ class ProjectFactory extends Factory
      */
     public function definition()
     {
-        $worker_id = rand(1, Worker::all()->count());
+        $worker_id = Worker::all()->random()->id;
 
         return [
             "name"=>$this->faker->sentence($nbWords = 4, $variableNbWords = true),

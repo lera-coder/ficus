@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\UserPermission;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -22,8 +23,7 @@ Route::middleware('jwt.verify')->group(function () {
 
     //Routes in Admin Panel
     Route::middleware(['verified','auth.2fa'])->group(function () {
-        //User methods
-        Route::resource("user", "App\Http\Controllers\API\UserController")->except('edit', 'create');
+
 
         //Methods for country codes
         Route::resource('country-code', "App\Http\Controllers\API\PhoneCountryCodeController")->except('edit', 'create');
@@ -75,4 +75,11 @@ Route::get('/login/{network}/callback', ['App\Http\Controllers\API\Auth\AuthCont
 Route::resource('company', 'App\Http\Controllers\API\CompanyController');
 Route::resource('knowledge', 'App\Http\Controllers\API\KnowledgeController');
 Route::resource('project', 'App\Http\Controllers\API\ProjectController');
+
+//User methods
+Route::resource("user", "App\Http\Controllers\API\UserController")->except('edit', 'create');
+
+//Route::get('user-applicant/{id}', function ($id){
+//    return new \App\Http\Resources\UserApplicantPermissionResource(\App\Models\UserApplicantPermission::find($id));
+//});
 

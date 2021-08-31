@@ -27,7 +27,7 @@ class Token2FARepository implements Token2FARepositoryInterface
         return $this->token2FA->findOrFail($id);
     }
 
-    public static function user(Token2fa $token2FA){
-        return $token2FA->user;
+    public function user($id){
+        return $this->getById($id)->user;
     }
 }

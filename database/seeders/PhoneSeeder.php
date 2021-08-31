@@ -16,6 +16,8 @@ class PhoneSeeder extends Seeder
      */
     public function run()
     {
+        //Phone seeding for another users  is in email seeder because of really low speed
+
         DB::table('phones')->insert([
 
             [

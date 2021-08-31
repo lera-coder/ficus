@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\PivotModels\UserApplicantPermissionPivot;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -9,11 +10,10 @@ class UserPermission extends Model
 {
     use HasFactory;
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
-     */
+
     public function users(){
-        return $this->belongsToMany(User::class, 'users_applicants_permission')
-            ->withPivot('applicant_id');
+        return $this->belongsToMany(User::class, 'users_applicants_permissions', 'user_id')
+            ->using(UserApplicantPermissionPivot::class)
+            ->withPivot('applicant_id', 'permission_id');
     }
 }

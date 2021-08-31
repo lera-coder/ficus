@@ -27,7 +27,7 @@ class ApplicantStatusRepository implements ApplicantStatusRepositoryInterface
         return $this->applicant_status->findOrFail($id);
     }
 
-    public static function applicants(ApplicantStatus $applicant_status){
-        return $applicant_status->applicants;
+    public function applicants($id){
+        return $this->getById($id)->applicants;
     }
 }

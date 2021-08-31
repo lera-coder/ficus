@@ -25,7 +25,7 @@ class KnowledgeFactory extends Factory
         return [
             'year_start'=>$this->faker->year,
             'description'=>$this->faker->realText,
-            'level_id'=>rand(1, Level::all()->count())
+            'level_id'=>Level::all()->random()->id
         ];
     }
 }

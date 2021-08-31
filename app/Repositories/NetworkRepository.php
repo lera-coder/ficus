@@ -26,8 +26,8 @@ class NetworkRepository implements NetworkRepositoryInterface
         return $this->network->findOrFail($id);
     }
 
-    public static function users(Network $network){
-        return $network->users;
+    public function users($id){
+        return $this->getById($id)->users;
     }
 
     public function getModelByName($name){

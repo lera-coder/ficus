@@ -3,6 +3,8 @@
 
 namespace App\Repositories;
 
+use App\Http\Resources\UserFullCollection;
+use App\Http\Resources\UserFullResource;
 use App\Models\User;
 use App\Repositories\Interfaces\UserRepositoryInterface;
 
@@ -23,7 +25,7 @@ class UserRepository implements UserRepositoryInterface
      */
     public function all($n)
     {
-        return $this->user->paginate($n);
+        return UserFullResource::collection($this->user->paginate($n));
     }
 
 
@@ -45,7 +47,7 @@ class UserRepository implements UserRepositoryInterface
      */
     public function emails($id)
     {
-        return $this->getById($id)->get->emails;
+        return $this->getById($id)->emails;
     }
 
     /**
@@ -139,4 +141,15 @@ class UserRepository implements UserRepositoryInterface
         return $this->user->where('login', $login)->first()->id;
     }
 
+    public function disactiveEmails($id)
+    {
+        $emails = $this->emails($id);
+        return (is_null($emails))?:
+            $emails->where('is_active', 0);
+    }
+
+    public function activeEmail($id)
+    {
+        return $this->emails($id)->where('is_active', 1)->first();
+    }
 }

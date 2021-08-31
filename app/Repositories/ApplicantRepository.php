@@ -28,11 +28,11 @@ class ApplicantRepository implements ApplicantRepositoryInterface
         return $this->applicant->findOrFail($id);
     }
 
-    public static function status(Applicant $applicant){
-        return $applicant->status;
+    public function status($id){
+        return $this->getById($id)->status;
     }
 
-    public static function knowledges(Applicant $applicant){
-        return $applicant->knowledges;
+    public function knowledges($id){
+        return $this->getById($id)->knowledges;
     }
 }

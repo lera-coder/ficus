@@ -15,6 +15,8 @@ class RoleSeeder extends Seeder
     public function run()
     {
 
+        //Roles_users seeding for another users is in email seeder because of really low speed
+
         DB::table('roles')->insert([
             ["name" => "god"],
             ["name" => "manager"],
@@ -30,7 +32,7 @@ class RoleSeeder extends Seeder
             ],
 
             [
-                "role_id" => 2,
+                "role_id" => 3,
                 "user_id"=> 2
             ],
 

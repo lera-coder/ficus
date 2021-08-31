@@ -23,10 +23,6 @@ class WorkerPhoneFactory extends Factory
     {
         return [
             "phone_number"=>$this->faker->phoneNumber,
-            "operator"=>"",
-            "worker_id"=>"",
-
-
         ];
     }
 }

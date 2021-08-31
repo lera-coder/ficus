@@ -26,7 +26,7 @@ class UserFactory extends Factory
         return [
             'name' => $this->faker->name(),
             'login'=> 'user'.User::all()->last()->id++,
-            'password' => Hash::make('2206'), // password
+            'password' => Hash::make('2206'),
             'remember_token' => Str::random(10),
         ];
     }
