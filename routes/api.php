@@ -58,7 +58,7 @@ Route::middleware('jwt.verify')->group(function () {
         Route::get("user/permissions/{id}", ["App\Http\Controllers\API\UserController", "permissions"]);
         Route::get("interview/permissions/{id}", ["App\Http\Controllers\API\InterviewController", "permissions"]);
 
-        Route::get("interview/filtration/{route}", ["App\Http\Controllers\API\InterviewController", "filtration"]);
+        Route::get("interviews/filtration", ["App\Http\Controllers\API\InterviewController", "filtration"]);
 
 
 

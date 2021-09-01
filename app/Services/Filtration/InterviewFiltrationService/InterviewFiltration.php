@@ -29,14 +29,12 @@ class InterviewFiltration implements InterviewFiltrationInterface
      * @param $route
      * @return mixed
      */
-    public function apply($route){
-        $this->route = $route;
-        $array = $this->getArray($this->route, $this->fields);
-        $array = $this->convertStatusesToIds($array);
-        $array = $this->convertInterviewDate($array);
-
-        return $this->interview_repository->filtration($array);
-
+    public function apply($filtration_values_keys_array, $fields){
+        $this->fields = $fields;
+        $filtration_values_keys_array = $this->getArray($filtration_values_keys_array, $fields);
+        $filtration_values_keys_array = $this->convertStatusesToIds($filtration_values_keys_array);
+        $filtration_values_keys_array = $this->convertInterviewDate($filtration_values_keys_array);
+        return $this->interview_repository->filtration($filtration_values_keys_array);
     }
 
 
@@ -48,11 +46,11 @@ class InterviewFiltration implements InterviewFiltrationInterface
      * @param $array
      * @return mixed
      */
-    protected function convertStatusesToIds($array){
-        if(key_exists('status', $array)) {
+    protected function convertStatusesToIds($filtration_values_keys_array){
+        if(key_exists('status', $filtration_values_keys_array)) {
             $statuses_id_array = [];
 
-            foreach ($array['status'] as $status) {
+            foreach ($filtration_values_keys_array['status'] as $status) {
                 $status_id = $this->interview_status_repository
                     ->getIdByName(str_replace('-', ' ', $status));
 
@@ -61,14 +59,14 @@ class InterviewFiltration implements InterviewFiltrationInterface
                 }
             }
             if(count($statuses_id_array) > 0) {
-                $array['status'] = $statuses_id_array;
+                $filtration_values_keys_array['status'] = $statuses_id_array;
             }
             else{
-                unset($array['status']);
+                unset($filtration_values_keys_array['status']);
             }
         }
 
-        return $array;
+        return $filtration_values_keys_array;
 
     }
 
@@ -80,12 +78,12 @@ class InterviewFiltration implements InterviewFiltrationInterface
      *
      * @param $array
      */
-    protected function convertInterviewDate($array){
-        if(key_exists('interview-date', $array)){
+    protected function convertInterviewDate($filtration_values_keys_array){
+        if(key_exists('interview-date', $filtration_values_keys_array)){
             $array_date_between = [];
             $array_date_in = [];
 
-            foreach ($array['interview-date'] as $interview_date) {
+            foreach ($filtration_values_keys_array['interview-date'] as $interview_date) {
                 if (str_contains($interview_date, '|')){
                     $array_date_between_current = explode('|', $interview_date);
                     $array_date_between_current = [$array_date_between_current[0],
@@ -105,15 +103,15 @@ class InterviewFiltration implements InterviewFiltrationInterface
                 }
             }
 
-            unset($array['interview-date']);
+            unset($filtration_values_keys_array['interview-date']);
             if(count($array_date_between)>0){
-                $array['interview-date-between'] = $array_date_between;
+                $filtration_values_keys_array['interview-date-between'] = $array_date_between;
             }
             if(count($array_date_in)>0) {
-                $array['interview-date-in'] = $array_date_in;
+                $filtration_values_keys_array['interview-date-in'] = $array_date_in;
             }
         }
-        return $array;
+        return $filtration_values_keys_array;
     }
 
 

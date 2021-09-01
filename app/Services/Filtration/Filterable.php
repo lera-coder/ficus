@@ -14,32 +14,13 @@ trait Filterable
      * @param $keys
      * @return array
      */
-    public function getArray($route, $keys){
-        $result_array = [];
-        $array = explode('&', $route);
-        foreach ($array as $element){
-            $exploded_element = explode('=', $element);
-            $result_array[$exploded_element[0]] = explode('_', $exploded_element[1]);
-        }
-        $result_array = $this->checkKeys($result_array, $keys);
-        return $result_array;
+    public function getArray($filtration_values_keys_array, $fields){
+        return array_map(function ($values){
+            return explode('_', $values);
+        }, $filtration_values_keys_array);
     }
 
 
-    /**
-     * @param $array
-     * @param $keys
-     * @return array
-     */
-    protected function checkKeys($array, $keys){
-        $result_array = [];
-        foreach ($array as $key=>$value){
-            if(in_array($key, $keys)) {
-                $result_array[$key] = $value;
-            }
-        }
-        return $result_array;
-    }
 
     /**
      * @param $date
