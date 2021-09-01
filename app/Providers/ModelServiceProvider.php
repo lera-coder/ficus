@@ -10,6 +10,8 @@ use App\Services\ModelService\CompanyService\CompanyService;
 use App\Services\ModelService\CompanyService\CompanyServiceInterface;
 use App\Services\ModelService\EmailService\EmailService;
 use App\Services\ModelService\EmailService\EmailServiceInterface;
+use App\Services\ModelService\InterviewService\InterviewService;
+use App\Services\ModelService\InterviewService\InterviewServiceInterface;
 use App\Services\ModelService\KnowledgeService\KnowledgeService;
 use App\Services\ModelService\KnowledgeService\KnowledgeServiceInterface;
 use App\Services\ModelService\LevelService\LevelService;
@@ -73,6 +75,7 @@ class ModelServiceProvider extends ServiceProvider
         $this->app->bind(WorkerPositionServiceInterface::class, WorkerPositionService::class);
         $this->app->bind(WorkerServiceInterface::class, WorkerService::class);
         $this->app->bind(WorkerStatusServiceInterface::class, WorkerStatusService::class);
+        $this->app->bind(InterviewServiceInterface::class, InterviewService::class);
 
     }
 

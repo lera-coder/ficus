@@ -142,6 +142,7 @@ return [
 
         App\Providers\RepositoryServiceProvider::class,
         App\Providers\ModelServiceProvider::class,
+        App\Providers\FiltrationServiceProvider::class,
 
         /*
          * Laravel Framework Service Providers...
@@ -169,6 +170,7 @@ return [
         Illuminate\Validation\ValidationServiceProvider::class,
         Illuminate\View\ViewServiceProvider::class,
         App\Providers\LaravelCustomServiceProvider::class,
+
 
 
 
