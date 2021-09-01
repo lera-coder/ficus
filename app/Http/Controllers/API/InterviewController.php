@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 use App\Http\Resources\UserApplicantPermissionResources\UserApplicantPermissionCollection;
 use App\Repositories\Interfaces\InterviewRepositoryInterface;
 use App\Repositories\Interfaces\UserApplicantPermissionRepositoryInterface;
+use App\Services\Filtration\InterviewFiltrationService\InterviewFiltrationInterface;
 use App\Services\ModelService\InterviewService\InterviewServiceInterface;
 use Illuminate\Http\Request;
 
@@ -80,5 +81,12 @@ class InterviewController extends Controller
     public function permissions($id){
         return new UserApplicantPermissionCollection
             ($this->user_applicant_permission_repository->getByInterview($id));
+    }
+
+
+    public function filtration($route, InterviewFiltrationInterface $filtration)
+    {
+        return response()->json( $filtration->apply($route));
+//        return $this->interview_repository->getByStatuses($statuses);
     }
 }

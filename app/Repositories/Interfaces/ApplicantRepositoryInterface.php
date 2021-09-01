@@ -9,4 +9,6 @@ interface ApplicantRepositoryInterface extends RepositoryInterface
 
     public  function knowledges($id);
 
+    public function interviews($id);
+
 }

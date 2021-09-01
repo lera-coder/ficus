@@ -35,4 +35,8 @@ class ApplicantRepository implements ApplicantRepositoryInterface
     public function knowledges($id){
         return $this->getById($id)->knowledges;
     }
+
+    public function interviews($id){
+        return $this->getById($id)->interviews;
+    }
 }
