@@ -84,9 +84,9 @@ class InterviewController extends Controller
     }
 
 
-    public function filtration($route, InterviewFiltrationInterface $filtration)
+    public function filtration(Request $request, InterviewFiltrationInterface $filtration)
     {
-        return response()->json( $filtration->apply($route));
-//        return $this->interview_repository->getByStatuses($statuses);
+        $fields = ['status', 'interviewer', 'applicant', 'interview-date'];
+        return response()->json($filtration->apply($request->only($fields), $fields));
     }
 }
