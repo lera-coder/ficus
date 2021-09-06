@@ -3,16 +3,18 @@
 namespace App\Http\Controllers\API\Auth;
 
 use App\Http\Controllers\API\Controller;
-use App\Http\Requests\LoginRequest;
-use App\Http\Requests\RefreshPasswordEmailRequest;
-use App\Http\Requests\RefreshPasswordUpdateRequest;
-use App\Http\Requests\RegisterRequest;
-use App\Http\Resources\UserFullResource;
+use App\Http\Requests\AuthRequests\LoginRequest;
+use App\Http\Requests\AuthRequests\RefreshPasswordEmailRequest;
+use App\Http\Requests\AuthRequests\RefreshPasswordUpdateRequest;
+use App\Http\Requests\AuthRequests\RegisterRequest;
 use App\Repositories\Interfaces\UserRepositoryInterface;
 use App\Services\ModelService\NetworkService\NetworkServiceInterface;
 use App\Services\ModelService\UserService\UserServiceInterface;
 use Exception;
+use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Contracts\Routing\ResponseFactory;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Facades\Response;
@@ -37,83 +39,77 @@ class AuthController extends Controller
 
     /**
      * @param LoginRequest $request
-     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Http\JsonResponse|\Illuminate\Http\Response
+     * @return Application|ResponseFactory|JsonResponse|\Illuminate\Http\Response
      */
-    public function login(LoginRequest $request){
+    public function login(LoginRequest $request)
+    {
 
         $login_credentials = $request->all();
         $user = auth()->attempt2FA($login_credentials);
-        if(!$user) return response('Error, incorrect password!', 401);
-        if($user->is_2auth) {
+        if (!$user) return response('Error, incorrect password!', 401);
+        if ($user->is_2auth) {
             $this->user_service->send2FACode(auth()->user());
         }
         $token = auth()->attempt($login_credentials);
         return $this->createNewToken($token);
     }
 
-
-    /**
-     * @param Request $request
-     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Http\JsonResponse|\Illuminate\Http\Response
-     */
-    public function post2FAToken(Request $request){
-        return $this->user_service->check2FAtoken($request->token, auth()->user()) ?
-            response('Your personality was successfully verified via 2FA!') :
-            response('Error, incorrect 2FA token!', 401);
-    }
-
-
-
-
     /**
      * Function to show token with other nessecery information
      * @param $token
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
-    protected function createNewToken($token){
+    protected function createNewToken($token)
+    {
         return response()->json([
             'access_token' => $token,
-            'expires_in'=> auth()->factory()->getTTL() * 1440,
+            'expires_in' => auth()->factory()->getTTL() * 1440,
             'token_type' => 'bearer',
             'user' => auth()->user()
         ]);
     }
 
-
-
+    /**
+     * @param Request $request
+     * @return Application|ResponseFactory|JsonResponse|\Illuminate\Http\Response
+     */
+    public function post2FAToken(Request $request)
+    {
+        return $this->user_service->check2FAtoken($request->token, auth()->user()) ?
+            response('Your personality was successfully verified via 2FA!') :
+            response('Error, incorrect 2FA token!', 401);
+    }
 
     /**
      * Function to refresh token
      *
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
 
-    public function refresh(){
-        try{
+    public function refresh()
+    {
+        try {
             $new_token = auth()->refresh();
             return $this->createNewToken($new_token);
-        }
-        catch (TokenInvalidException $exception) {
+        } catch (TokenInvalidException $exception) {
             return Response::json(['error' => $exception->getMessage()], 401);
         }
     }
-
-
 
 
     /**
      * Function to register
      *
      * @param RegisterRequest $request
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
-    public function register(RegisterRequest  $request){
-        try{
+    public function register(RegisterRequest $request)
+    {
+        try {
             $this->user_service->create($request->all());
             return $this->createNewToken(auth()->attempt($request->only('login', 'password')));
-        }
-        catch (Exception $exception){
-            return Response::json(['error'=>$exception->getMessage()], 401);
+        } catch (Exception $exception) {
+            return Response::json(['error' => $exception->getMessage()], 401);
         }
     }
 
@@ -122,13 +118,14 @@ class AuthController extends Controller
      * Function to check data to decide is those data valid
      *
      * @param RefreshPasswordEmailRequest $request
-     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Http\Response
+     * @return Application|ResponseFactory|\Illuminate\Http\Response
      */
-    public function emailPassword(RefreshPasswordEmailRequest $request){
+    public function emailPassword(RefreshPasswordEmailRequest $request)
+    {
         $status = Password::sendResetLink($request->only('login'));
         return $status === Password::RESET_LINK_SENT
             ? response('Now user should go to confirm email')
-            :response('Sorry, you cannot change your password!', 401);
+            : response('Sorry, you cannot change your password!', 401);
     }
 
 
@@ -136,9 +133,10 @@ class AuthController extends Controller
      * Function to reset password after confirmation on email
      *
      * @param RefreshPasswordUpdateRequest $request
-     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Http\Response
+     * @return Application|ResponseFactory|\Illuminate\Http\Response
      */
-    public function resetPassword(RefreshPasswordUpdateRequest $request){
+    public function resetPassword(RefreshPasswordUpdateRequest $request)
+    {
 
         $status = $this->user_service->returnResetPasswordStatus(
             $request->only('password', 'password_confirmation', 'token', 'email'));
@@ -151,20 +149,21 @@ class AuthController extends Controller
 
     /***
      * @param $network
-     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Http\Response
+     * @return Application|ResponseFactory|\Illuminate\Http\Response
      */
-    public function redirectToSocialNetwork($network){
+    public function redirectToSocialNetwork($network)
+    {
         $this->network_service->checkNetworkExistance($network);
         return Socialite::driver($network)->stateless()->redirect();
     }
 
 
-
     /**
      * @param $network
-     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Http\JsonResponse|\Illuminate\Http\Response
+     * @return Application|ResponseFactory|JsonResponse|\Illuminate\Http\Response
      */
-    public function callbackFromSocialNetwork($network){
+    public function callbackFromSocialNetwork($network)
+    {
         $this->network_service->checkNetworkExistance($network);
         $token = $this->user_service->updateUserAfterSocialNetworkLoggedIn($network, Socialite::driver($network)->stateless()->user());
         return $this->createNewToken($token);
@@ -172,22 +171,21 @@ class AuthController extends Controller
     }
 
 
-
-
-
     /***
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
-    public function verifyEmailNotice(){
+    public function verifyEmailNotice()
+    {
         return Response::json(['Please, verify your email, firstly!'], 401);
     }
 
 
     /***
      * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
-    public function verifyEmailSend(Request $request){
+    public function verifyEmailSend(Request $request)
+    {
         $request->user()->sendEmailVerificationNotification();
         return Response::json(['Email was successfully sended']);
     }
@@ -195,14 +193,13 @@ class AuthController extends Controller
 
     /***
      * @param EmailVerificationRequest $request
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
-    public function verifyEmailConfirm(EmailVerificationRequest $request){
+    public function verifyEmailConfirm(EmailVerificationRequest $request)
+    {
         $request->fulfill();
         return Response::json(['Your email is verified']);
     }
-
-
 
 
 }

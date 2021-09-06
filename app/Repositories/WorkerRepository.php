@@ -6,6 +6,10 @@ namespace App\Repositories;
 
 use App\Models\Worker;
 use App\Repositories\Interfaces\WorkerRepositoryInterface;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\HigherOrderBuilderProxy;
+use Illuminate\Database\Eloquent\Model;
 
 class WorkerRepository implements WorkerRepositoryInterface
 {
@@ -16,37 +20,79 @@ class WorkerRepository implements WorkerRepositoryInterface
         return $this->worker = $worker;
     }
 
+    /**
+     * @param $n
+     * @return mixed
+     */
     public function all($n)
     {
-        return $this->worker->paginate($n);
+        return $this->worker->query()->paginate($n);
     }
 
+    /**
+     * @param $id
+     * @return HigherOrderBuilderProxy|mixed
+     */
+    public function emails($id)
+    {
+        return $this->getById($id)->query()->emails;
+    }
+
+    /**
+     * @param $id
+     * @return Builder|Builder[]|Collection|Model|null
+     */
     public function getById($id)
     {
-        return $this->worker->findOrFail($id);
+        return $this->worker->query()->findOrFail($id);
     }
 
-    public function emails($id){
-        return $this->getById($id)->emails;
+    /**
+     * @param $id
+     * @return HigherOrderBuilderProxy|mixed
+     */
+    public function phones($id)
+    {
+        return $this->getById($id)->query()->phones;
     }
 
-    public function phones($id){
-        return $this->getById($id)->phones;
+
+    /**
+     * @param $id
+     * @return HigherOrderBuilderProxy|mixed
+     */
+    public function position($id)
+    {
+        return $this->getById($id)->query()->position;
     }
 
-    public function position($id){
-        return $this->getById($id)->position;
+
+    /**
+     * @param $id
+     * @return HigherOrderBuilderProxy|mixed
+     */
+    public function status($id)
+    {
+        return $this->getById($id)->query()->status;
     }
 
-    public function status($id){
-        return $this->getById($id)->status;
+
+    /**
+     * @param $id
+     * @return HigherOrderBuilderProxy|mixed
+     */
+    public function company($id)
+    {
+        return $this->getById($id)->query()->company;
     }
 
-    public function company($id){
-        return $this->getById($id)->company;
-    }
 
-    public function projects($id){
-        return $this->getById($id)->projects;
+    /**
+     * @param $id
+     * @return HigherOrderBuilderProxy|mixed
+     */
+    public function projects($id)
+    {
+        return $this->getById($id)->query()->projects;
     }
 }

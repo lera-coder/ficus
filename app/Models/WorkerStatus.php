@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class WorkerStatus extends Model
 {
@@ -17,9 +18,10 @@ class WorkerStatus extends Model
 
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * @return HasMany
      */
-    public function workers(){
+    public function workers():HasMany
+    {
         return $this->hasMany(Worker::class);
     }
 

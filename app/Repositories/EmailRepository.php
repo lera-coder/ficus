@@ -6,6 +6,11 @@ namespace App\Repositories;
 
 use App\Models\Email;
 use App\Repositories\Interfaces\EmailRepositoryInterface;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\HigherOrderBuilderProxy;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class EmailRepository implements EmailRepositoryInterface
 {
@@ -16,26 +21,52 @@ class EmailRepository implements EmailRepositoryInterface
         $this->email = $email;
     }
 
-    public function all($n)
+    /**
+     * @param $n
+     * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
+     */
+    public function all($n): LengthAwarePaginator
     {
-        return $this->email->paginate($n);
+        return $this->email->query()->paginate($n);
     }
 
-    public function getById($id)
+    /**
+     * @param $user_id
+     * @return Builder|Model|object|null
+     */
+    public function activeEmail($user_id): Builder
     {
-        return $this->email->findOrFail($id);
+        return $this->email
+            ->query()
+            ->where('user_id', $user_id)
+            ->active()
+            ->first();
     }
 
-    public function activeEmail($user_id)
+    /**
+     * @param $id
+     * @return HigherOrderBuilderProxy|mixed
+     */
+    public function user($id): HigherOrderBuilderProxy
     {
-        return $this->email->where('user_id', $user_id)->where('is_active', 1)->first();
+        return $this->getById($id)->query()->user;
     }
 
-    public function user($id){
-        return $this->getById($id)->user;
+    /**
+     * @param $id
+     * @return Builder|Builder[]|Collection|Model|null
+     */
+    public function getById($id): Builder
+    {
+        return $this->email->query()->findOrFail($id);
     }
 
-    public function getModelByEmail($email){
-        return $this->email->where('email', $email)->firstOrFail();
+    /**
+     * @param $email
+     * @return Builder|Model
+     */
+    public function getModelByEmail($email): Builder
+    {
+        return $this->email->query()->where('email', $email)->firstOrFail();
     }
 }

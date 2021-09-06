@@ -25,15 +25,18 @@ class PhoneBookController extends Controller
         $this->worker_repository = $worker_repository;
     }
 
-    public function users(){
+    public function users()
+    {
         return new PhoneBookUserCollection($this->user_repository->all(20));
     }
 
-    public function applicants(){
+    public function applicants()
+    {
         return new PhoneBookApplicantCollection($this->applicant_repository->all(20));
     }
 
-    public function workers(){
+    public function workers()
+    {
         return new PhoneBookWorkerCollection($this->worker_repository->all(20));
     }
 }

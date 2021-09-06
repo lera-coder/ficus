@@ -1,13 +1,16 @@
 <?php
 
-
 namespace App\Repositories;
-
 
 use App\Models\UserApplicantPermission;
 use App\Repositories\Interfaces\InterviewRepositoryInterface;
 use App\Repositories\Interfaces\UserApplicantPermissionRepositoryInterface;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\HigherOrderBuilderProxy;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\HigherOrderCollectionProxy;
 
 class UserApplicantPermissionRepository implements UserApplicantPermissionRepositoryInterface
 {
@@ -23,7 +26,7 @@ class UserApplicantPermissionRepository implements UserApplicantPermissionReposi
 
     /**
      * @param $n
-     * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
+     * @return LengthAwarePaginator
      */
     public function all($n)
     {
@@ -32,57 +35,62 @@ class UserApplicantPermissionRepository implements UserApplicantPermissionReposi
 
     /**
      * @param $id
-     * @return \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Builder[]|\Illuminate\Database\Eloquent\Collection|\Illuminate\Database\Eloquent\Model|null
+     * @return HigherOrderBuilderProxy|HigherOrderCollectionProxy|mixed
+     */
+    public function user($id)
+    {
+        return $this->getById($id)->user;
+    }
+
+    /**
+     * @param $id
+     * @return Builder|Builder[]|Collection|Model|null
      */
     public function getById($id)
     {
         return $this->user_applicant_permission->query()->findOrFail($id);
     }
 
-
     /**
      * @param $id
-     * @return \Illuminate\Database\Eloquent\HigherOrderBuilderProxy|\Illuminate\Support\HigherOrderCollectionProxy|mixed
+     * @return HigherOrderBuilderProxy|HigherOrderCollectionProxy|mixed
      */
-    public function user($id){
-        return $this->getById($id)->user;
-    }
-
-    /**
-     * @param $id
-     * @return \Illuminate\Database\Eloquent\HigherOrderBuilderProxy|\Illuminate\Support\HigherOrderCollectionProxy|mixed
-     */
-    public function applicant($id){
+    public function applicant($id)
+    {
         return $this->getById($id)->applicant;
     }
 
     /**
      * @param $id
-     * @return \Illuminate\Database\Eloquent\HigherOrderBuilderProxy|\Illuminate\Support\HigherOrderCollectionProxy|mixed
+     * @return HigherOrderBuilderProxy|HigherOrderCollectionProxy|mixed
      */
-    public function permission($id){
+    public function permission($id)
+    {
         return $this->getById($id)->permission;
     }
 
 
     /**
      * @param $id
-     * @return \Illuminate\Database\Eloquent\Builder[]|\Illuminate\Database\Eloquent\Collection
+     * @return Builder[]|Collection
      */
-    public function getByApplicant($id){
+    public function getByApplicant($id)
+    {
         return $this->user_applicant_permission->query()->where('applicant_id', $id)->get();
     }
 
     /**
      * @param $id
-     * @return \Illuminate\Database\Eloquent\Builder[]|\Illuminate\Database\Eloquent\Collection
+     * @return Builder[]|Collection
      */
-    public function getByUser($id){
+    public function getByUser($id)
+    {
         return $this->user_applicant_permission->query()->where('user_id', $id)->get();
     }
 
 
-    public function getByInterview($id){
+    public function getByInterview($id)
+    {
         $applicants_keys = $this->interview_repository->applicants($id)->modelkeys();
         return $this->user_applicant_permission
             ->query()

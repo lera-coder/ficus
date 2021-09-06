@@ -4,8 +4,11 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Requests\CreateWorkerRequest;
 use App\Http\Requests\UpdateWorkerRequest;
+use App\Models\Worker;
 use App\Repositories\Interfaces\WorkerRepositoryInterface;
 use App\Services\ModelService\WorkerService\WorkerServiceInterface;
+use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 
 class WorkerController extends Controller
 {
@@ -20,7 +23,7 @@ class WorkerController extends Controller
     }
 
     /**
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function index()
     {
@@ -29,8 +32,8 @@ class WorkerController extends Controller
 
 
     /**
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @param Request $request
+     * @return Response
      */
     public function store(CreateWorkerRequest $request)
     {
@@ -38,8 +41,8 @@ class WorkerController extends Controller
     }
 
     /**
-     * @param  \App\Models\Worker  $worker
-     * @return \Illuminate\Http\Response
+     * @param Worker $worker
+     * @return Response
      */
     public function show($id)
     {
@@ -48,9 +51,9 @@ class WorkerController extends Controller
 
 
     /**
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Worker  $worker
-     * @return \Illuminate\Http\Response
+     * @param Request $request
+     * @param Worker $worker
+     * @return Response
      */
     public function update(UpdateWorkerRequest $request, $id)
     {
@@ -58,8 +61,8 @@ class WorkerController extends Controller
     }
 
     /**
-     * @param  \App\Models\Worker  $worker
-     * @return \Illuminate\Http\Response
+     * @param Worker $worker
+     * @return Response
      */
     public function destroy($id)
     {

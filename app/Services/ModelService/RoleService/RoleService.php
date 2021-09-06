@@ -16,16 +16,29 @@ class RoleService implements RoleServiceInterface
         $this->role_repository = $role_repository;
     }
 
+    /**
+     * @param $id
+     * @param $data
+     * @return mixed
+     */
     public function update($id, $data)
     {
         return $this->role_repository->getById($id);
     }
 
+    /**
+     * @param $id
+     * @return mixed
+     */
     public function destroy($id)
     {
         return $this->role_repository->getById($id)->destroy();
     }
 
+    /**
+     * @param $data
+     * @return mixed
+     */
     public function create($data)
     {
         return $this->role_repository->role->create($data);

@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Project extends Model
 {
@@ -19,33 +21,34 @@ class Project extends Model
     ];
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @return BelongsTo
      */
-    public function company(){
+    public function company():BelongsTo
+    {
         return $this->belongsTo(Company::class);
     }
 
     /**
-     * Relationship with class Status Project
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @return BelongsTo
      */
-    public function status(){
+    public function status():BelongsTo
+    {
         return $this->belongsTo(ProjectStatus::class);
     }
 
     /**
-     * Relationship with class Worker
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @return BelongsTo
      */
-    public function worker(){
+    public function worker():BelongsTo
+    {
         return $this->belongsTo(Worker::class);
     }
 
     /**
-     * Relationship with Technology class
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     * @return BelongsToMany
      */
-    public function technologies(){
+    public function technologies():BelongsToMany
+    {
         return $this->belongsToMany(Project::class);
     }
 }

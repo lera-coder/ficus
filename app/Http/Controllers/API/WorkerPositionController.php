@@ -7,6 +7,7 @@ use App\Models\WorkerPosition;
 use App\Repositories\Interfaces\WorkerPositionRepositoryInterface;
 use App\Services\ModelService\WorkerPositionService\WorkerPositionServiceInterface;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 
 class WorkerPositionController extends Controller
 {
@@ -22,7 +23,7 @@ class WorkerPositionController extends Controller
     }
 
     /**
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function index()
     {
@@ -31,8 +32,8 @@ class WorkerPositionController extends Controller
 
 
     /**
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @param Request $request
+     * @return Response
      */
     public function store(WorkerPositionRequest $request)
     {
@@ -40,8 +41,8 @@ class WorkerPositionController extends Controller
     }
 
     /**
-     * @param  \App\Models\WorkerPosition  $workerPosition
-     * @return \Illuminate\Http\Response
+     * @param WorkerPosition $workerPosition
+     * @return Response
      */
     public function show($id)
     {
@@ -50,9 +51,9 @@ class WorkerPositionController extends Controller
 
 
     /**
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\WorkerPosition  $workerPosition
-     * @return \Illuminate\Http\Response
+     * @param Request $request
+     * @param WorkerPosition $workerPosition
+     * @return Response
      */
     public function update(WorkerPositionRequest $request, $id)
     {
@@ -60,8 +61,8 @@ class WorkerPositionController extends Controller
     }
 
     /**
-     * @param  \App\Models\WorkerPosition  $workerPosition
-     * @return \Illuminate\Http\Response
+     * @param WorkerPosition $workerPosition
+     * @return Response
      */
     public function destroy($id)
     {

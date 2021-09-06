@@ -7,6 +7,7 @@ use App\Models\ApplicantStatus;
 use App\Repositories\Interfaces\ApplicantStatusRepositoryInterface;
 use App\Services\ModelService\ApplicantStatusService\ApplicantStatusServiceInterface;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 
 class ApplicantStatusController extends Controller
 {
@@ -21,7 +22,7 @@ class ApplicantStatusController extends Controller
     }
 
     /**
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function index()
     {
@@ -30,8 +31,8 @@ class ApplicantStatusController extends Controller
 
 
     /**
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @param Request $request
+     * @return Response
      */
     public function store(ApplicantStatusRequest $request)
     {
@@ -39,8 +40,8 @@ class ApplicantStatusController extends Controller
     }
 
     /**
-     * @param  \App\Models\ApplicantStatus  $applicantStatus
-     * @return \Illuminate\Http\Response
+     * @param ApplicantStatus $applicantStatus
+     * @return Response
      */
     public function show($id)
     {
@@ -49,9 +50,9 @@ class ApplicantStatusController extends Controller
 
 
     /**
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\ApplicantStatus  $applicantStatus
-     * @return \Illuminate\Http\Response
+     * @param Request $request
+     * @param ApplicantStatus $applicantStatus
+     * @return Response
      */
     public function update(ApplicantStatusRequest $request, $id)
     {
@@ -59,8 +60,8 @@ class ApplicantStatusController extends Controller
     }
 
     /**
-     * @param  \App\Models\ApplicantStatus  $applicantStatus
-     * @return \Illuminate\Http\Response
+     * @param ApplicantStatus $applicantStatus
+     * @return Response
      */
     public function destroy($id)
     {

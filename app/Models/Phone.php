@@ -2,14 +2,17 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+
 
 class Phone extends Model
 {
     use HasFactory;
 
-    protected $fillable= [
+    protected $fillable = [
         'phone_number',
         'two_factor_options',
         'is_active',
@@ -19,20 +22,39 @@ class Phone extends Model
 
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @return BelongsTo
      */
-    public function user(){
+    public function user(): BelongsTo
+    {
         return $this->belongsTo(User::class);
     }
 
 
+    /**
+     * @return BelongsTo
+     */
+    public function phoneCountryCode(): BelongsTo
+    {
+        return $this->BelongsTo(PhoneCountryCode::class);
+    }
+
 
     /**
-     * Function to return country code of this phone number
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @method static active() get active phone of user
+     * @return Builder
      */
-    public function phoneCountryCode(){
-        return $this->BelongsTo(PhoneCountryCode::class);
+    public function scopeActive($query): Builder
+    {
+        return $query->where('is_active', 1);
+    }
+
+    /**
+     * @method static notActive() get not active phone of user
+     * @return Builder
+     */
+    public function scopeNotActive($query): Builder
+    {
+        return $query->where('is_active', 0);
     }
 
 }

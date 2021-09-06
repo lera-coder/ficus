@@ -4,13 +4,15 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Testing\Fluent\Concerns\Has;
 
 class Network extends Model
 {
     use HasFactory;
 
 
-    protected $fillable =[
+    protected $fillable = [
         'name'
     ];
 
@@ -19,21 +21,21 @@ class Network extends Model
      * @param $network
      * @return mixed
      */
-    public static function checkForExist($network){
-        return static::where('name', $network)->firstOr(function (){
-                return false;
-            }
-        );
+    public static function checkForExist($network)
+    {
+        return static::where('name', $network)->firstOr(function () {
+            return false;
+        });
     }
 
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * @return HasMany
      */
-    public function users(){
+    public function users():HasMany
+    {
         return $this->hasMany(User::class);
     }
-
 
 
 }

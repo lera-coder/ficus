@@ -25,6 +25,7 @@ class CreateApplicantsTable extends Migration
             $table->foreign('status_id')
                 ->references('id')->on('applicant_statuses');
 
+            $table->softDeletes();
             $table->timestamps();
         });
     }

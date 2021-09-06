@@ -17,17 +17,30 @@ class Token2FARepository implements Token2FARepositoryInterface
     }
 
 
+    /**
+     * @param $n
+     * @return mixed
+     */
     public function all($n)
     {
-        return $this->token2FA->paginate($n);
+        return $this->token2FA->query()->paginate($n);
     }
 
+    /**
+     * @param $id
+     * @return mixed
+     */
+    public function user($id)
+    {
+        return $this->getById($id)->user;
+    }
+
+    /**
+     * @param $id
+     * @return mixed
+     */
     public function getById($id)
     {
-        return $this->token2FA->findOrFail($id);
-    }
-
-    public function user($id){
-        return $this->getById($id)->user;
+        return $this->token2FA->query()->findOrFail($id);
     }
 }

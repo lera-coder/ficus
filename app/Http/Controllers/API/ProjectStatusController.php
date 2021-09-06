@@ -3,8 +3,11 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Requests\ProjectStatusRequest;
+use App\Models\ProjectStatus;
 use App\Repositories\Interfaces\ProjectStatusRepositoryInterface;
 use App\Services\ModelService\ProjectStatusService\ProjectStatusServiceInterface;
+use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 
 class ProjectStatusController extends Controller
 {
@@ -19,7 +22,7 @@ class ProjectStatusController extends Controller
     }
 
     /**
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function index()
     {
@@ -28,8 +31,8 @@ class ProjectStatusController extends Controller
 
 
     /**
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @param Request $request
+     * @return Response
      */
     public function store(ProjectStatusRequest $request)
     {
@@ -37,8 +40,8 @@ class ProjectStatusController extends Controller
     }
 
     /**
-     * @param  \App\Models\ProjectStatus  $projectStatus
-     * @return \Illuminate\Http\Response
+     * @param ProjectStatus $projectStatus
+     * @return Response
      */
     public function show($id)
     {
@@ -47,9 +50,9 @@ class ProjectStatusController extends Controller
 
 
     /**
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\ProjectStatus  $projectStatus
-     * @return \Illuminate\Http\Response
+     * @param Request $request
+     * @param ProjectStatus $projectStatus
+     * @return Response
      */
     public function update(ProjectStatusRequest $request, $id)
     {
@@ -57,8 +60,8 @@ class ProjectStatusController extends Controller
     }
 
     /**
-     * @param  \App\Models\ProjectStatus  $projectStatus
-     * @return \Illuminate\Http\Response
+     * @param ProjectStatus $projectStatus
+     * @return Response
      */
     public function destroy($id)
     {

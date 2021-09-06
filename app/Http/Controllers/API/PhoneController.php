@@ -7,11 +7,12 @@ use App\Http\Requests\UpdatePhoneRequest;
 use App\Http\Resources\PhoneFullCollection;
 use App\Http\Resources\PhoneFullResource;
 use App\Models\Phone;
-use App\Models\PhoneCountryCode;
 use App\Repositories\Interfaces\PhoneRepositoryInterface;
 use App\Services\ModelService\PhoneService\PhoneServiceInterface;
+use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Contracts\Routing\ResponseFactory;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Gate;
-use Symfony\Component\HttpFoundation\Exception\JsonException;
 
 class PhoneController extends Controller
 {
@@ -28,35 +29,37 @@ class PhoneController extends Controller
     /**
      * @return mixed
      */
-    public function index(){
+    public function index()
+    {
         return new PhoneFullCollection(PhoneFullResource::collection($this->phone_repository->all(20)));
     }
-
 
 
     /**
      * @return mixed
      */
-    public function activePhone(){
+    public function activePhone()
+    {
         return $this->phone_repository->activePhone(auth()->user());
     }
 
 
     /**
      * @param $id
-     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Http\Response
+     * @return Application|ResponseFactory|Response
      */
-    public function show($id){
-       return $this->phone_repository->getById($id);
+    public function show($id)
+    {
+        return $this->phone_repository->getById($id);
     }
-
 
 
     /**
      * @param $id
-     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Http\Response
+     * @return Application|ResponseFactory|Response
      */
-    public function destroy($id){
+    public function destroy($id)
+    {
         $this->phone_service->destroy(($id));
     }
 
@@ -65,7 +68,8 @@ class PhoneController extends Controller
      * @param PhoneRequest $request
      * @return mixed
      */
-    public function store(PhoneRequest $request){
+    public function store(PhoneRequest $request)
+    {
         return $this->phone_service->create($request->only(['phone_number', 'phone_country_code_id']));
     }
 
@@ -76,9 +80,10 @@ class PhoneController extends Controller
      * @param $id
      * @return mixed
      */
-    public function setActive($id){
+    public function setActive($id)
+    {
         return $this->phone_service->makeActive($id) ?
-            response('Phone was successfully turned to active'):
+            response('Phone was successfully turned to active') :
             response('This action is not allowed', 403);
 
     }
@@ -88,8 +93,9 @@ class PhoneController extends Controller
      * @param UpdatePhoneRequest $request
      * @param $id
      */
-    public function update(UpdatePhoneRequest $request, $id){
-        if (! Gate::allows('update-phone', Phone::find($id))) {
+    public function update(UpdatePhoneRequest $request, $id)
+    {
+        if (!Gate::allows('update-phone', Phone::find($id))) {
             return response('You cannot edit not your phone!', 401);
         }
 

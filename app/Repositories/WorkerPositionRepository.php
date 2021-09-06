@@ -16,19 +16,31 @@ class WorkerPositionRepository implements WorkerPositionRepositoryInterface
         $this->worker_position = $worker_position;
     }
 
+    /**
+     * @param $n
+     * @return mixed
+     */
     public function all($n)
     {
-       return $this->worker_position->paginate($n);
+        return $this->worker_position->query()->paginate($n);
     }
 
-    public function getById($id)
-    {
-        return $this->worker_position->findOrFail($id);
-    }
-
+    /**
+     * @param $id
+     * @return mixed
+     */
     public function workers($id)
     {
         return $this->getById($id)->workers;
+    }
+
+    /**
+     * @param $id
+     * @return mixed
+     */
+    public function getById($id)
+    {
+        return $this->worker_position->query()->findOrFail($id);
     }
 
 }

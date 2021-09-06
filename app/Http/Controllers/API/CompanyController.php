@@ -6,6 +6,7 @@ use App\Http\Requests\CreateCompanyRequest;
 use App\Repositories\Interfaces\CompanyRepositoryInterface;
 use App\Services\ModelService\CompanyService\CompanyServiceInterface;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 
 class CompanyController extends Controller
 {
@@ -20,7 +21,7 @@ class CompanyController extends Controller
     }
 
     /**
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function index()
     {

@@ -4,10 +4,13 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Interview extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
 
     protected $fillable = [
         'link',
@@ -19,23 +22,26 @@ class Interview extends Model
     ];
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @return BelongsTo
      */
-    public function interviewer(){
+    public function interviewer(): BelongsTo
+    {
         return $this->belongsTo(User::class, 'interviewer_id');
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @return BelongsTo
      */
-    public function status(){
+    public function status(): BelongsTo
+    {
         return $this->belongsTo(InterviewStatus::class, 'status_id');
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     * @return BelongsToMany
      */
-    public function applicants(){
+    public function applicants(): BelongsToMany
+    {
         return $this->belongsToMany(Applicant::class, 'applicants_interviews');
     }
 

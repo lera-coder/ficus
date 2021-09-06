@@ -15,21 +15,32 @@ class Token2FAService implements Token2FAServiceInterface
         $this->token2fa_repository = $token2fa_repository;
     }
 
-
+    /**
+     * @param $id
+     * @param $data
+     * @return mixed
+     */
     public function update($id, $data)
     {
-        // TODO: Implement update() method.
+        return $this->token2fa_repository->getById($id)->update($data);
     }
 
+    /**
+     * @param $id
+     * @return mixed
+     */
     public function destroy($id)
     {
-        // TODO: Implement destroy() method.
+        return $this->token2fa_repository->getById($id)->destroy();
     }
 
+    /**
+     * @param $user_id
+     */
     public function create($user_id)
     {
         Token2fa::create([
-            'user_id'=>$user_id
+            'user_id' => $user_id
         ]);
     }
 }

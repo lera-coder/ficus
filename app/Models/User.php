@@ -2,12 +2,17 @@
 
 namespace App\Models;
 
+use Illuminate\Contracts\Auth\CanResetPassword;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\hasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Tymon\JWTAuth\Contracts\JWTSubject;
-use Illuminate\Contracts\Auth\CanResetPassword;
 
 
 class User extends Authenticatable implements JWTSubject, MustVerifyEmail, CanResetPassword
@@ -32,58 +37,69 @@ class User extends Authenticatable implements JWTSubject, MustVerifyEmail, CanRe
 
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @return BelongsTo
      */
-    public function network(){
+    public function network()
+    {
         return $this->belongsTo(Network::class);
     }
 
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\hasOne
+     * @return hasOne
      */
-    public function token2fa(){
+    public function token2fa()
+    {
         return $this->hasOne(Token2fa::class);
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * @return HasMany
      */
-    public function phones(){
+    public function phones()
+    {
         return $this->hasMany(Phone::class);
     }
 
-    public function emails(){
-        return $this->hasMany(Email::class);
-    }
-
-    public function activeEmail(){
-        return $this->emails()->where('is_active', 1)->first();
-    }
-
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     * @return BelongsToMany
      */
     public function roles()
     {
         return $this->belongsToMany(Role::class);
     }
 
-
     /*********Overriding interface methods. It was done for adding authentication via login
-
-    /***
+     *
+     * /***
      * @return bool
      */
-    public function hasVerifiedEmail(){
+    public function hasVerifiedEmail()
+    {
         return !is_null($this->activeEmail()->email_verified_at);
     }
 
+    /**
+     * @return Model|HasMany|object|null
+     */
+    public function activeEmail()
+    {
+        return $this->emails()->where('is_active', 1)->first();
+    }
+
+    /**
+     * @return HasMany
+     */
+    public function emails():HasMany
+    {
+        return $this->hasMany(Email::class);
+    }
 
     /***
      * @return bool
      */
-    public function markEmailAsVerified(){
+    public function markEmailAsVerified():bool
+    {
         $email = $this->activeEmail();
         $email->email_verified_at = now();
         $email->save();
@@ -93,7 +109,7 @@ class User extends Authenticatable implements JWTSubject, MustVerifyEmail, CanRe
     /***
      * @return bool
      */
-    public function getEmailForVerification()
+    public function getEmailForVerification():bool
     {
         return $this->activeEmail()->email;
     }
@@ -101,7 +117,8 @@ class User extends Authenticatable implements JWTSubject, MustVerifyEmail, CanRe
     /***
      * @return bool
      */
-    public function getEmailForPasswordReset(){
+    public function getEmailForPasswordReset():bool
+    {
         return $this->activeEmail()->email;
     }
 
@@ -117,7 +134,7 @@ class User extends Authenticatable implements JWTSubject, MustVerifyEmail, CanRe
 
 
     /****Overriding interface of JWT
-    /**
+     * /**
      * @return mixed
      */
     public function getJWTIdentifier()

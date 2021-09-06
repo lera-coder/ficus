@@ -18,6 +18,7 @@ class CreateApplicantsInterviewsTable extends Migration
 
             $table->unsignedBigInteger('interview_id');
             $table->unsignedBigInteger('applicant_id');
+            $table->softDeletes();
 
             $table->foreign('interview_id')
                 ->references('id')->on('interviews');

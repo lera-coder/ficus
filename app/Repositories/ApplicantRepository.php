@@ -13,30 +13,61 @@ class ApplicantRepository implements ApplicantRepositoryInterface
 {
     public $applicant;
 
+    /**
+     * ApplicantRepository constructor.
+     * @param Applicant $applicant
+     */
     public function __construct(Applicant $applicant)
     {
         $this->applicant = $applicant;
     }
 
+    /**
+     * @param $n
+     * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
+     */
     public function all($n)
     {
-        return $this->applicant->paginate($n);
+        return $this->applicant->query()->paginate($n);
     }
 
+    /**
+     * @param $id
+     * @return \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Builder[]|\Illuminate\Database\Eloquent\Collection|\Illuminate\Database\Eloquent\Model|null
+     */
     public function getById($id)
     {
-        return $this->applicant->findOrFail($id);
+        return $this->applicant->query()->findOrFail($id);
     }
 
+    /**
+     * @param $id
+     * @return \Illuminate\Database\Eloquent\HigherOrderBuilderProxy|mixed
+     */
     public function status($id){
-        return $this->getById($id)->status;
+        return $this->getById($id)->query()->status;
     }
 
+    /**
+     * @param $id
+     * @return \Illuminate\Database\Eloquent\HigherOrderBuilderProxy|mixed
+     */
     public function knowledges($id){
-        return $this->getById($id)->knowledges;
+        return $this->getById($id)->query()->knowledges;
     }
 
+    /**
+     * @param $id
+     * @return \Illuminate\Database\Eloquent\HigherOrderBuilderProxy|mixed
+     */
     public function interviews($id){
-        return $this->getById($id)->interviews;
+        return $this->getById($id)->query()->interviews;
+    }
+
+    /**
+     * @return array
+     */
+    public function getIdsOfApplicantsWithValidStatus(){
+        return $this->applicant->all()->whereNotIn('status_id', [5,6])->pluck('id')->toArray();
     }
 }

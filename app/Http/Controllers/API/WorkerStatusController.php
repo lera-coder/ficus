@@ -7,6 +7,7 @@ use App\Models\WorkerStatus;
 use App\Repositories\Interfaces\WorkerStatusRepositoryInterface;
 use App\Services\ModelService\WorkerStatusService\WorkerStatusServiceInterface;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 
 class WorkerStatusController extends Controller
 {
@@ -21,7 +22,7 @@ class WorkerStatusController extends Controller
     }
 
     /**
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function index()
     {
@@ -30,8 +31,8 @@ class WorkerStatusController extends Controller
 
 
     /**
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @param Request $request
+     * @return Response
      */
     public function store(WorkerStatusRequest $request)
     {
@@ -39,8 +40,8 @@ class WorkerStatusController extends Controller
     }
 
     /**
-     * @param  \App\Models\WorkerStatus  $workerStatus
-     * @return \Illuminate\Http\Response
+     * @param WorkerStatus $workerStatus
+     * @return Response
      */
     public function show($id)
     {
@@ -49,9 +50,9 @@ class WorkerStatusController extends Controller
 
 
     /**
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\WorkerStatus  $workerStatus
-     * @return \Illuminate\Http\Response
+     * @param Request $request
+     * @param WorkerStatus $workerStatus
+     * @return Response
      */
     public function update(WorkerStatusRequest $request, $id)
     {
@@ -59,8 +60,8 @@ class WorkerStatusController extends Controller
     }
 
     /**
-     * @param  \App\Models\WorkerStatus  $workerStatus
-     * @return \Illuminate\Http\Response
+     * @param WorkerStatus $workerStatus
+     * @return Response
      */
     public function destroy($id)
     {
