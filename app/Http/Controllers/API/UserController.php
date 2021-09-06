@@ -4,17 +4,17 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Requests\ContactRequest;
 use App\Http\Requests\CreateUserRequest;
-use App\Http\Requests\EmailRequest;
-use App\Http\Requests\PhoneRequest;
 use App\Http\Requests\UpdateUserRequest;
 use App\Http\Resources\UserApplicantPermissionResources\ApplicantPermissionForUsersCollection;
 use App\Models\User;
 use App\Repositories\Interfaces\UserApplicantPermissionRepositoryInterface;
 use App\Repositories\Interfaces\UserRepositoryInterface;
-use App\Services\ModelService\ModelServiceInterface;
 use App\Services\ModelService\UserService\UserServiceInterface;
+use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Contracts\Routing\ResponseFactory;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
-
+use Illuminate\Http\Response;
 
 
 class UserController extends Controller
@@ -35,7 +35,7 @@ class UserController extends Controller
 
 
     /**
-     * @return User[]|\Illuminate\Database\Eloquent\Collection
+     * @return User[]|Collection
      */
     public function index()
     {
@@ -88,24 +88,25 @@ class UserController extends Controller
     }
 
 
-
     /**
      * Function to turn on 2FA
      *
      * @param $activity
-     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Http\Response
+     * @return Application|ResponseFactory|Response
      */
-    public function toggle2FAAuth(){
+    public function toggle2FAAuth()
+    {
         return $this->user_services->toggle2FA(auth()->user()) ?
-            response('Your 2Auth was successfully turned on'):
+            response('Your 2Auth was successfully turned on') :
             response('Your 2Auth was successfully turned down');
     }
 
 
-    public function permissions($id){
+    public function permissions($id)
+    {
         return new ApplicantPermissionForUsersCollection
-                             ($this->user_applicant_permission_repository
-                             ->getByUser($id));
+        ($this->user_applicant_permission_repository
+            ->getByUser($id));
     }
 
 

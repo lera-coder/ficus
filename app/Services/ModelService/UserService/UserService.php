@@ -5,7 +5,6 @@ namespace App\Services\ModelService\UserService;
 
 
 use App\Exceptions\TransactionFailedException;
-use App\Models\User;
 use App\Repositories\Interfaces\EmailRepositoryInterface;
 use App\Repositories\Interfaces\NetworkRepositoryInterface;
 use App\Repositories\Interfaces\UserRepositoryInterface;
@@ -13,6 +12,10 @@ use App\Services\ModelService\EmailService\EmailServiceInterface;
 use App\Services\ModelService\Token2FAService\Token2FAServiceInterface;
 use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Auth\Events\Registered;
+use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Contracts\Routing\ResponseFactory;
+use Illuminate\Http\Response;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Password;
@@ -32,7 +35,8 @@ class UserService implements UserServiceInterface
                                 EmailRepositoryInterface $email_repository,
                                 EmailServiceInterface $email_service,
                                 NetworkRepositoryInterface $network_repository,
-                                Token2FAServiceInterface $token2FA_service){
+                                Token2FAServiceInterface $token2FA_service)
+    {
 
         $this->user_repository = $user_repository;
         $this->email_repository = $email_repository;
@@ -42,48 +46,9 @@ class UserService implements UserServiceInterface
     }
 
 
-    /**
-     * @param $credentials
-     */
-    public function create($credentials)
+    public function makeApplicantUser($applicant_data, $request_data)
     {
-
-        $user = $this->createUserModelByCredentials($credentials);
-
-        try{
-            DB::beginTransaction();
-            if(array_key_exists('email', $credentials)) {
-                $this->email_service->create(['email'=>$credentials['email'], 'user_id'=>$user->id]);
-            }
-            $this->token2FA_service->create($user->id);
-            DB::commit();
-            event(new Registered($user));
-        }
-        catch(TransactionFailedException $exception){
-            DB::rollBack();
-        }
-
-    }
-
-    /**
-     * @param $credentials
-     * @return mixed
-     */
-    protected function createUserModelByCredentials($credentials){
-        return $this->user_repository->user->create($this->modifyArrayOfUserCredentials($credentials));
-    }
-
-
-    /**
-     * @param $credentials
-     * @return mixed
-     */
-    protected function modifyArrayOfUserCredentials($credentials){
-        if(array_key_exists('password', $credentials)){
-            $credentials['password'] = Hash::make($credentials['password']);
-        }
-        unset($credentials['email']);
-        return $credentials;
+        //TODO проверка на то, если ли уже у претендента на должность емаил, исключение, добавление
     }
 
     /**
@@ -91,22 +56,22 @@ class UserService implements UserServiceInterface
      * @param $data
      * @return mixed
      */
-    public function update($id, $data){
+    public function update($id, $data)
+    {
         return $this->user_repository->getById($id)->update($data);
     }
-
 
     /**
      * @param $id
      * @return mixed
      */
-    public function destroy($id){
+    public function destroy($id)
+    {
         return $this->user_repository->getById($id)->destroy();
     }
 
-
     /**
-     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Http\Response
+     * @return Application|ResponseFactory|Response
      */
     public function toggle2FA()
     {
@@ -120,17 +85,14 @@ class UserService implements UserServiceInterface
         return $user->is_2auth;
     }
 
-
     /**
      * @param $id
      * @return bool
      */
-    protected function checkActivePhoneAvalability($id){
+    protected function checkActivePhoneAvalability($id)
+    {
         return (is_null($this->user_repository->activePhone($id)));
     }
-
-
-
 
     /**
      * @param $token
@@ -139,7 +101,7 @@ class UserService implements UserServiceInterface
     public function check2FAtoken($token)
     {
         $user = auth()->user();
-        $right =  $token == $this->user_repository->token2fa($user)->token;
+        $right = $token == $this->user_repository->token2fa($user)->token;
 
         try {
             DB::beginTransaction();
@@ -148,20 +110,32 @@ class UserService implements UserServiceInterface
             }
             $this->deleteToken2FAIfUserIsVerified();
             DB::commit();
-        }
-        catch(TransactionFailedException $exception){
+        } catch (TransactionFailedException $exception) {
             DB::rollBack();
         }
         return $right;
     }
 
-
-    protected function deleteToken2FAIfUserIsVerified(){
+    protected function deleteToken2FAIfUserIsVerified()
+    {
         $user = auth()->user();
         $user->token2fa->token = null;
         $user->push();
     }
 
+    public function send2FACode()
+    {
+        $user = auth()->user();
+
+        Nexmo::message()->send([
+            'to' => $this->repository->getFullActivePhone($user),
+            'from' => ENV('NEXMO_FROM_NUMBER'),
+            'text' => $this->set2FAtoken($user)
+        ]);
+
+        $this->markUserAfterSending2FAToken();
+
+    }
 
     /**
      * @return string
@@ -171,55 +145,25 @@ class UserService implements UserServiceInterface
         try {
             DB::beginTransaction();
             $user = auth()->user();
-            $token = $this->generate2FAtoken();
-            $token2fa_model = $this->repository->token2fa($user);
+            $token = implode(Arr::random([0, 1, 2, 3, 4, 5, 6, 7, 8, 9], 4));
+            $token2fa_model = $this->user_repository->token2fa($user);
             $token2fa_model->token = $token;
             $user->push();
             DB::commit();
-        }
-        catch (TransactionFailedException $exception){
+        } catch (TransactionFailedException $exception) {
             DB::rollBack();
         }
         return $token;
     }
 
-    /**
-     * @return string
-     */
-    protected function generate2FAtoken(){
-        $permitted_chars = '0123456789';
-        $token ='';
 
-        for($i = 0; $i< 4; $i++){
-            $token .= $permitted_chars[rand(0,strlen($permitted_chars) - 1)];
-        }
-
-        return $token;
-    }
-
-
-
-    public function send2FACode(){
-        $user = auth()->user();
-
-        Nexmo::message()->send([
-            'to'   => $this->repository->getFullActivePhone($user),
-            'from' => ENV('NEXMO_FROM_NUMBER'),
-            'text' => $this->set2FAtoken($user)
-        ]);
-
-        $this->markUserAfterSending2FAToken();
-
-    }
-
-
-    protected function markUserAfterSending2FAToken(){
+    protected function markUserAfterSending2FAToken()
+    {
         $user = auth()->user();
         $user->token2fa->is_confirmed = false;
         $user->push();
 
     }
-
 
     /**
      * @param $network
@@ -229,10 +173,9 @@ class UserService implements UserServiceInterface
     {
         $email = $this->email_repository->getModelByEmail($user_credentials->email);
 
-        if($email){
+        if ($email) {
             $user = $this->email_repository->user($email);
-        }
-        else {
+        } else {
             $this->create($user_credentials);
         }
 
@@ -242,13 +185,54 @@ class UserService implements UserServiceInterface
             $this->email_repository->activeEmail($user->id)->email_verified_at = now();
             $user->push();
             DB::commit();
-        }
-        catch (TransactionFailedException $exception){
+        } catch (TransactionFailedException $exception) {
             DB::rollBack();
         }
         return auth()->login($user);
     }
 
+    /**
+     * @param $credentials
+     */
+    public function create($credentials)
+    {
+
+        $user = $this->createUserModelByCredentials($credentials);
+
+        try {
+            DB::beginTransaction();
+            if (array_key_exists('email', $credentials)) {
+                $this->email_service->create(['email' => $credentials['email'], 'user_id' => $user->id]);
+            }
+            $this->token2FA_service->create($user->id);
+            DB::commit();
+            event(new Registered($user));
+        } catch (TransactionFailedException $exception) {
+            DB::rollBack();
+        }
+    }
+
+    /**
+     * @param $credentials
+     * @return mixed
+     */
+    protected function createUserModelByCredentials($credentials)
+    {
+        return $this->user_repository->user->create($this->modifyArrayOfUserCredentials($credentials));
+    }
+
+    /**
+     * @param $credentials
+     * @return mixed
+     */
+    protected function modifyArrayOfUserCredentials($credentials)
+    {
+        if (array_key_exists('password', $credentials)) {
+            $credentials['password'] = Hash::make($credentials['password']);
+        }
+        unset($credentials['email']);
+        return $credentials;
+    }
 
     /**
      * @param $login
@@ -264,10 +248,11 @@ class UserService implements UserServiceInterface
      * @param $reset_password_data
      * @return mixed
      */
-    public function returnResetPasswordStatus($reset_password_data){
+    public function returnResetPasswordStatus($reset_password_data)
+    {
         $user = auth()->user();
 
-        return  Password::reset(
+        return Password::reset(
             $reset_password_data,
             function ($user, $password) {
                 $user->forceFill([

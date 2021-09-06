@@ -3,9 +3,11 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Requests\RoleRequest;
+use App\Models\Technology;
 use App\Repositories\Interfaces\RoleRepositoryInterface;
 use App\Services\ModelService\RoleService\RoleServiceInterface;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 
 class RoleController extends Controller
 {
@@ -20,7 +22,7 @@ class RoleController extends Controller
     }
 
     /**
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function index()
     {
@@ -29,8 +31,8 @@ class RoleController extends Controller
 
 
     /**
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @param Request $request
+     * @return Response
      */
     public function store(RoleRequest $request)
     {
@@ -38,8 +40,8 @@ class RoleController extends Controller
     }
 
     /**
-     * @param  \App\Models\Technology  $technology
-     * @return \Illuminate\Http\Response
+     * @param Technology $technology
+     * @return Response
      */
     public function show($id)
     {
@@ -48,9 +50,9 @@ class RoleController extends Controller
 
 
     /**
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Technology  $technology
-     * @return \Illuminate\Http\Response
+     * @param Request $request
+     * @param Technology $technology
+     * @return Response
      */
     public function update(RoleRequest $request, $id)
     {
@@ -58,8 +60,8 @@ class RoleController extends Controller
     }
 
     /**
-     * @param  \App\Models\Technology  $technology
-     * @return \Illuminate\Http\Response
+     * @param Technology $technology
+     * @return Response
      */
     public function destroy($id)
     {

@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Worker extends Model
 {
@@ -18,44 +20,50 @@ class Worker extends Model
 
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * @return HasMany
      */
-    public function emails(){
+    public function emails():HasMany
+    {
         return $this->hasMany(WorkerEmail::class);
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * @return HasMany
      */
-    public function phones(){
+    public function phones():HasMany
+    {
         return $this->hasMany(WorkerPhone::class);
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @return BelongsTo
      */
-    public function status(){
+    public function status():HasMany
+    {
         return $this->belongsTo(WorkerStatus::class);
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @return BelongsTo
      */
-    public function position(){
+    public function position():HasMany
+    {
         return $this->belongsTo(WorkerPosition::class);
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @return BelongsTo
      */
-    public function company(){
+    public function company():HasMany
+    {
         return $this->belongsTo(Company::class);
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * @return HasMany
      */
-    public function projects(){
+    public function projects():HasMany
+    {
         return $this->hasMany(Project::class);
     }
 

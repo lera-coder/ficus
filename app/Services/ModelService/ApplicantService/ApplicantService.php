@@ -4,6 +4,7 @@
 namespace App\Services\ModelService\ApplicantService;
 
 use App\Repositories\Interfaces\ApplicantRepositoryInterface;
+use Illuminate\Database\Eloquent\Builder;
 
 class ApplicantService implements ApplicantServiceInterface
 {
@@ -14,17 +15,30 @@ class ApplicantService implements ApplicantServiceInterface
         $this->applicant_repository = $applicant_repository;
     }
 
-    public function update($id, $data)
+    /**
+     * @param $id
+     * @param $data
+     * @return Builder
+     */
+    public function update($id, $data): Builder
     {
         return $this->applicant_repository->getById($id)->update($data);
     }
 
+    /**
+     * @param $id
+     * @return mixed
+     */
     public function destroy($id)
     {
         return $this->applicant_repository->getById($id)->destroy();
     }
 
-    public function create($data)
+    /**
+     * @param $data
+     * @return Builder
+     */
+    public function create($data): Builder
     {
         return $this->applicant_repository->applicant->create($data);
     }

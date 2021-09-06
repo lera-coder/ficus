@@ -3,12 +3,12 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Requests\CreateKnowledgeRequest;
-use App\Http\Requests\CreateProjectRequest;
 use App\Http\Requests\UpdateKnowledgeRequest;
-use App\Models\Knowledge;
+use App\Models\Technology;
 use App\Repositories\Interfaces\KnowledgeRepositoryInterface;
 use App\Services\ModelService\KnowledgeService\KnowledgeServiceInterface;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 
 class KnowledgeController extends Controller
 {
@@ -23,7 +23,7 @@ class KnowledgeController extends Controller
     }
 
     /**
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function index()
     {
@@ -32,8 +32,8 @@ class KnowledgeController extends Controller
 
 
     /**
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @param Request $request
+     * @return Response
      */
     public function store(CreateKnowledgeRequest $request)
     {
@@ -42,8 +42,8 @@ class KnowledgeController extends Controller
     }
 
     /**
-     * @param  \App\Models\Technology  $knowledge
-     * @return \Illuminate\Http\Response
+     * @param Technology $knowledge
+     * @return Response
      */
     public function show($id)
     {
@@ -52,9 +52,9 @@ class KnowledgeController extends Controller
 
 
     /**
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Technology  $knowledge
-     * @return \Illuminate\Http\Response
+     * @param Request $request
+     * @param Technology $knowledge
+     * @return Response
      */
     public function update(UpdateKnowledgeRequest $request, $id)
     {
@@ -63,8 +63,8 @@ class KnowledgeController extends Controller
     }
 
     /**
-     * @param  \App\Models\Technology  $knowledge
-     * @return \Illuminate\Http\Response
+     * @param Technology $knowledge
+     * @return Response
      */
     public function destroy($id)
     {

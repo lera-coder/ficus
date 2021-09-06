@@ -11,7 +11,10 @@ use App\Http\Resources\PhoneResource;
 use App\Models\PhoneCountryCode;
 use App\Repositories\Interfaces\PhoneCountryCodeRepositoryInterface;
 use App\Services\ModelService\PhoneCountryCodeService\PhoneCountryCodeServiceInterface;
-use Illuminate\Http\Resources\Json\ResourceCollection;
+use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Contracts\Routing\ResponseFactory;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Http\Response;
 
 class PhoneCountryCodeController extends Controller
 {
@@ -26,17 +29,19 @@ class PhoneCountryCodeController extends Controller
     }
 
     /**
-     * @return PhoneCountryCode[]|\Illuminate\Database\Eloquent\Collection
+     * @return PhoneCountryCode[]|Collection
      */
-    public function index(){
+    public function index()
+    {
         return $this->phone_country_code_repository->all(100);
     }
 
     /**
      * @param $id
-     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Http\Response
+     * @return Application|ResponseFactory|Response
      */
-    public function show($id){
+    public function show($id)
+    {
         return $this->phone_country_code_repository->getById($id);
     }
 
@@ -44,16 +49,18 @@ class PhoneCountryCodeController extends Controller
      * @param PhoneCountryCodeRequest $request
      * @return mixed
      */
-    public function store(PhoneCountryCodeRequest $request){
+    public function store(PhoneCountryCodeRequest $request)
+    {
         return $this->phone_country_code_service->create($request->all());
     }
 
 
     /**
      * @param $id
-     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Http\Response
+     * @return Application|ResponseFactory|Response
      */
-    public function destroy($id){
+    public function destroy($id)
+    {
         return $this->phone_country_code_service->destroy($id);
     }
 
@@ -63,8 +70,9 @@ class PhoneCountryCodeController extends Controller
      * @param $id
      * @return mixed
      */
-    public function update(UpdatePhoneCountryCodeRequest $request, $id){
-       return $this->phone_country_code_service->update($id, $request->all());
+    public function update(UpdatePhoneCountryCodeRequest $request, $id)
+    {
+        return $this->phone_country_code_service->update($id, $request->all());
     }
 
 
@@ -72,7 +80,8 @@ class PhoneCountryCodeController extends Controller
      * @param $id
      * @return mixed
      */
-    public function phones($id){
+    public function phones($id)
+    {
         return $this->phone_country_code_repository->phones($id);
     }
 }

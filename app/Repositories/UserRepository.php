@@ -3,10 +3,11 @@
 
 namespace App\Repositories;
 
-use App\Http\Resources\UserFullCollection;
-use App\Http\Resources\UserFullResource;
 use App\Models\User;
 use App\Repositories\Interfaces\UserRepositoryInterface;
+use Illuminate\Contracts\Pagination\Paginator;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
 
 
 class UserRepository implements UserRepositoryInterface
@@ -19,39 +20,24 @@ class UserRepository implements UserRepositoryInterface
     }
 
     /**
-     * Get all users
      * @param $n
      * @return mixed
      */
-    public function all($n)
+    public function all($n): Paginator
     {
         return $this->user->query()->paginate($n);
     }
 
-
     /**
-     * Get 1 user by id
-     * @param $id
-     * @return mixed
-     */
-    public function getById($id)
-    {
-        return $this->user->findOrFail($id);
-    }
-
-
-    /**
-     * get all emails from 1 user
      * @param User $user
      * @return mixed
      */
-    public function emails($id)
+    public function disactivePhones($id)
     {
-        return $this->getById($id)->emails;
+        return $this->phones($id)->notActive();
     }
 
     /**
-     * Get all phones by user model
      * @param User $user
      * @return mixed
      */
@@ -61,37 +47,42 @@ class UserRepository implements UserRepositoryInterface
     }
 
     /**
-     * Get active phone by user model
-     * @param User $user
+     * @param $id
      * @return mixed
      */
-    public function activePhone($id)
+    public function getById($id)
     {
-        return $this->phones($id)->where('is_active', 1)->first();
+        return $this->user->query()->findOrFail($id);
     }
 
     /**
-     * Get disactive phones by user model
-     * @param User $user
-     * @return mixed
-     */
-    public function disactivePhones($id)
-    {
-        return $this->phones($id)->where('is_active', 0);
-    }
-
-    /**
-     * Get full version of active phone (with country code)
      * @param User $user
      * @return string
      */
     public function getFullActivePhone($id)
     {
-        return $this->getActivePhoneCountryCode($id)->code.$this->activePhone($id)->phone_number;
+        return $this->getActivePhoneCountryCode($id)->code . $this->activePhone($id)->phone_number;
     }
 
     /**
-     * Get network, via those user is logged in
+     * @param User $user
+     * @return mixed
+     */
+    protected function getActivePhoneCountryCode($id)
+    {
+        return $this->activePhone($id)->phoneCountryCode;
+    }
+
+    /**
+     * @param User $user
+     * @return mixed
+     */
+    public function activePhone($id)
+    {
+        return $this->phones($id)->active()->first();
+    }
+
+    /**
      * @param User $user
      * @return mixed
      */
@@ -102,7 +93,6 @@ class UserRepository implements UserRepositoryInterface
 
 
     /**
-     * Get token2fa model of user
      * @param User $user
      * @return mixed
      */
@@ -111,19 +101,7 @@ class UserRepository implements UserRepositoryInterface
         return $this->getById($id)->token2fa;
     }
 
-
     /**
-     * Get country code of active phone
-     * @param User $user
-     * @return mixed
-     */
-    protected function getActivePhoneCountryCode($id)
-    {
-        return $this->activePhone($id)->phoneCountryCode;
-    }
-
-    /**
-     * Get all roles of user
      * @param User $user
      * @return mixed
      */
@@ -133,23 +111,49 @@ class UserRepository implements UserRepositoryInterface
     }
 
     /**
-     * get id primary key with login
      * @param $login
      * @return mixed
      */
-    public function getIdViaLogin($login){
-        return $this->user->where('login', $login)->first()->id;
+    public function getIdViaLogin($login)
+    {
+        return $this->user->query()->where('login', $login)->first()->id;
     }
 
+    /**
+     * @param $id
+     * @return bool
+     */
     public function disactiveEmails($id)
     {
         $emails = $this->emails($id);
-        return (is_null($emails))?:
-            $emails->where('is_active', 0);
+        return (is_null($emails)) ?:
+            $emails->notActive()->get();
     }
 
+    /**
+     * @param User $user
+     * @return mixed
+     */
+    public function emails($id)
+    {
+        return $this->getById($id)->emails;
+    }
+
+    /**
+     * @param $id
+     * @return mixed
+     */
     public function activeEmail($id)
     {
-        return $this->emails($id)->where('is_active', 1)->first();
+        return $this->emails($id)->active()->first();
+    }
+
+
+    /**
+     * @return array
+     */
+    public function getInterviewerIds():array
+    {
+        return DB::table('role_user')->whereIn('role_id', [3, 4])->pluck('user_id')->toArray();
     }
 }

@@ -5,6 +5,12 @@ namespace App\Repositories;
 
 use App\Models\Project;
 use App\Repositories\Interfaces\ProjectRepositoryInterface;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\HigherOrderBuilderProxy;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\HigherOrderCollectionProxy;
 
 class ProjectRepository implements ProjectRepositoryInterface
 {
@@ -15,30 +21,59 @@ class ProjectRepository implements ProjectRepositoryInterface
         $this->project = $project;
     }
 
-
+    /**
+     * @param $n
+     * @return LengthAwarePaginator
+     */
     public function all($n)
     {
-       return $this->project->paginate($n);
+        return $this->project->query()->paginate($n);
     }
 
+    /**
+     * @param $id
+     * @return HigherOrderBuilderProxy|HigherOrderCollectionProxy|mixed
+     */
+    public function company($id)
+    {
+        return $this->getById($id)->query()->company;
+    }
+
+    /**
+     * @param $id
+     * @return Builder|Builder[]|Collection|Model|null
+     */
     public function getById($id)
     {
-        return $this->project->findOrFail($id);
+        return $this->project->query()->findOrFail($id);
     }
 
-    public function company($id){
-        return $this->getById($id)->company;
-    }
-
-    public function status($id){
+    /**
+     * @param $id
+     * @return HigherOrderBuilderProxy|HigherOrderCollectionProxy|mixed
+     */
+    public function status($id)
+    {
         return $this->getById($id)->status;
     }
 
-    public function worker($id){
+
+    /**
+     * @param $id
+     * @return HigherOrderBuilderProxy|HigherOrderCollectionProxy|mixed
+     */
+    public function worker($id)
+    {
         return $this->getById($id)->worker;
     }
 
-    public function technologies($id){
+
+    /**
+     * @param $id
+     * @return HigherOrderBuilderProxy|HigherOrderCollectionProxy|mixed
+     */
+    public function technologies($id)
+    {
         return $this->getById($id)->technologies;
     }
 }

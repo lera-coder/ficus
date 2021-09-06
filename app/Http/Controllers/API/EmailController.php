@@ -8,9 +8,10 @@ use App\Http\Resources\EmailFullResource;
 use App\Models\Email;
 use App\Repositories\Interfaces\EmailRepositoryInterface;
 use App\Services\ModelService\EmailService\EmailServiceInterface;
-use Illuminate\Http\Resources\Json\ResourceCollection;
+use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Contracts\Routing\ResponseFactory;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Gate;
-use Symfony\Component\HttpFoundation\Exception\JsonException;
 
 class EmailController extends Controller
 {
@@ -28,7 +29,8 @@ class EmailController extends Controller
     /**
      * @return mixed
      */
-    public function index(){
+    public function index()
+    {
         return new EmailFullCollection(EmailFullResource::collection($this->email_repository->all(20)));
 
     }
@@ -37,7 +39,8 @@ class EmailController extends Controller
     /**
      * @return mixed
      */
-    public function activeEmail(){
+    public function activeEmail()
+    {
         return $this->email_repository->activeEmail(auth()->user()->id);
     }
 
@@ -46,16 +49,18 @@ class EmailController extends Controller
      * @param $id
      * @return EmailFullResource
      */
-    public function show($id){
+    public function show($id)
+    {
         return new EmailFullResource($this->email_repository->getById($id));
     }
 
 
     /**
      * @param $id
-     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Http\Response
+     * @return Application|ResponseFactory|Response
      */
-    public function destroy($id){
+    public function destroy($id)
+    {
         return $this->email_service->destroy($id);
 
     }
@@ -65,7 +70,8 @@ class EmailController extends Controller
      * @param EmailRequest $request
      * @return mixed
      */
-    public function store(EmailRequest $request){
+    public function store(EmailRequest $request)
+    {
         return $this->email_service->create($request->email);
     }
 
@@ -74,7 +80,8 @@ class EmailController extends Controller
      * @param $id
      * @return mixed
      */
-    public function setActive($id){
+    public function setActive($id)
+    {
         return $this->email_service->makeActive($id);
     }
 
@@ -83,8 +90,9 @@ class EmailController extends Controller
      * @param EmailRequest $request
      * @param $id
      */
-    public function update(EmailRequest $request, $id){
-        if (! Gate::allows('update-email', Email::find($id))) {
+    public function update(EmailRequest $request, $id)
+    {
+        if (!Gate::allows('update-email', Email::find($id))) {
             return response('You cannot edit not your email!', 401);
         }
 

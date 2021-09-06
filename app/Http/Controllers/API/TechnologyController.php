@@ -4,9 +4,11 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Requests\CreateTechnologyRequest;
 use App\Http\Requests\UpdateTechnologyRequest;
+use App\Models\Technology;
 use App\Repositories\Interfaces\TechnologyRepositoryInterface;
 use App\Services\ModelService\TechnologyService\TechnologyServiceInterface;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 
 class TechnologyController extends Controller
 {
@@ -21,7 +23,7 @@ class TechnologyController extends Controller
     }
 
     /**
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function index()
     {
@@ -30,8 +32,8 @@ class TechnologyController extends Controller
 
 
     /**
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @param Request $request
+     * @return Response
      */
     public function store(CreateTechnologyRequest $request)
     {
@@ -39,8 +41,8 @@ class TechnologyController extends Controller
     }
 
     /**
-     * @param  \App\Models\Technology  $technology
-     * @return \Illuminate\Http\Response
+     * @param Technology $technology
+     * @return Response
      */
     public function show($id)
     {
@@ -49,9 +51,9 @@ class TechnologyController extends Controller
 
 
     /**
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Technology  $technology
-     * @return \Illuminate\Http\Response
+     * @param Request $request
+     * @param Technology $technology
+     * @return Response
      */
     public function update(UpdateTechnologyRequest $request, $id)
     {
@@ -59,8 +61,8 @@ class TechnologyController extends Controller
     }
 
     /**
-     * @param  \App\Models\Technology  $technology
-     * @return \Illuminate\Http\Response
+     * @param Technology $technology
+     * @return Response
      */
     public function destroy($id)
     {

@@ -15,16 +15,29 @@ class WorkerStatusService implements WorkerStatusServiceInterface
         $this->worker_status_repository = $worker_status_repository;
     }
 
+    /**
+     * @param $id
+     * @param $data
+     * @return mixed
+     */
     public function update($id, $data)
     {
         return $this->worker_status_repository->getById($id)->update($data);
     }
 
+    /**
+     * @param $id
+     * @return mixed
+     */
     public function destroy($id)
     {
         return $this->worker_status_repository->getById($id)->destroy();
     }
 
+    /**
+     * @param $data
+     * @return mixed
+     */
     public function create($data)
     {
         return $this->worker_status_repository->worker_status->create($data);

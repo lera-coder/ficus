@@ -4,9 +4,11 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Requests\CreateProjectRequest;
 use App\Http\Requests\UpdateProjectRequest;
+use App\Models\Project;
 use App\Repositories\Interfaces\ProjectRepositoryInterface;
 use App\Services\ModelService\ProjectService\ProjectServiceInterface;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 
 class ProjectController extends Controller
 {
@@ -22,7 +24,7 @@ class ProjectController extends Controller
     }
 
     /**
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function index()
     {
@@ -31,8 +33,8 @@ class ProjectController extends Controller
 
 
     /**
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @param Request $request
+     * @return Response
      */
     public function store(CreateProjectRequest $request)
     {
@@ -41,8 +43,8 @@ class ProjectController extends Controller
     }
 
     /**
-     * @param  \App\Models\Project  $project
-     * @return \Illuminate\Http\Response
+     * @param Project $project
+     * @return Response
      */
     public function show($id)
     {
@@ -51,9 +53,9 @@ class ProjectController extends Controller
 
 
     /**
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Project  $project
-     * @return \Illuminate\Http\Response
+     * @param Request $request
+     * @param Project $project
+     * @return Response
      */
     public function update(UpdateProjectRequest $request, $id)
     {
@@ -62,8 +64,8 @@ class ProjectController extends Controller
     }
 
     /**
-     * @param  \App\Models\Project  $project
-     * @return \Illuminate\Http\Response
+     * @param Project $project
+     * @return Response
      */
     public function destroy($id)
     {

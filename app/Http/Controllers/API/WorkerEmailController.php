@@ -4,8 +4,11 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Requests\CreateWorkerEmailRequest;
 use App\Http\Requests\UpdateWorkerEmailRequest;
+use App\Models\WorkerEmail;
 use App\Repositories\Interfaces\WorkerEmailRepositoryInterface;
 use App\Services\ModelService\WorkerEmailService\WorkerEmailServiceInterface;
+use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 
 class WorkerEmailController extends Controller
 {
@@ -20,7 +23,7 @@ class WorkerEmailController extends Controller
     }
 
     /**
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function index()
     {
@@ -29,8 +32,8 @@ class WorkerEmailController extends Controller
 
 
     /**
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @param Request $request
+     * @return Response
      */
     public function store(CreateWorkerEmailRequest $request)
     {
@@ -38,8 +41,8 @@ class WorkerEmailController extends Controller
     }
 
     /**
-     * @param  \App\Models\WorkerEmail  $workerEmail
-     * @return \Illuminate\Http\Response
+     * @param WorkerEmail $workerEmail
+     * @return Response
      */
     public function show($id)
     {
@@ -48,9 +51,9 @@ class WorkerEmailController extends Controller
 
 
     /**
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\WorkerEmail  $workerEmail
-     * @return \Illuminate\Http\Response
+     * @param Request $request
+     * @param WorkerEmail $workerEmail
+     * @return Response
      */
     public function update(UpdateWorkerEmailRequest $request, $id)
     {
@@ -58,8 +61,8 @@ class WorkerEmailController extends Controller
     }
 
     /**
-     * @param  \App\Models\WorkerEmail  $workerEmail
-     * @return \Illuminate\Http\Response
+     * @param WorkerEmail $workerEmail
+     * @return Response
      */
     public function destroy($id)
     {

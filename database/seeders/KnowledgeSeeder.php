@@ -18,7 +18,7 @@ class KnowledgeSeeder extends Seeder
     public function run()
     {
 
-        $this->filling(User::all(), 'App\Models\User');
+        $this->filling(User::all(), User::class);
         $this->filling(Applicant::all(), 'App\Models\Applicant');
     }
 

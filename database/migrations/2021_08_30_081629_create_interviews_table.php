@@ -20,6 +20,7 @@ class CreateInterviewsTable extends Migration
             $table->timestamp('sending_time')->nullable();
             $table->text('description')->nullable();
             $table->timestamps();
+            $table->softDeletes();
 
             $table->unsignedBigInteger('interviewer_id');
             $table->unsignedBigInteger('status_id');
@@ -28,6 +29,7 @@ class CreateInterviewsTable extends Migration
                 ->references('id')->on('users');
             $table->foreign('status_id')
                 ->references('id')->on('interview_statuses');
+
         });
     }
 

@@ -4,8 +4,11 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Requests\CreateLevelRequest;
 use App\Http\Requests\UpdateLevelRequest;
+use App\Models\Level;
 use App\Repositories\Interfaces\LevelRepositoryInterface;
 use App\Services\ModelService\LevelService\LevelServiceInterface;
+use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 
 class LevelController extends Controller
 {
@@ -20,7 +23,7 @@ class LevelController extends Controller
     }
 
     /**
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function index()
     {
@@ -29,8 +32,8 @@ class LevelController extends Controller
 
 
     /**
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @param Request $request
+     * @return Response
      */
     public function store(CreateLevelRequest $request)
     {
@@ -39,8 +42,8 @@ class LevelController extends Controller
     }
 
     /**
-     * @param  \App\Models\Level  $level
-     * @return \Illuminate\Http\Response
+     * @param Level $level
+     * @return Response
      */
     public function show($id)
     {
@@ -49,9 +52,9 @@ class LevelController extends Controller
 
 
     /**
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Level  $level
-     * @return \Illuminate\Http\Response
+     * @param Request $request
+     * @param Level $level
+     * @return Response
      */
     public function update(UpdateLevelRequest $request, $id)
     {
@@ -59,8 +62,8 @@ class LevelController extends Controller
     }
 
     /**
-     * @param  \App\Models\Level  $level
-     * @return \Illuminate\Http\Response
+     * @param Level $level
+     * @return Response
      */
     public function destroy($id)
     {

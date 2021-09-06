@@ -14,16 +14,29 @@ class ApplicantStatusService implements ApplicantStatusServiceInterface
         $this->applicant_status_repository = $applicant_status_repository;
     }
 
+    /**
+     * @param $id
+     * @param $data
+     * @return mixed
+     */
     public function update($id, $data)
     {
         return $this->applicant_status_repository->getById($id)->update($data);
     }
 
+    /**
+     * @param $id
+     * @return mixed
+     */
     public function destroy($id)
     {
         return $this->applicant_status_repository->getById($id)->destroy();
     }
 
+    /**
+     * @param $data
+     * @return mixed
+     */
     public function create($data)
     {
         return $this->applicant_status_repository->applicant_status->create($data);

@@ -11,8 +11,6 @@ use App\Services\ModelService\ModelServiceInterface;
 interface UserServiceInterface extends ModelServiceInterface
 {
 
-    public function create($credentials);
-
     public function toggle2FA();
 
     public function check2FAtoken($token);
@@ -26,6 +24,8 @@ interface UserServiceInterface extends ModelServiceInterface
     public function send2FACode();
 
     public function returnResetPasswordStatus($reset_password_data);
+
+    public function makeApplicantUser($applicant_data, $request_data);
 
 
 

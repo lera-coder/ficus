@@ -11,4 +11,5 @@ interface ApplicantRepositoryInterface extends RepositoryInterface
 
     public function interviews($id);
 
+    public function getIdsOfApplicantsWithValidStatus();
 }

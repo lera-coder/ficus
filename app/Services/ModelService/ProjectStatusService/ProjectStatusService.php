@@ -16,16 +16,29 @@ class ProjectStatusService implements ProjectStatusServiceInterface
         $this->project_status_repository = $project_status_repository;
     }
 
+    /**
+     * @param $id
+     * @param $data
+     * @return mixed
+     */
     public function update($id, $data)
     {
         return $this->project_status_repository->getById($id)->update($data);
     }
 
+    /**
+     * @param $id
+     * @return mixed
+     */
     public function destroy($id)
     {
         return $this->project_status_repository->getById($id)->destroy();
     }
 
+    /**
+     * @param $data
+     * @return mixed
+     */
     public function create($data)
     {
         return $this->project_status_repository->project_status->create($data);

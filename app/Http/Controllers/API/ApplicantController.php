@@ -2,27 +2,31 @@
 
 namespace App\Http\Controllers\API;
 
+use App\Http\Requests\ApplicantMakeUserRequest;
 use App\Http\Requests\CreateApplicantRequest;
 use App\Http\Requests\UpdateApplicantRequest;
-use App\Http\Resources\UserApplicantPermissionResources\UserApplicantPermissionCollection;
 use App\Http\Resources\UserApplicantPermissionResources\UserPermissionForApplicantsCollection;
 use App\Repositories\Interfaces\ApplicantRepositoryInterface;
 use App\Repositories\Interfaces\UserApplicantPermissionRepositoryInterface;
 use App\Services\ModelService\ApplicantService\ApplicantServiceInterface;
+use App\Services\ModelService\UserService\UserServiceInterface;
 
 class ApplicantController extends Controller
 {
     protected $applicant_repository;
     protected $applicant_service;
     protected $permission_repository;
+    protected $user_service;
 
     public function __construct(ApplicantRepositoryInterface $applicant_repository,
                                 ApplicantServiceInterface $applicant_service,
-                                UserApplicantPermissionRepositoryInterface $permission_repository)
+                                UserApplicantPermissionRepositoryInterface $permission_repository,
+                                UserServiceInterface $user_service)
     {
         $this->applicant_repository = $applicant_repository;
         $this->applicant_service = $applicant_service;
         $this->permission_repository = $permission_repository;
+        $this->user_service = $user_service;
     }
 
     /**
@@ -35,7 +39,7 @@ class ApplicantController extends Controller
 
 
     /**
-     * @param Request $request
+     * @param CreateApplicantRequest $request
      * @return mixed
      */
     public function store(CreateApplicantRequest $request)
@@ -45,8 +49,8 @@ class ApplicantController extends Controller
     }
 
     /**
-     * @param  \App\Models\Applicant  $applicant
-     * @return \Illuminate\Http\Response
+     * @param $id
+     * @return mixed
      */
     public function show($id)
     {
@@ -55,9 +59,9 @@ class ApplicantController extends Controller
 
 
     /**
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Applicant  $applicant
-     * @return \Illuminate\Http\Response
+     * @param UpdateApplicantRequest $request
+     * @param $id
+     * @return mixed
      */
     public function update(UpdateApplicantRequest $request, $id)
     {
@@ -65,17 +69,41 @@ class ApplicantController extends Controller
         only(["name", "email", "phone", "description", "status_id"]));
     }
 
+
     /**
-     * @param  \App\Models\Applicant  $applicant
-     * @return \Illuminate\Http\Response
+     * @param $id
+     * @return mixed
      */
     public function destroy($id)
     {
         return $this->applicant_service->destroy($id);
     }
 
-    public function permissions($id){
-//        return $this->permission_repository->getByApplicant($id);
+
+    /**
+     * @param $id
+     * @return UserPermissionForApplicantsCollection
+     */
+    public function permissions($id)
+    {
         return new UserPermissionForApplicantsCollection($this->permission_repository->getByApplicant($id));
     }
+
+
+    public function makeUser($id, ApplicantMakeUserRequest $request)
+    {
+        $applicant = $this->applicant_repository->getById($id);
+        $this->applicant_service->update($id, ['status' => 6]);
+//        $this->user_service->;
+        $applicant->softDelete();
+        return response()->json('Applicant was successfully upgraded to user of this system!');
+
+    }
+
+    public function deny($id)
+    {
+        return $this->applicant_service->update($id, ['status' => 5]);
+    }
+
+
 }

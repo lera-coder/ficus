@@ -10,17 +10,25 @@ class UserApplicantPermissionService implements UserApplicantPermissionServiceIn
 
     protected $user_applicant_permission_repository;
 
-    public function __construct(UserApplicantPermissionRepositoryInterface $user_applicant_permission_repository)
+    public function __construct(
+        UserApplicantPermissionRepositoryInterface $user_applicant_permission_repository)
     {
         $this->user_applicant_permission_repository = $user_applicant_permission_repository;
     }
 
-
+    /**
+     * @param $id
+     * @return mixed
+     */
     public function destroy($id)
     {
-       return $this->user_applicant_permission_repository->getById($id)->destroy();
+        return $this->user_applicant_permission_repository->getById($id)->destroy();
     }
 
+    /**
+     * @param $data
+     * @return mixed
+     */
     public function create($data)
     {
         return $this->user_applicant_permission_repository->user_applicant_permission->create($data);

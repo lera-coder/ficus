@@ -36,14 +36,6 @@ class Handler extends ExceptionHandler
      */
     public function register()
     {
-        $this->reportable(function (Throwable $e) {
-            //
-        });
-
-        $this->reportable(function (TransactionFailedException $exception){
-            return response()->json('This operation was stopped', 500);
-        });
-
 
     }
 
@@ -63,6 +55,14 @@ class Handler extends ExceptionHandler
 
         else if($e instanceof InvalidNetworkConnectException){
             return response()->json('Invalid network connection!', 404);
+        }
+
+        else if($e instanceof InvalidNetworkConnectException){
+            return response()->json('Invalid network connection!', 404);
+        }
+
+        else if($e instanceof TryToPublishEmptyException){
+            return response()->json($e->getMessage(), 405);
         }
 
         return parent::render($request, $e);

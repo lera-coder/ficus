@@ -16,18 +16,31 @@ class LevelRepository implements LevelRepositoryInterface
         $this->level = $level;
     }
 
+    /**
+     * @param $n
+     * @return mixed
+     */
     public function all($n)
     {
-        return $this->level->paginate($n);
+        return $this->level->query()->paginate($n);
     }
 
+    /**
+     * @param Level $id
+     * @return mixed
+     */
+    public function knowledges($id)
+    {
+        return $this->getById($id)->knowledges;
+    }
+
+    /**
+     * @param $id
+     * @return mixed
+     */
     public function getById($id)
     {
-        return $this->level->findOrFail($id);
-    }
-
-    public function knowledges($id){
-        return $this->getById($id)->knowledges;
+        return $this->level->query()->findOrFail($id);
     }
 
 }

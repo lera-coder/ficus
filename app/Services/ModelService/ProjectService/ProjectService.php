@@ -20,6 +20,12 @@ class ProjectService implements ProjectServiceInterface
         $this->worker_repository = $worker_repository;
     }
 
+    /**
+     * @param $id
+     * @param $data
+     * @return mixed
+     * @throws WorkerNotInThisCompanyException
+     */
     public function update($id, $data)
     {
         $data_edited = $this->checkWorkerAndCompanyForMatch($data);
@@ -27,17 +33,21 @@ class ProjectService implements ProjectServiceInterface
     }
 
 
-    public function checkWorkerAndCompanyForMatch($data){
-        if(array_key_exists('worker_id', $data)){
-            if(array_key_exists('company_id', $data)){
-                if ($this->worker_repository->company($data['worker_id'])->id == $data['company_id']){
+    /**
+     * @param $data
+     * @return mixed
+     * @throws WorkerNotInThisCompanyException
+     */
+    public function checkWorkerAndCompanyForMatch($data)
+    {
+        if (array_key_exists('worker_id', $data)) {
+            if (array_key_exists('company_id', $data)) {
+                if ($this->worker_repository->company($data['worker_id'])->id == $data['company_id']) {
                     return $data;
-                }
-                else{
+                } else {
                     throw new WorkerNotInThisCompanyException();
                 }
-            }
-            else{
+            } else {
                 $data['company_id'] = $this->worker_repository->company($data['worker_id'])->id;
             }
         }
@@ -45,11 +55,20 @@ class ProjectService implements ProjectServiceInterface
     }
 
 
+    /**
+     * @param $id
+     * @return mixed
+     */
     public function destroy($id)
     {
         return $this->project_repository->getById($id)->destroy();
     }
 
+    /**
+     * @param $data
+     * @return mixed
+     * @throws WorkerNotInThisCompanyException
+     */
     public function create($data)
     {
         $data = $this->checkWorkerAndCompanyForMatch($data);

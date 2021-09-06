@@ -27,7 +27,7 @@ interface UserRepositoryInterface extends RepositoryInterface
 
     public function getIdViaLogin($login);
 
-
+    public function getInterviewerIds();
 
 
 
