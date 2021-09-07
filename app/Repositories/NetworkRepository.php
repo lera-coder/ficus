@@ -10,11 +10,11 @@ use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
 class NetworkRepository implements NetworkRepositoryInterface
 {
-    protected $network;
+    protected $model;
 
     public function __construct(Network $network)
     {
-        $this->network = $network;
+        $this->model = $network;
     }
 
     /**
@@ -23,7 +23,7 @@ class NetworkRepository implements NetworkRepositoryInterface
      */
     public function all($n)
     {
-        return $this->network->query()->paginate($n);
+        return $this->model->query()->paginate($n);
     }
 
     /**
@@ -41,7 +41,7 @@ class NetworkRepository implements NetworkRepositoryInterface
      */
     public function getById($id)
     {
-        return $this->network->query()->findOrFail($id);
+        return $this->model->query()->findOrFail($id);
     }
 
     /**
@@ -50,7 +50,7 @@ class NetworkRepository implements NetworkRepositoryInterface
      */
     public function getModelByName($name)
     {
-        return $this->network->where('name', $name)->firstOrFail();
+        return $this->model->where('name', $name)->firstOrFail();
     }
 
 
@@ -60,6 +60,6 @@ class NetworkRepository implements NetworkRepositoryInterface
      */
     public function checkSocialNetworkForExistance($network)
     {
-        return $this->network->where('name', $network)->get();
+        return $this->model->where('name', $network)->get();
     }
 }

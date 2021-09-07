@@ -14,11 +14,11 @@ use Illuminate\Database\Eloquent\Model;
 
 class WorkerPhoneRepository implements WorkerPhoneRepositoryInterface
 {
-    public $worker_phone;
+    public $model;
 
     public function __construct(WorkerPhone $worker_phone)
     {
-        $this->worker_phone = $worker_phone;
+        $this->model = $worker_phone;
     }
 
     /**
@@ -27,7 +27,7 @@ class WorkerPhoneRepository implements WorkerPhoneRepositoryInterface
      */
     public function all($n)
     {
-        return $this->worker_phone->query()->paginate($n);
+        return $this->model->query()->paginate($n);
     }
 
     /**
@@ -45,6 +45,6 @@ class WorkerPhoneRepository implements WorkerPhoneRepositoryInterface
      */
     public function getById($id)
     {
-        return $this->worker_phone->query()->findOrFail($id);
+        return $this->model->query()->findOrFail($id);
     }
 }

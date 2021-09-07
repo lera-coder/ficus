@@ -15,11 +15,11 @@ use Illuminate\Database\Eloquent\Model;
 class InterviewStatusRepository implements InterviewStatusRepositoryInterface
 {
 
-    public $interviewStatus;
+    public $model;
 
     public function __construct(InterviewStatus $interviewStatus)
     {
-        $this->interviewStatus = $interviewStatus;
+        $this->model = $interviewStatus;
     }
 
     /**
@@ -28,7 +28,7 @@ class InterviewStatusRepository implements InterviewStatusRepositoryInterface
      */
     public function all($n)
     {
-        return $this->interviewStatus->query()->paginate($n);
+        return $this->model->query()->paginate($n);
     }
 
     /**
@@ -37,7 +37,7 @@ class InterviewStatusRepository implements InterviewStatusRepositoryInterface
      */
     public function getById($id)
     {
-        return $this->interviewStatus->query()->findOrFail($id);
+        return $this->model->query()->findOrFail($id);
     }
 
     /**
@@ -45,7 +45,7 @@ class InterviewStatusRepository implements InterviewStatusRepositoryInterface
      */
     public function getAllIds()
     {
-        return $this->interviewStatus->all()->pluck('id')->toArray();
+        return $this->model->all()->pluck('id')->toArray();
     }
 
     /**
@@ -68,7 +68,7 @@ class InterviewStatusRepository implements InterviewStatusRepositoryInterface
      */
     public function getIdByName($status_name)
     {
-        $model = $this->interviewStatus->query()->where('name', $status_name)->first();
+        $model = $this->model->query()->where('name', $status_name)->first();
         return $model ? $model->id : null;
     }
 }

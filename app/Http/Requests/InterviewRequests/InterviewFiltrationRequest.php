@@ -6,9 +6,7 @@ use App\Http\Requests\ParentRequest;
 use App\Repositories\Interfaces\ApplicantRepositoryInterface;
 use App\Repositories\Interfaces\UserRepositoryInterface;
 use App\Rules\ArrayNotEmptyRule;
-use App\Rules\CheckApplicantsArrayRule;
 use App\Rules\CheckDateForInterviewFiltrationRule;
-use App\Rules\CheckInterviewersForInterviewFiltrationRule;
 use App\Rules\CheckStatusesForInterviewFiltrationRule;
 use App\Rules\FiltrationArrayCheckRule;
 use Illuminate\Support\Facades\App;
@@ -38,15 +36,16 @@ class InterviewFiltrationRequest extends ParentRequest
                 new ArrayNotEmptyRule(),
                 new CheckStatusesForInterviewFiltrationRule()],
 
-            "interviewer" => ["array",
+            "interviewer" => ["bail", "array",
                 new ArrayNotEmptyRule(),
                 new FiltrationArrayCheckRule($this->user_repository->getInterviewerIds())],
 
-            "applicant" => ["array",
+            "applicant" => ["bail", "array",
                 new ArrayNotEmptyRule(),
                 new  FiltrationArrayCheckRule($this->applicant_repository->getIdsOfApplicantsWithValidStatus())],
 
             "interview-date" => [
+                "bail",
                 "array",
                 new ArrayNotEmptyRule(),
                 new CheckDateForInterviewFiltrationRule()],

@@ -14,11 +14,11 @@ use Illuminate\Database\Eloquent\Model;
 
 class KnowledgeRepository implements KnowledgeRepositoryInterface
 {
-    public $knowledge;
+    public $model;
 
     public function __construct(Knowledge $knowledge)
     {
-        $this->knowledge = $knowledge;
+        $this->model = $knowledge;
     }
 
     /**
@@ -27,7 +27,7 @@ class KnowledgeRepository implements KnowledgeRepositoryInterface
      */
     public function all($n)
     {
-        return $this->knowledge->query()->paginate($n);
+        return $this->model->query()->paginate($n);
     }
 
     /**
@@ -45,7 +45,7 @@ class KnowledgeRepository implements KnowledgeRepositoryInterface
      */
     public function getById($id)
     {
-        return $this->knowledge->query()->findOrFail($id);
+        return $this->model->query()->findOrFail($id);
     }
 
     /**
@@ -75,7 +75,7 @@ class KnowledgeRepository implements KnowledgeRepositoryInterface
     public function knowledgeWithThisTechnologyAndKnowledgableType($technology_id, $knowledge_id)
     {
         $knowledge = $this->getById($knowledge_id);
-        return $this->knowledge->query()->where('knowledgable_type', $knowledge->knowledgable_type)
+        return $this->model->query()->where('knowledgable_type', $knowledge->knowledgable_type)
             ->where('knowledgable_id', $knowledge->knowledgable_id)
             ->where('technology_id', $technology_id)
             ->get();

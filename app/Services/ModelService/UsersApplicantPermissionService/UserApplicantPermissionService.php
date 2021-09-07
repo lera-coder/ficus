@@ -31,6 +31,6 @@ class UserApplicantPermissionService implements UserApplicantPermissionServiceIn
      */
     public function create($data)
     {
-        return $this->user_applicant_permission_repository->user_applicant_permission->create($data);
+        return $this->user_applicant_permission_repository->model->create($data);
     }
 }

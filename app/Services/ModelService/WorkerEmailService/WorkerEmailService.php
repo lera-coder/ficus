@@ -40,6 +40,6 @@ class WorkerEmailService implements WorkerEmailServiceInterface
      */
     public function create($data)
     {
-        return $this->worker_email_repository->worker_email->create($data);
+        return $this->worker_email_repository->model->create($data);
     }
 }

@@ -41,6 +41,6 @@ class RoleService implements RoleServiceInterface
      */
     public function create($data)
     {
-        return $this->role_repository->role->create($data);
+        return $this->role_repository->model->create($data);
     }
 }

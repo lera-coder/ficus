@@ -20,6 +20,11 @@ Route::middleware('jwt.verify')->group(function () {
     //Routes in Admin Panel
     Route::middleware(['verified','auth.2fa'])->group(function () {
 
+        //Model Routes
+        Route::resource('company', 'App\Http\Controllers\API\CompanyController');
+        Route::resource('knowledge', 'App\Http\Controllers\API\KnowledgeController');
+        Route::resource('project', 'App\Http\Controllers\API\ProjectController');
+        Route::resource('interview', 'App\Http\Controllers\API\InterviewController');
 
         //Methods for country codes
         Route::resource('country-code', "App\Http\Controllers\API\PhoneCountryCodeController")->except('edit', 'create');
@@ -83,9 +88,6 @@ Route::get("/refresh", ['App\Http\Controllers\API\Auth\AuthController', 'refresh
 Route::get('/login/{network}/redirect', ['App\Http\Controllers\API\Auth\AuthController', 'redirectToSocialNetwork'])->name('network.redirect');
 Route::get('/login/{network}/callback', ['App\Http\Controllers\API\Auth\AuthController', 'callbackFromSocialNetwork'])->name('login.network');
 
-Route::resource('company', 'App\Http\Controllers\API\CompanyController');
-Route::resource('knowledge', 'App\Http\Controllers\API\KnowledgeController');
-Route::resource('project', 'App\Http\Controllers\API\ProjectController');
 
 
 //Route::get('user-applicant/{id}', function ($id){

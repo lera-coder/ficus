@@ -30,7 +30,7 @@ class IfOneFieldIsNullOtherShouldBeNullRule implements Rule
      */
     public function passes($attribute, $value)
     {
-        $this->dependent_field = $attribute;
+        $this->dependent_field = str_replace('_', ' ', $attribute);
         return !(is_null($this->main_value) && !is_null($value));
     }
 

@@ -81,6 +81,6 @@ class KnowledgeService implements KnowledgeServiceInterface
      */
     public function create($data)
     {
-        return $this->knowledge_repository->knowledge->create($data);
+        return $this->knowledge_repository->model->create($data);
     }
 }

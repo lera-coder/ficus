@@ -43,6 +43,6 @@ class WorkerPositionService implements WorkerPositionServiceInterface
      */
     public function create($data)
     {
-        return $this->worker_position_repository->worker_position->query()->create($data);
+        return $this->worker_position_repository->model->query()->create($data);
     }
 }

@@ -2,9 +2,8 @@
 
 namespace App\Http\Controllers\API;
 
-use App\Http\Requests\ContactRequest;
-use App\Http\Requests\CreateUserRequest;
-use App\Http\Requests\UpdateUserRequest;
+use App\Http\Requests\UserRequests\CreateUserRequest;
+use App\Http\Requests\UserRequests\UpdateUserRequest;
 use App\Http\Resources\UserApplicantPermissionResources\ApplicantPermissionForUsersCollection;
 use App\Models\User;
 use App\Repositories\Interfaces\UserApplicantPermissionRepositoryInterface;
@@ -52,9 +51,7 @@ class UserController extends Controller
     }
 
 
-    /**
-     * Function to retrieve one user
-     *
+    /***
      * @param $id
      * @return mixed
      */
@@ -65,8 +62,6 @@ class UserController extends Controller
 
 
     /**
-     * Function to update one user
-     *
      * @param Request $request
      * @param $id
      * @return mixed
@@ -77,9 +72,7 @@ class UserController extends Controller
     }
 
 
-    /**
-     * Function to destroy user
-     *
+    /***
      * @param $id
      */
     public function destroy($id)
@@ -88,9 +81,7 @@ class UserController extends Controller
     }
 
 
-    /**
-     * Function to turn on 2FA
-     *
+    /***
      * @param $activity
      * @return Application|ResponseFactory|Response
      */
@@ -102,6 +93,10 @@ class UserController extends Controller
     }
 
 
+    /**
+     * @param $id
+     * @return ApplicantPermissionForUsersCollection
+     */
     public function permissions($id)
     {
         return new ApplicantPermissionForUsersCollection

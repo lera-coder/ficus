@@ -40,6 +40,6 @@ class TechnologyService implements TechnologyServiceInterface
      */
     public function create($data)
     {
-        return $this->technology_repository->technology->create($data);
+        return $this->technology_repository->model->create($data);
     }
 }

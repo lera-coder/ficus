@@ -15,11 +15,11 @@ use Illuminate\Database\Eloquent\Model;
 class PhoneRepository implements PhoneRepositoryInterface
 {
 
-    public $phone;
+    public $model;
 
     public function __construct(Phone $phone)
     {
-        $this->phone = $phone;
+        $this->model = $phone;
     }
 
     /**
@@ -28,7 +28,7 @@ class PhoneRepository implements PhoneRepositoryInterface
      */
     public function activePhone($user_id)
     {
-        return $this->phone
+        return $this->model
             ->query()
             ->where('user_id', $user_id)
             ->active()
@@ -42,7 +42,7 @@ class PhoneRepository implements PhoneRepositoryInterface
      */
     public function all($n): LengthAwarePaginator
     {
-        return $this->phone->query()->paginate($n);
+        return $this->model->query()->paginate($n);
     }
 
     /**
@@ -60,7 +60,7 @@ class PhoneRepository implements PhoneRepositoryInterface
      */
     public function getById($id)
     {
-        return $this->phone->query()->findOrFail($id);
+        return $this->model->query()->findOrFail($id);
     }
 
     /**

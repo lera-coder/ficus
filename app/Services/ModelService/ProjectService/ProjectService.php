@@ -72,7 +72,7 @@ class ProjectService implements ProjectServiceInterface
     public function create($data)
     {
         $data = $this->checkWorkerAndCompanyForMatch($data);
-        return $this->project_repository->project->create($data);
+        return $this->project_repository->model->create($data);
     }
 
 

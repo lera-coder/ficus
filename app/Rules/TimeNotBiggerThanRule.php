@@ -32,8 +32,8 @@ class TimeNotBiggerThanRule implements Rule
      */
     public function passes($attribute, $value)
     {
-        $this->field = ucfirst(str_replace('_', ' ', $attribute));
-        return $value < $this->timeToCheckForBigger;
+        $this->givenField = ucfirst(str_replace('_', ' ', $attribute));
+        return $this->timeToCheckForBigger < $value;
     }
 
     /**
@@ -43,6 +43,6 @@ class TimeNotBiggerThanRule implements Rule
      */
     public function message()
     {
-        return 'Attribute '.$this->givenField.' cannot be bigger, than attribute '.$this->nameOfTimeField;
+        return $this->nameOfTimeField.' cannot be bigger, than '.$this->givenField;
     }
 }

@@ -40,6 +40,6 @@ class WorkerPhoneService implements WorkerPhoneServiceInterface
      */
     public function create($data)
     {
-        return $this->worker_phone_repository->worker_phone->create($data);
+        return $this->worker_phone_repository->model->create($data);
     }
 }

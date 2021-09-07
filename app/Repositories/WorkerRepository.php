@@ -13,11 +13,11 @@ use Illuminate\Database\Eloquent\Model;
 
 class WorkerRepository implements WorkerRepositoryInterface
 {
-    public $worker;
+    public $model;
 
     public function __construct(Worker $worker)
     {
-        return $this->worker = $worker;
+        return $this->model = $worker;
     }
 
     /**
@@ -26,7 +26,7 @@ class WorkerRepository implements WorkerRepositoryInterface
      */
     public function all($n)
     {
-        return $this->worker->query()->paginate($n);
+        return $this->model->query()->paginate($n);
     }
 
     /**
@@ -44,7 +44,7 @@ class WorkerRepository implements WorkerRepositoryInterface
      */
     public function getById($id)
     {
-        return $this->worker->query()->findOrFail($id);
+        return $this->model->query()->findOrFail($id);
     }
 
     /**
