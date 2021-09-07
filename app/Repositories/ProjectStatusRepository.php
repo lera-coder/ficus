@@ -9,11 +9,11 @@ use App\Repositories\Interfaces\ProjectStatusRepositoryInterface;
 
 class ProjectStatusRepository implements ProjectStatusRepositoryInterface
 {
-    public $project_status;
+    public $model;
 
     public function __construct(ProjectStatus $project_status)
     {
-        $this->project_status = $project_status;
+        $this->model = $project_status;
     }
 
     /**
@@ -22,7 +22,7 @@ class ProjectStatusRepository implements ProjectStatusRepositoryInterface
      */
     public function all($n)
     {
-        return $this->project_status->query()->paginate($n);
+        return $this->model->query()->paginate($n);
     }
 
     /**
@@ -40,6 +40,6 @@ class ProjectStatusRepository implements ProjectStatusRepositoryInterface
      */
     public function getById($id)
     {
-        return $this->project_status->query()->findOrFail($id);
+        return $this->model->query()->findOrFail($id);
     }
 }

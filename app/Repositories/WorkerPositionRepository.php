@@ -9,11 +9,11 @@ use App\Repositories\Interfaces\WorkerPositionRepositoryInterface;
 
 class WorkerPositionRepository implements WorkerPositionRepositoryInterface
 {
-    public $worker_position;
+    public $model;
 
     public function __construct(WorkerPosition $worker_position)
     {
-        $this->worker_position = $worker_position;
+        $this->model = $worker_position;
     }
 
     /**
@@ -22,7 +22,7 @@ class WorkerPositionRepository implements WorkerPositionRepositoryInterface
      */
     public function all($n)
     {
-        return $this->worker_position->query()->paginate($n);
+        return $this->model->query()->paginate($n);
     }
 
     /**
@@ -40,7 +40,7 @@ class WorkerPositionRepository implements WorkerPositionRepositoryInterface
      */
     public function getById($id)
     {
-        return $this->worker_position->query()->findOrFail($id);
+        return $this->model->query()->findOrFail($id);
     }
 
 }

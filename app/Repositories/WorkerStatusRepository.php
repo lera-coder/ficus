@@ -14,11 +14,11 @@ use Illuminate\Database\Eloquent\Model;
 
 class WorkerStatusRepository implements WorkerStatusRepositoryInterface
 {
-    public $worker_status;
+    public $model;
 
     public function __construct(WorkerStatus $worker_status)
     {
-        $this->worker_status = $worker_status;
+        $this->model = $worker_status;
     }
 
     /**
@@ -27,7 +27,7 @@ class WorkerStatusRepository implements WorkerStatusRepositoryInterface
      */
     public function all($n)
     {
-        return $this->worker_status->query()->paginate($n);
+        return $this->model->query()->paginate($n);
     }
 
     /**
@@ -45,6 +45,6 @@ class WorkerStatusRepository implements WorkerStatusRepositoryInterface
      */
     public function getById($id)
     {
-        return $this->worker_status->query()->findOrFail($id);
+        return $this->model->query()->findOrFail($id);
     }
 }

@@ -10,11 +10,11 @@ use App\Repositories\Interfaces\ApplicantStatusRepositoryInterface;
 class ApplicantStatusRepository implements ApplicantStatusRepositoryInterface
 {
 
-    public $applicant_status;
+    public $model;
 
     public function __construct(ApplicantStatus $applicant_status)
     {
-        $this->applicant_status = $applicant_status;
+        $this->model = $applicant_status;
     }
 
 
@@ -24,7 +24,7 @@ class ApplicantStatusRepository implements ApplicantStatusRepositoryInterface
      */
     public function all($n)
     {
-        return $this->applicant_status->query()->paginate($n);
+        return $this->model->query()->paginate($n);
     }
 
 
@@ -34,7 +34,7 @@ class ApplicantStatusRepository implements ApplicantStatusRepositoryInterface
      */
     public function getById($id)
     {
-        return $this->applicant_status->query()->findOrFail($id);
+        return $this->model->query()->findOrFail($id);
     }
 
     /**

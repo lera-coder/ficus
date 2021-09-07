@@ -14,11 +14,11 @@ use Illuminate\Support\HigherOrderCollectionProxy;
 
 class TechnologyRepository implements TechnologyRepositoryInterface
 {
-    public $technology;
+    public $model;
 
     public function __construct(Technology $technology)
     {
-        $this->technology = $technology;
+        $this->model = $technology;
     }
 
     /**
@@ -27,7 +27,7 @@ class TechnologyRepository implements TechnologyRepositoryInterface
      */
     public function all($n)
     {
-        return $this->technology->query()->paginate($n);
+        return $this->model->query()->paginate($n);
     }
 
     /**
@@ -45,7 +45,7 @@ class TechnologyRepository implements TechnologyRepositoryInterface
      */
     public function getById($id)
     {
-        return $this->technology->query()->findOrFail($id);
+        return $this->model->query()->findOrFail($id);
     }
 
     /**

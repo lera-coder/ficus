@@ -30,7 +30,7 @@ class CheckForValidInterviewerRule implements Rule
      */
     public function passes($attribute, $value)
     {
-        $team_leads = $this->user_repository->teamLeadsIds();
+        $team_leads = $this->user_repository->getInterviewerIds();
         return in_array($value, $team_leads);
     }
 

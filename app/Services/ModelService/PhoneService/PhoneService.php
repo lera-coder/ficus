@@ -49,7 +49,7 @@ class PhoneService implements PhoneServiceInterface
      */
     public function create($credentials)
     {
-        return $this->phone_repository->phone->create([
+        return $this->phone_repository->model->create([
             'phone_number' => $credentials['phone_number'],
             'is_active' => $this->user_repository->phones($credentials['user_id'])->count() == 0,
             'phone_country_code_id' => $credentials['phone_country_code_id'],

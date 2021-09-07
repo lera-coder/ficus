@@ -14,11 +14,11 @@ use Illuminate\Database\Eloquent\Model;
 class UserPermissionsRepository implements UserPermissionsRepositoryInterface
 {
 
-    public $permission;
+    public $model;
 
     public function __construct(UserPermission $permission)
     {
-        $this->permission = $permission;
+        $this->model = $permission;
     }
 
     /**
@@ -27,7 +27,7 @@ class UserPermissionsRepository implements UserPermissionsRepositoryInterface
      */
     public function all($n)
     {
-        return $this->permission->query()->paginate($n);
+        return $this->model->query()->paginate($n);
     }
 
     /**
@@ -36,6 +36,6 @@ class UserPermissionsRepository implements UserPermissionsRepositoryInterface
      */
     public function getById($id)
     {
-        return $this->permission->query()->findOrFail($id);
+        return $this->model->query()->findOrFail($id);
     }
 }

@@ -40,6 +40,6 @@ class WorkerStatusService implements WorkerStatusServiceInterface
      */
     public function create($data)
     {
-        return $this->worker_status_repository->worker_status->create($data);
+        return $this->worker_status_repository->model->create($data);
     }
 }

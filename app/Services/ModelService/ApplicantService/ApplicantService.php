@@ -40,6 +40,6 @@ class ApplicantService implements ApplicantServiceInterface
      */
     public function create($data): Builder
     {
-        return $this->applicant_repository->applicant->create($data);
+        return $this->applicant_repository->model->create($data);
     }
 }

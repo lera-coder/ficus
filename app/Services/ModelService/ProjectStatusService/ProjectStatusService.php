@@ -41,6 +41,6 @@ class ProjectStatusService implements ProjectStatusServiceInterface
      */
     public function create($data)
     {
-        return $this->project_status_repository->project_status->create($data);
+        return $this->project_status_repository->model->create($data);
     }
 }

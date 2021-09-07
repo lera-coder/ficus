@@ -9,12 +9,12 @@ use App\Repositories\Interfaces\PhoneCountryCodeRepositoryInterface;
 
 class PhoneCountryCodeRepository implements PhoneCountryCodeRepositoryInterface
 {
-    public $phone_country_code;
+    public $model;
 
 
     public function __construct(PhoneCountryCode $phone_country_code)
     {
-        return $this->phone_country_code = $phone_country_code;
+        return $this->model = $phone_country_code;
     }
 
 
@@ -24,7 +24,7 @@ class PhoneCountryCodeRepository implements PhoneCountryCodeRepositoryInterface
      */
     public function all($n)
     {
-        return $this->phone_country_code->query()->paginate($n);
+        return $this->model->query()->paginate($n);
     }
 
     /**
@@ -42,7 +42,7 @@ class PhoneCountryCodeRepository implements PhoneCountryCodeRepositoryInterface
      */
     public function getById($id)
     {
-        return $this->phone_country_code->query()->findOrFail($id);
+        return $this->model->query()->findOrFail($id);
     }
 
     /**
@@ -60,6 +60,6 @@ class PhoneCountryCodeRepository implements PhoneCountryCodeRepositoryInterface
      */
     public function getIdByCode($code)
     {
-        return $this->phone_country_code->query()->where('code', $code)->first();
+        return $this->model->query()->where('code', $code)->first();
     }
 }

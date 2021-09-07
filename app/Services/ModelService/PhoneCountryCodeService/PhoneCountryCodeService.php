@@ -40,6 +40,6 @@ class PhoneCountryCodeService implements PhoneCountryCodeServiceInterface
      */
     public function create($data)
     {
-        return $this->phone_country_code_repository->phone_country_code->create($data);
+        return $this->phone_country_code_repository->model->create($data);
     }
 }

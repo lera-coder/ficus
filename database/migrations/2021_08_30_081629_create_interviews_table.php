@@ -22,8 +22,8 @@ class CreateInterviewsTable extends Migration
             $table->timestamps();
             $table->softDeletes();
 
-            $table->unsignedBigInteger('interviewer_id');
-            $table->unsignedBigInteger('status_id');
+            $table->unsignedBigInteger('interviewer_id')->nullable();
+            $table->unsignedBigInteger('status_id')->default(1);
 
             $table->foreign('interviewer_id')
                 ->references('id')->on('users');

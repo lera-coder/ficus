@@ -39,6 +39,6 @@ class ApplicantStatusService implements ApplicantStatusServiceInterface
      */
     public function create($data)
     {
-        return $this->applicant_status_repository->applicant_status->create($data);
+        return $this->applicant_status_repository->model->create($data);
     }
 }

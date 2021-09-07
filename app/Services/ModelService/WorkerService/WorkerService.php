@@ -39,6 +39,6 @@ class WorkerService implements WorkerServiceInterface
      */
     public function create($data)
     {
-        return $this->worker_repository->worker->create($data);
+        return $this->worker_repository->model->create($data);
     }
 }

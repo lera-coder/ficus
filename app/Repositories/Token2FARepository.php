@@ -9,11 +9,11 @@ use App\Repositories\Interfaces\Token2FARepositoryInterface;
 
 class Token2FARepository implements Token2FARepositoryInterface
 {
-    protected $token2FA;
+    protected $model;
 
     public function __construct(Token2fa $token2FA)
     {
-        $this->token2FA = $token2FA;
+        $this->model = $token2FA;
     }
 
 
@@ -23,7 +23,7 @@ class Token2FARepository implements Token2FARepositoryInterface
      */
     public function all($n)
     {
-        return $this->token2FA->query()->paginate($n);
+        return $this->model->query()->paginate($n);
     }
 
     /**
@@ -41,6 +41,6 @@ class Token2FARepository implements Token2FARepositoryInterface
      */
     public function getById($id)
     {
-        return $this->token2FA->query()->findOrFail($id);
+        return $this->model->query()->findOrFail($id);
     }
 }

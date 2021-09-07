@@ -65,6 +65,14 @@ class Handler extends ExceptionHandler
             return response()->json($e->getMessage(), 405);
         }
 
+        else if($e instanceof UnsuccessfullDeleteException){
+            return response()->json("Sorry, try again!", 404);
+        }
+
+        else if($e instanceof SendingTimeIsBiggerThanInterviewTimeException){
+            return response()->json("You cannot send email about interview after interview!", 405);
+        }
+
         return parent::render($request, $e);
     }
 }

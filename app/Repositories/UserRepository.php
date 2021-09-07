@@ -12,11 +12,11 @@ use Illuminate\Support\Facades\DB;
 
 class UserRepository implements UserRepositoryInterface
 {
-    public $user;
+    public $model;
 
     public function __construct(User $user)
     {
-        $this->user = $user;
+        $this->model = $user;
     }
 
     /**
@@ -25,7 +25,7 @@ class UserRepository implements UserRepositoryInterface
      */
     public function all($n): Paginator
     {
-        return $this->user->query()->paginate($n);
+        return $this->model->query()->paginate($n);
     }
 
     /**
@@ -52,7 +52,7 @@ class UserRepository implements UserRepositoryInterface
      */
     public function getById($id)
     {
-        return $this->user->query()->findOrFail($id);
+        return $this->model->query()->findOrFail($id);
     }
 
     /**
@@ -116,7 +116,7 @@ class UserRepository implements UserRepositoryInterface
      */
     public function getIdViaLogin($login)
     {
-        return $this->user->query()->where('login', $login)->first()->id;
+        return $this->model->query()->where('login', $login)->first()->id;
     }
 
     /**

@@ -42,6 +42,6 @@ class LevelService implements LevelServiceInterface
      */
     public function create($data)
     {
-        return $this->level_repository->level->create($data);
+        return $this->level_repository->model->create($data);
     }
 }

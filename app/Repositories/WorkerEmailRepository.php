@@ -9,11 +9,11 @@ use App\Repositories\Interfaces\WorkerEmailRepositoryInterface;
 
 class WorkerEmailRepository implements WorkerEmailRepositoryInterface
 {
-    public $worker_email;
+    public $model;
 
     public function __construct(WorkerEmail $worker_email)
     {
-        return $this->worker_email = $worker_email;
+        return $this->model = $worker_email;
     }
 
     /**
@@ -22,7 +22,7 @@ class WorkerEmailRepository implements WorkerEmailRepositoryInterface
      */
     public function all($n)
     {
-        return $this->worker_email->query()->paginate($n);
+        return $this->model->query()->paginate($n);
     }
 
     /**
@@ -40,7 +40,7 @@ class WorkerEmailRepository implements WorkerEmailRepositoryInterface
      */
     public function getById($id)
     {
-        return $this->worker_email->query()->findOrFail($id);
+        return $this->model->query()->findOrFail($id);
     }
 
 

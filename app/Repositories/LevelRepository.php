@@ -9,11 +9,11 @@ use App\Repositories\Interfaces\LevelRepositoryInterface;
 
 class LevelRepository implements LevelRepositoryInterface
 {
-    public $level;
+    public $model;
 
     public function __construct(Level $level)
     {
-        $this->level = $level;
+        $this->model = $level;
     }
 
     /**
@@ -22,7 +22,7 @@ class LevelRepository implements LevelRepositoryInterface
      */
     public function all($n)
     {
-        return $this->level->query()->paginate($n);
+        return $this->model->query()->paginate($n);
     }
 
     /**
@@ -40,7 +40,7 @@ class LevelRepository implements LevelRepositoryInterface
      */
     public function getById($id)
     {
-        return $this->level->query()->findOrFail($id);
+        return $this->model->query()->findOrFail($id);
     }
 
 }

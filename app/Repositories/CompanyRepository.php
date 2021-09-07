@@ -9,11 +9,11 @@ use App\Repositories\Interfaces\CompanyRepositoryInterface;
 
 class CompanyRepository implements CompanyRepositoryInterface
 {
-    public $company;
+    public $model;
 
     public function __construct(Company $company)
     {
-        $this->company = $company;
+        $this->model = $company;
     }
 
     /**
@@ -22,7 +22,7 @@ class CompanyRepository implements CompanyRepositoryInterface
      */
     public function all($n)
     {
-        return $this->company->query()->paginate($n);
+        return $this->model->query()->paginate($n);
     }
 
 
@@ -32,7 +32,7 @@ class CompanyRepository implements CompanyRepositoryInterface
      */
     public function getById($id)
     {
-        return $this->company->query()->findOrFail($id);
+        return $this->model->query()->findOrFail($id);
     }
 
 

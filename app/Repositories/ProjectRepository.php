@@ -14,11 +14,11 @@ use Illuminate\Support\HigherOrderCollectionProxy;
 
 class ProjectRepository implements ProjectRepositoryInterface
 {
-    public $project;
+    public $model;
 
     public function __construct(Project $project)
     {
-        $this->project = $project;
+        $this->model = $project;
     }
 
     /**
@@ -27,7 +27,7 @@ class ProjectRepository implements ProjectRepositoryInterface
      */
     public function all($n)
     {
-        return $this->project->query()->paginate($n);
+        return $this->model->query()->paginate($n);
     }
 
     /**
@@ -45,7 +45,7 @@ class ProjectRepository implements ProjectRepositoryInterface
      */
     public function getById($id)
     {
-        return $this->project->query()->findOrFail($id);
+        return $this->model->query()->findOrFail($id);
     }
 
     /**

@@ -14,13 +14,13 @@ use Illuminate\Support\HigherOrderCollectionProxy;
 
 class UserApplicantPermissionRepository implements UserApplicantPermissionRepositoryInterface
 {
-    public $user_applicant_permission;
+    public $model;
     protected $interview_repository;
 
     public function __construct(UserApplicantPermission $user_applicant_permission,
                                 InterviewRepositoryInterface $interview_repository)
     {
-        $this->user_applicant_permission = $user_applicant_permission;
+        $this->model = $user_applicant_permission;
         $this->interview_repository = $interview_repository;
     }
 
@@ -30,7 +30,7 @@ class UserApplicantPermissionRepository implements UserApplicantPermissionReposi
      */
     public function all($n)
     {
-        return $this->user_applicant_permission->query()->paginate($n);
+        return $this->model->query()->paginate($n);
     }
 
     /**
@@ -48,7 +48,7 @@ class UserApplicantPermissionRepository implements UserApplicantPermissionReposi
      */
     public function getById($id)
     {
-        return $this->user_applicant_permission->query()->findOrFail($id);
+        return $this->model->query()->findOrFail($id);
     }
 
     /**
@@ -76,7 +76,7 @@ class UserApplicantPermissionRepository implements UserApplicantPermissionReposi
      */
     public function getByApplicant($id)
     {
-        return $this->user_applicant_permission->query()->where('applicant_id', $id)->get();
+        return $this->model->query()->where('applicant_id', $id)->get();
     }
 
     /**
@@ -85,14 +85,14 @@ class UserApplicantPermissionRepository implements UserApplicantPermissionReposi
      */
     public function getByUser($id)
     {
-        return $this->user_applicant_permission->query()->where('user_id', $id)->get();
+        return $this->model->query()->where('user_id', $id)->get();
     }
 
 
     public function getByInterview($id)
     {
         $applicants_keys = $this->interview_repository->applicants($id)->modelkeys();
-        return $this->user_applicant_permission
+        return $this->model
             ->query()
             ->whereIn('applicant_id', $applicants_keys)
             ->get();

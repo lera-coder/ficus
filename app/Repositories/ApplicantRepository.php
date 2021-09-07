@@ -11,7 +11,7 @@ use App\Repositories\Interfaces\ApplicantRepositoryInterface;
 
 class ApplicantRepository implements ApplicantRepositoryInterface
 {
-    public $applicant;
+    public $model;
 
     /**
      * ApplicantRepository constructor.
@@ -19,7 +19,7 @@ class ApplicantRepository implements ApplicantRepositoryInterface
      */
     public function __construct(Applicant $applicant)
     {
-        $this->applicant = $applicant;
+        $this->model = $applicant;
     }
 
     /**
@@ -28,7 +28,7 @@ class ApplicantRepository implements ApplicantRepositoryInterface
      */
     public function all($n)
     {
-        return $this->applicant->query()->paginate($n);
+        return $this->model->query()->paginate($n);
     }
 
     /**
@@ -37,7 +37,7 @@ class ApplicantRepository implements ApplicantRepositoryInterface
      */
     public function getById($id)
     {
-        return $this->applicant->query()->findOrFail($id);
+        return $this->model->query()->findOrFail($id);
     }
 
     /**
@@ -68,6 +68,6 @@ class ApplicantRepository implements ApplicantRepositoryInterface
      * @return array
      */
     public function getIdsOfApplicantsWithValidStatus(){
-        return $this->applicant->all()->whereNotIn('status_id', [5,6])->pluck('id')->toArray();
+        return $this->model->all()->whereNotIn('status_id', [5,6])->pluck('id')->toArray();
     }
 }

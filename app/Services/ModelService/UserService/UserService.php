@@ -218,7 +218,7 @@ class UserService implements UserServiceInterface
      */
     protected function createUserModelByCredentials($credentials)
     {
-        return $this->user_repository->user->create($this->modifyArrayOfUserCredentials($credentials));
+        return $this->user_repository->model->create($this->modifyArrayOfUserCredentials($credentials));
     }
 
     /**

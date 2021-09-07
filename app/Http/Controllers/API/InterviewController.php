@@ -2,15 +2,14 @@
 
 namespace App\Http\Controllers\API;
 
-use App\Exceptions\TryToPublishEmptyException;
 use App\Http\Requests\InterviewRequests\CreateInterviewRequest;
 use App\Http\Requests\InterviewRequests\InterviewFiltrationRequest;
 use App\Http\Requests\InterviewRequests\UpdateInterviewRequest;
+use App\Http\Resources\InterviewResources\InterviewFullCollection;
 use App\Http\Resources\UserApplicantPermissionResources\UserApplicantPermissionCollection;
 use App\Repositories\Interfaces\InterviewRepositoryInterface;
 use App\Repositories\Interfaces\UserApplicantPermissionRepositoryInterface;
 use App\Services\ModelService\InterviewService\InterviewServiceInterface;
-use Illuminate\Http\JsonResponse;
 
 class InterviewController extends Controller
 {
@@ -42,31 +41,10 @@ class InterviewController extends Controller
      */
     public function store(CreateInterviewRequest $request)
     {
-        $validated_data = $request->validated();
-        return $validated_data['status_id'] == 2 ?
-            $this->checkCreateInterviewForPublishStatus($validated_data) :
-            $this->interview_service->create($validated_data);
+        return $this->interview_service->create($request->validated());
 
     }
 
-    /**
-     * Function to check if this interview is filled for publishing
-     * @param $validated_data
-     * @return mixed
-     */
-    private function checkCreateInterviewForPublishStatus($validated_data)
-    {
-        if (key_exists('link', $validated_data) && is_null($validated_data['link']) &&
-            key_exists('interview_time', $validated_data) && is_null($validated_data['interview_time']) &&
-            key_exists('sending_time', $validated_data) && is_null($validated_data['sending_time']) &&
-            key_exists('interview_id', $validated_data) && is_null($validated_data['interview_id'])) {
-
-            $this->interview_service->create($validated_data);
-        }
-
-        throw new TryToPublishEmptyException
-        ('To publish this interview  you should fill fields: link, interview time, sending time, interviewer');
-    }
 
     /**
      * @param $id
@@ -102,7 +80,19 @@ class InterviewController extends Controller
      */
     public function destroy($id)
     {
+
         return $this->interview_service->destroy($id);
+    }
+
+
+    /**
+     * @param $interview_id
+     * @param $applicant_id
+     * @return mixed
+     */
+    public function deleteApplicantFromInterview($interview_id, $applicant_id)
+    {
+        return $this->interview_service->deleteAppliacantFromInterview($interview_id, $applicant_id);
     }
 
     /**
@@ -118,12 +108,13 @@ class InterviewController extends Controller
 
     /**
      * @param InterviewFiltrationRequest $request
-     * @return JsonResponse
+     * @return InterviewFullCollection
      */
     public function filtration(InterviewFiltrationRequest $request)
     {
-
-        return response()->json($this->interview_repository->filtration($request->validated()));
+        $request_to_array = $this->interview_service->makeValidFiltrationArray($request->validated());
+        return new InterviewFullCollection(
+            ($this->interview_repository->filtration($request->validated())));
     }
 
 

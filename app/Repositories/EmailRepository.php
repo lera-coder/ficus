@@ -14,11 +14,11 @@ use Illuminate\Pagination\LengthAwarePaginator;
 
 class EmailRepository implements EmailRepositoryInterface
 {
-    public $email;
+    public $model;
 
     public function __construct(Email $email)
     {
-        $this->email = $email;
+        $this->model = $email;
     }
 
     /**
@@ -27,7 +27,7 @@ class EmailRepository implements EmailRepositoryInterface
      */
     public function all($n): LengthAwarePaginator
     {
-        return $this->email->query()->paginate($n);
+        return $this->model->query()->paginate($n);
     }
 
     /**
@@ -36,7 +36,7 @@ class EmailRepository implements EmailRepositoryInterface
      */
     public function activeEmail($user_id): Builder
     {
-        return $this->email
+        return $this->model
             ->query()
             ->where('user_id', $user_id)
             ->active()
@@ -58,7 +58,7 @@ class EmailRepository implements EmailRepositoryInterface
      */
     public function getById($id): Builder
     {
-        return $this->email->query()->findOrFail($id);
+        return $this->model->query()->findOrFail($id);
     }
 
     /**
@@ -67,6 +67,6 @@ class EmailRepository implements EmailRepositoryInterface
      */
     public function getModelByEmail($email): Builder
     {
-        return $this->email->query()->where('email', $email)->firstOrFail();
+        return $this->model->query()->where('email', $email)->firstOrFail();
     }
 }
