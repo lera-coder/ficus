@@ -9,10 +9,10 @@ use App\Repositories\Interfaces\InterviewRepositoryInterface;
 use App\Repositories\Interfaces\InterviewStatusRepositoryInterface;
 use App\Traits\Filterable;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\HigherOrderBuilderProxy;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\HigherOrderCollectionProxy;
 
@@ -94,7 +94,7 @@ class InterviewRepository implements InterviewRepositoryInterface
      */
     public function interviewer($id)
     {
-        return $this->getById($id)->interviwer;
+        return $this->getById($id)->interviewer;
     }
 
 
@@ -109,124 +109,74 @@ class InterviewRepository implements InterviewRepositoryInterface
 
 
     /**
-     * @param $request_array
-     * @return Interview[]|Collection
+     * @param array $request_filtration_array
+     * @return LengthAwarePaginator
      */
-    public function filtration($request_data)
+    public function filtration(array $request_filtration_array)
     {
-        return $this->detectFiltrationTypesCallFiltrations($request_data);
+        $result_query = DB::table('interviews as i')
+            ->join('applicants_interviews as ai', 'i.id', '=', 'ai.interview_id')
+            ->join('applicants as a',  'ai.applicant_id', '=', 'a.id')
+            ->join('users as u', 'i.interviewer_id', '=', 'u.id')
+            ->select('a.name as applicant_name', 'a.id as applicant_id', 'u.name as user_name', 'i.*' );
+
+        $result_query = $this->filtationByStatuses($request_filtration_array, $result_query);
+        $result_query = $this->filtrationByInterviewers($request_filtration_array, $result_query);
+        $result_query = $this->filtrationByApplicants($request_filtration_array, $result_query);
+        $result_query = $this->filtrationByDate($request_filtration_array, $result_query);
+        $result_query = $this->sort($request_filtration_array, $result_query);
+        $result_query = $this->paginate($request_filtration_array, $result_query);
+        return $result_query;
     }
 
     /**
-     * @param $request_data
-     * @return mixed
+     * @param $request_filtration_array
+     * @param $result_query
+     * @return Builder
      */
-    public function detectFiltrationTypesCallFiltrations($request_data)
-    {
-//        if(fi)
-        $result = $this->model->all();
-
-        //Filtration by time diaposones
-        $result = $this->filtrationByInterviewTimeDiapason($result, $request_data);
-        //Filtration by one day
-        $result = $this->filtrationByTimeIn($result, $request_data);
-        //Filtration by interviewer
-        $result = $this->filtrationWhereInByKeys
-        ($result, $request_data, 'interviewer', 'interviewer_id');
-        //Filtration by Status
-        $result = $this->filtrationByStatus($result, $request_data);
-
-        $result = $this->filtrationByApplicant($result, $request_data);
-
-        return $result;
-    }
-
-    /**
-     * @param $result_data
-     * @param $request_data
-     * @return mixed
-     */
-    protected function filtrationByInterviewTimeDiapason($result_data, $request_data){
-        return $this->filtrationByTimeBetween
-        ($result_data, $request_data, 'interview-date', 'interview-date');
-    }
-
-
-    /**
-     * @param $result
-     * @param $request_array
-     * @return mixed
-     */
-    protected function filtrationByTimeIn($result, $request_array)
-    {
-        if (key_exists('interview-date', $request_array)) {
-            $array_time_in = $this->getArrayTimeIn($request_array['interview-date']);
-
-            foreach ($array_time_in as $date) {
-                $date_result = DB::table('interviews')
-                    ->whereDate('interview_time', $date)->get();
-                $result = $result->union($date_result);
-            }
-        }
-        return $result;
-    }
-
-
-    /**
-     * @param $request_array
-     * @return array
-     */
-    protected function getArrayTimeIn($request_array)
-    {
-        return array_filter($request_array, function ($value) {
-            return !str_contains($value, '|');
-        });
-    }
-
-    /**
-     * @param $result
-     * @param $request_array
-     * @return mixed
-     */
-    protected function filtrationByStatus($result_data, $request_data)
-    {
-        if (array_key_exists('status', $request_data)) {
-            return $this->filtrationWithConvertedData(
-                $result_data,
-                $this->interview_status_repository->getIdsForFiltration($request_data['status']),
-                'status_id');
-        }
-        return $result_data;
-    }
-
-    /**
-     * @param $result
-     * @param $request_array
-     * @return mixed
-     */
-    protected function filtrationByApplicant($result_data, $request_data)
-    {
-
-        if (array_key_exists('applicant', $request_data)) {
-            return $this->filtrationWithConvertedData(
-                $result_data, DB::table('applicants_interviews')
-                ->whereIn('applicant_id', $request_data['applicant'])->get()->pluck('id')->toArray(),
-                'id');
-        }
-        return $result_data;
-
-
-    }
-
-    /**
-     * @param $result
-     * @param $request_array
-     * @return mixed
-     */
-    protected function filtrationByInterviewer($result, $request_data)
+    public function filtationByStatuses(array $request_filtration_array, Builder $result_query): Builder
     {
         return $this->filtrationWhereInByKeys
-        ($result, $request_data, 'interviewer', 'interviewer_id');
+        ($result_query, $request_filtration_array, 'statuses', 'status_id');
+    }
+
+    /**
+     * @param array $request_filtration_array
+     * @param Builder $result_query
+     * @return Builder
+     */
+    public function filtrationByInterviewers(array $request_filtration_array, Builder $result_query): Builder
+    {
+        return $this->filtrationWhereInByKeys
+        ($result_query, $request_filtration_array, 'interviewers', 'interviewer_id');
+    }
+
+    /**
+     * @param array $request_filtration_array
+     * @param Builder $result_query
+     * @return Builder
+     */
+    public function filtrationByApplicants(array $request_filtration_array, Builder $result_query): Builder
+    {
+        return $this->filtrationWhereInByKeys
+        ($result_query, $request_filtration_array, 'applicants', 'applicant_id');
+    }
+
+    /**
+     * @param array $request_filtration_array
+     * @param Builder $result_query
+     * @return Builder
+     */
+    public function filtrationByDate(array $request_filtration_array, Builder $result_query): Builder
+    {
+        if (isset($request_filtration_array['interview-dates'])) {
+            $result_query = $this->filtrationByDates($result_query,
+                $request_filtration_array['interview-dates'],
+                'dates_between',
+                'interview_time', 'dates_in');
+        }
+
+        return $result_query;
     }
 
 

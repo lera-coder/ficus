@@ -2,14 +2,13 @@
 
 namespace App\Rules;
 
-use App\Repositories\Interfaces\InterviewStatusRepositoryInterface;
+use App\Services\ModelService\InterviewService\InterviewServiceInterface;
 use Illuminate\Contracts\Validation\Rule;
 use Illuminate\Support\Facades\App;
 
 class CheckStatusesForInterviewFiltrationRule implements Rule
 {
-
-    protected $interview_statuses_repository;
+    protected $interview_service;
 
     /**
      * Create a new rule instance.
@@ -18,29 +17,20 @@ class CheckStatusesForInterviewFiltrationRule implements Rule
      */
     public function __construct()
     {
-        $this->interview_statuses_repository = App::make(InterviewStatusRepositoryInterface::class);
+        $this->interview_service = App::make(InterviewServiceInterface::class);
     }
 
     /**
      * Determine if the validation rule passes.
      *
-     * @param  string  $attribute
-     * @param  mixed  $value
+     * @param string $attribute
+     * @param mixed $value
      * @return bool
      */
     public function passes($attribute, $value)
     {
-        $statuses_id = $this->interview_statuses_repository->getAllIds();
-        $statuses_get_by_filtration = $this->interview_statuses_repository
-            ->getIdsForFiltration($value);
-
-        foreach ($statuses_get_by_filtration as $status){
-            if(!in_array($status, $statuses_id)){
-                return false;
-            }
-        }
-
-        return true;
+        $statuses = $this->interview_service->getValidStatusesArray($value);
+        return !in_array(null, $statuses);
     }
 
     /**

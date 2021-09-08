@@ -5,10 +5,10 @@ namespace App\Http\Requests\InterviewRequests;
 use App\Http\Requests\ParentRequest;
 use App\Repositories\Interfaces\ApplicantRepositoryInterface;
 use App\Repositories\Interfaces\UserRepositoryInterface;
-use App\Rules\ArrayNotEmptyRule;
 use App\Rules\CheckDateForInterviewFiltrationRule;
 use App\Rules\CheckStatusesForInterviewFiltrationRule;
 use App\Rules\FiltrationArrayCheckRule;
+use App\Rules\SortRule;
 use Illuminate\Support\Facades\App;
 
 class InterviewFiltrationRequest extends ParentRequest
@@ -31,23 +31,21 @@ class InterviewFiltrationRequest extends ParentRequest
     public function rules()
     {
         return [
-            "status" => ["bail",
-                "array",
-                new ArrayNotEmptyRule(),
+            "per_page"=>"integer",
+            "sort"=>["string", new SortRule(["interview-date", "applicants", "interviewers"])],
+            "statuses" => ["bail",
+                "string",
                 new CheckStatusesForInterviewFiltrationRule()],
 
-            "interviewer" => ["bail", "array",
-                new ArrayNotEmptyRule(),
+            "interviewers" => ["bail", "string",
                 new FiltrationArrayCheckRule($this->user_repository->getInterviewerIds())],
 
-            "applicant" => ["bail", "array",
-                new ArrayNotEmptyRule(),
+            "applicants" => ["bail", "string",
                 new  FiltrationArrayCheckRule($this->applicant_repository->getIdsOfApplicantsWithValidStatus())],
 
-            "interview-date" => [
+            "interview-dates" => [
                 "bail",
-                "array",
-                new ArrayNotEmptyRule(),
+                "string",
                 new CheckDateForInterviewFiltrationRule()],
         ];
     }

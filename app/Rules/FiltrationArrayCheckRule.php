@@ -29,7 +29,7 @@ class FiltrationArrayCheckRule implements Rule
     public function passes($attribute, $value)
     {
         $this->field = $attribute;
-        $filtration_array = array_unique($value);
+        $filtration_array = array_unique(explode('_', $value));
 
         foreach ($filtration_array as $element){
             if(!in_array($element, $this->repository_array)){

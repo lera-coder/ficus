@@ -3,96 +3,114 @@
 
 namespace App\Traits;
 
-
-use App\Models\Interview;
 use DateInterval;
-use DateTime;
 use Exception;
-use Illuminate\Database\Eloquent\Model;
-
+use Illuminate\Database\Query\Builder;
+use \Illuminate\Contracts\Pagination\LengthAwarePaginator;
 trait Filterable
 {
 
     /**
-     * @param $result_data
-     * @param $request_data
-     * @param $field_name
-     * @param $column_name
-     * @return mixed
+     * @param Builder $result_query
+     * @param array $request_data
+     * @param string $field_name
+     * @param string $column_name
+     * @return Builder
      */
-    public function filtrationWhereInByKeys($result_data, $request_data, $field_name, $column_name)
+    public function filtrationWhereInByKeys(Builder $result_query,
+                                            array $request_data,
+                                            string $field_name,
+                                            string $column_name): Builder
     {
-        if (key_exists($field_name, $request_data)) {
-            return $result_data->whereIn($column_name, $request_data[$field_name]);
-        }
-        return $result_data;
-    }
-
-
-    /**
-     * @param $result_data
-     * @param $converted_data
-     * @param $column_name_in_db
-     * @return mixed
-     */
-    public function filtrationWithConvertedData($result_data,
-                                                $converted_data,
-                                                $column_name_in_db)
-    {
-            return $result_data->whereIn($column_name_in_db, $converted_data);
+        return $result_query->when(isset($request_data[$field_name]),
+            function ($query) use ($request_data, $column_name, $field_name) {
+                return $query->whereIn($column_name, $request_data[$field_name]);
+            });
     }
 
 
     /**
      * @param $result
      * @param $request_array
-     * @return mixed
+     * @return Builder
      */
-    public function filtrationByTimeBetween($result_data, $request_data, $field_name, $column_name)
+    public function filtrationByDates(Builder $result_query,
+                                      array $request_data,
+                                      string $dates_between_field_name,
+                                      string $column_name,
+                                      string $dates_in_field_name):Builder
     {
-        if (key_exists($field_name, $request_data)) {
-            $array_time_between = $this->getArrayTimeBetween($request_data[$column_name]);
-            $date_result = collect();
-            foreach ($array_time_between as $date) {
-                $date = explode('|', $date);
+
+        $is_between_dates = false;
+        if (key_exists($dates_between_field_name, $request_data)) {
+            $is_between_dates = true;
+
+            $date = $this->renovateDate($request_data[$dates_between_field_name][0]);
+            $result_query = $result_query->whereBetween($column_name, $date);
+
+            foreach (array_slice($request_data[$dates_between_field_name], 1) as $date) {
                 $date = $this->renovateDate($date);
-                $date_result = $result_data->whereBetween($column_name, $date)->union($date_result);
+                $result_query = $result_query->orWhereBetween($column_name, $date);
             }
-            return $date_result;
         }
-        return $result_data;
+        if(key_exists($dates_in_field_name, $request_data)){
+
+            if($is_between_dates){
+                $result_query = $result_query->orWhereDate($column_name, $request_data[$dates_in_field_name][0]);
+            }
+            else{
+                return $result_query->WhereDate($column_name, $request_data[$dates_in_field_name][0]);
+            }
+
+            foreach (array_slice($request_data[$dates_in_field_name], 1) as $date){
+                $result_query = $result_query->orWhereDate($column_name, $date);
+            }
+        }
+
+
+        return $result_query;
     }
 
 
-
-    /**
-     * @param $request_array
-     * @return array
-     */
-    protected function getArrayTimeBetween($request_array)
-    {
-        return array_filter($request_array, function ($value) {
-            return str_contains($value, '|');
-        });
-    }
 
 
     /**
      * This function is for adding one day to last day of range
      * It's for making not absolute boundary
-     * @param $date
-     * @return mixed
+     * @param array $date
+     * @return array
      * @throws Exception
      */
-    protected function renovateDate($date)
+    protected function renovateDate(array $date):array
     {
-        $date[1] = new DateTime($date[1]);
         $date[1]->add(new DateInterval('P1D'));
-        $date[1] = $date[1]->format('Y-m-d');
         return $date;
     }
 
 
+    /**
+     * @param array $request_data
+     * @param Builder $result_query
+     * @return LengthAwarePaginator
+     */
+    public function paginate(array $request_data, Builder $result_query): LengthAwarePaginator
+    {
+        if(array_key_exists('per_page', $request_data)){
+            return $result_query->paginate($request_data['per_page']);
+        }
+        return $result_query->paginate(10);
+    }
+
+    /**
+     * @param array $request_data
+     * @param Builder $result_query
+     * @return Builder
+     */
+    public function sort(array $request_data, Builder $result_query):Builder{
+        if(array_key_exists('sort', $request_data)){
+            return $result_query->orderBy($request_data['sort'][0], $request_data['sort'][1]);
+        }
+    }
 
 
 }
