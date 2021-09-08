@@ -21,37 +21,45 @@ Route::middleware('jwt.verify')->group(function () {
     Route::middleware(['verified','auth.2fa'])->group(function () {
 
         //Model Routes
-        Route::resource('company', 'App\Http\Controllers\API\CompanyController');
-        Route::resource('knowledge', 'App\Http\Controllers\API\KnowledgeController');
-        Route::resource('project', 'App\Http\Controllers\API\ProjectController');
-        Route::resource('interview', 'App\Http\Controllers\API\InterviewController');
+        Route::resource('companies', 'App\Http\Controllers\API\CompanyController')->except('edit', 'create');
+        Route::resource('knowledges', 'App\Http\Controllers\API\KnowledgeController')->except('edit', 'create');
+        Route::resource('projects', 'App\Http\Controllers\API\ProjectController')->except('edit', 'create');
+        Route::resource('interviews', 'App\Http\Controllers\API\InterviewController')->except('edit', 'create');
+        Route::resource('country-codes', "App\Http\Controllers\API\PhoneCountryCodeController")->except('edit', 'create');
+        Route::resource('applicants', "App\Http\Controllers\API\ApplicantController")->except('edit', 'create');
+        Route::resource("users", "App\Http\Controllers\API\UserController")->except('edit', 'create');
+        Route::resource('users/phones', "App\Http\Controllers\API\PhoneController")->except('edit', 'create');
+        Route::resource('users/emails', "App\Http\Controllers\API\EmailController")->except('edit', 'create');
+        Route::resource('workers', "App\Http\Controllers\API\WorkerController")->except('edit', 'create');
+        Route::resource('technologies', "App\Http\Controllers\API\TechnologyController")->except('edit', 'create');
+        Route::resource('roles', "App\Http\Controllers\API\RoleController")->only('index', 'show');
+        Route::resource('worker-statuses', "App\Http\Controllers\API\WorkerStatusController")->only('index', 'show');
+        Route::resource('applicant-statuses', "App\Http\Controllers\API\ApplicantStatusController")->only('index', 'show');
+        Route::resource('project-statuses', "App\Http\Controllers\API\ProjectStatusController")->only('index', 'show');
+        Route::resource('levels', "App\Http\Controllers\API\LevelController")->only('index', 'show');
+        Route::resource('worker-positions', "App\Http\Controllers\API\WorkerPositionController")->except('edit', 'create');
+        Route::resource('worker-emails', "App\Http\Controllers\API\WorkerEmailController")->except('edit', 'create');
+        Route::resource('worker-phones', "App\Http\Controllers\API\WorkerPhoneController")->except('edit', 'create');
+        Route::get('networks', ["App\Http\Controllers\API\NetworkController", "index"])->name('networks');
 
-        //Methods for country codes
-        Route::resource('country-code', "App\Http\Controllers\API\PhoneCountryCodeController")->except('edit', 'create');
         //Method to get phones by countries
         Route::get('country-code/phones/{id}', ["App\Http\Controllers\API\PhoneCountryCodeController", "phones"])->name('phones.country');
 
 
         //Activate email
-        Route::get('user/email/activate/{id}', ["App\Http\Controllers\API\EmailController", 'setActive']);
+        Route::get('users/emails/activate/{id}', ["App\Http\Controllers\API\EmailController", 'setActive']);
         //Get active email
-        Route::get("user/email/active", ["App\Http\Controllers\API\EmailController", "activeEmail"])->name("email.active");
-        //Methods for email
-        Route::resource('user/email', "App\Http\Controllers\API\EmailController")->except('edit', 'create');
-
+        Route::get("users/emails/active", ["App\Http\Controllers\API\EmailController", "activeEmail"])->name("email.active");
 
         //Activate phone
-        Route::get('user/phone/activate/{id}', ["App\Http\Controllers\API\PhoneController", 'setActive']);
+        Route::get('users/phones/activate/{id}', ["App\Http\Controllers\API\PhoneController", 'setActive']);
         //Get active phone
-        Route::get("user/phone/active", ["App\Http\Controllers\API\PhoneController", "activePhone"])->name("email.active");
-        //Methods for phone
-        Route::resource('user/phone', "App\Http\Controllers\API\PhoneController")->except('edit', 'create');
+        Route::get("users/phones/active", ["App\Http\Controllers\API\PhoneController", "activePhone"])->name("email.active");
+
 
         //Toggle 2FA
         Route::get('user/auth2fa/toggle', ["App\Http\Controllers\API\UserController", 'toggle2FAAuth']);
 
-        //User methods
-        Route::resource("user", "App\Http\Controllers\API\UserController")->except('edit', 'create');
 
         //Phonebook
         Route::get("phonebook/users", ["App\Http\Controllers\API\PhoneBookController", "users"]);
@@ -89,8 +97,4 @@ Route::get('/login/{network}/redirect', ['App\Http\Controllers\API\Auth\AuthCont
 Route::get('/login/{network}/callback', ['App\Http\Controllers\API\Auth\AuthController', 'callbackFromSocialNetwork'])->name('login.network');
 
 
-
-//Route::get('user-applicant/{id}', function ($id){
-//    return new \App\Http\Resources\UserApplicantPermissionResource(\App\Models\UserApplicantPermission::find($id));
-//});
 
