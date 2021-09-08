@@ -114,7 +114,8 @@ class InterviewController extends Controller
     {
         $request_to_array = $this->interview_service->makeValidFiltrationArray($request->validated());
         return new InterviewFullCollection(
-            ($this->interview_repository->filtration($request->validated())));
+            ($this->interview_repository->filtration($request_to_array)));
+
     }
 
 

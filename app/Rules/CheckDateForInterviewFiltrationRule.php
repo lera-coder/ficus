@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Validator;
 
 class CheckDateForInterviewFiltrationRule implements Rule
 {
+    protected $invalid_date;
     /**
      * Create a new rule instance.
      *
@@ -26,16 +27,19 @@ class CheckDateForInterviewFiltrationRule implements Rule
      */
     public function passes($attribute, $value)
     {
-        foreach ($value as $date) {
+        $interview_dates_array = explode('_', $value);
+        foreach ($interview_dates_array as $date) {
             if (str_contains($date, '|')) {
                 $sub_array_date_between = explode('|', $date);
                 if (count($sub_array_date_between) != 2) {
                     return false;
                 }
                 if (!$this->validateDate($sub_array_date_between[0])) {
+                    $this->invalid_date = $sub_array_date_between[0];
                     return false;
                 }
                 if (!$this->validateDate($sub_array_date_between[1])) {
+                    $this->invalid_date = $sub_array_date_between[1];
                     return false;
                 }
                 if($sub_array_date_between[0] > $sub_array_date_between[1]){
@@ -44,6 +48,7 @@ class CheckDateForInterviewFiltrationRule implements Rule
 
             } else {
                 if (!$this->validateDate($date)) {
+                    $this->invalid_date = $date;
                     return false;
                 }
             }
@@ -69,7 +74,7 @@ class CheckDateForInterviewFiltrationRule implements Rule
      */
     public function message()
     {
-        return 'Invalid date entered!';
+        return 'Invalid date entered:'.$this->invalid_date.'!';
     }
 
 

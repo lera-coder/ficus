@@ -14,7 +14,7 @@ interface InterviewRepositoryInterface extends RepositoryInterface
 
     public function getByInterviewer($interviewer_id);
 
-    public function filtration($request_array);
+    public function filtration(array $request_array);
 
     public function status($id);
 
