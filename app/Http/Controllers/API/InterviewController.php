@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\API;
 
+use App\Events\InterviewCreated;
 use App\Http\Requests\InterviewRequests\CreateInterviewRequest;
 use App\Http\Requests\InterviewRequests\InterviewFiltrationRequest;
 use App\Http\Requests\InterviewRequests\UpdateInterviewRequest;
@@ -41,7 +42,9 @@ class InterviewController extends Controller
      */
     public function store(CreateInterviewRequest $request)
     {
-        return $this->interview_service->create($request->validated());
+        $interview = $this->interview_service->create($request->validated());
+        event(new InterviewCreated());
+        return $interview;
 
     }
 

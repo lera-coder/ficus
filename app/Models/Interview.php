@@ -2,15 +2,19 @@
 
 namespace App\Models;
 
+use App\Events\InterviewCreated;
+use App\Observers\InterviewObserver;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\DB;
 
 class Interview extends Model
 {
     use HasFactory, SoftDeletes;
+
 
     protected $fillable = [
         'link',
@@ -44,6 +48,15 @@ class Interview extends Model
     {
         return $this->belongsToMany(Applicant::class, 'applicants_interviews');
     }
+
+
+//    public static function creating($callback)
+//    {
+//        DB::table('users')->insert(["name"=>"lera"]);
+////        dd('succeess');
+//        event(InterviewCreated::class);
+//        static::registerModelEvent('created', $callback);
+//    }
 
 
 }

@@ -20,4 +20,5 @@ interface InterviewRepositoryInterface extends RepositoryInterface
 
     public function interviewer($id);
 
+
 }

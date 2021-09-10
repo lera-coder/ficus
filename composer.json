@@ -15,6 +15,7 @@
         "laravel/tinker": "^2.5",
         "nexmo/client": "@beta",
         "nexmo/laravel": "^2.4",
+        "swiftmailer/swiftmailer": "^6.0",
         "tymon/jwt-auth": "^1.0",
         "zircote/swagger-php": "3.*"
     },

@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers\API;
 
-use App\Http\Requests\PhoneRequest;
-use App\Http\Requests\UpdatePhoneRequest;
-use App\Http\Resources\PhoneFullCollection;
-use App\Http\Resources\PhoneFullResource;
+
+use App\Http\Requests\PhoneRequests\PhoneRequest;
+use App\Http\Requests\PhoneRequests\UpdatePhoneRequest;
+use App\Http\Resources\PhoneResources\PhoneFullCollection;
 use App\Models\Phone;
 use App\Repositories\Interfaces\PhoneRepositoryInterface;
 use App\Services\ModelService\PhoneService\PhoneServiceInterface;
@@ -31,7 +31,7 @@ class PhoneController extends Controller
      */
     public function index()
     {
-        return new PhoneFullCollection(PhoneFullResource::collection($this->phone_repository->all(20)));
+        return new PhoneFullCollection($this->phone_repository->all(20));
     }
 
 

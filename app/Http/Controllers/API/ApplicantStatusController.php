@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\API;
 
-use App\Http\Requests\ApplicantStatusRequest;
+use App\Http\Requests\ApplicantStatusRequests\ApplicantStatusRequest;
 use App\Models\ApplicantStatus;
 use App\Repositories\Interfaces\ApplicantStatusRepositoryInterface;
 use App\Services\ModelService\ApplicantStatusService\ApplicantStatusServiceInterface;

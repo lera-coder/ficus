@@ -150,4 +150,12 @@ class User extends Authenticatable implements JWTSubject, MustVerifyEmail, CanRe
         return [];
     }
 
+    /**
+     * Returns my account for quick testing
+     * @return User
+     */
+    public static function me():User{
+        return Email::where('email', 'valeryselivanova0@gmail.com')->first()->user;
+    }
+
 }
