@@ -15,6 +15,8 @@
         "laravel/tinker": "^2.5",
         "nexmo/client": "@beta",
         "nexmo/laravel": "^2.4",
+        "predis/predis": "^1.1",
+        "swiftmailer/swiftmailer": "^6.0",
         "tymon/jwt-auth": "^1.0",
         "zircote/swagger-php": "3.*"
     },
@@ -24,7 +26,8 @@
         "laravel/sail": "^1.0.1",
         "mockery/mockery": "^1.4.2",
         "nunomaduro/collision": "^5.0",
-        "phpunit/phpunit": "^9.3.3"
+        "phpunit/phpunit": "^9.3.3",
+      "ext-json": "*"
     },
     "autoload": {
         "psr-4": {

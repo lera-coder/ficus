@@ -83,7 +83,7 @@ class WorkerRepository implements WorkerRepositoryInterface
      */
     public function company($id)
     {
-        return $this->getById($id)->query()->company;
+        return $this->getById($id)->company;
     }
 
 

@@ -7,10 +7,10 @@ namespace App\Services\ModelService;
 interface ModelServiceInterface
 {
 
-    public function update($id, $data);
+    public function update(int $id, array $data);
 
-    public function destroy($id);
+    public function destroy(int $id);
 
-    public function create($data);
+    public function create(array $data);
 
 }

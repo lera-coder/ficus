@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\API;
 
-use App\Http\Requests\CreateCompanyRequest;
+use App\Http\Requests\CompanyRequests\CreateCompanyRequest;
 use App\Repositories\Interfaces\CompanyRepositoryInterface;
 use App\Services\ModelService\CompanyService\CompanyServiceInterface;
 use Illuminate\Http\Request;
@@ -35,8 +35,7 @@ class CompanyController extends Controller
      */
     public function store(CreateCompanyRequest $request)
     {
-        return $this->company_service->create(
-            $request->only(['name', 'description', 'contact_information']));
+        return $this->company_service->create($request->validated());
     }
 
     /**
@@ -56,8 +55,7 @@ class CompanyController extends Controller
      */
     public function update(Request $request, $id)
     {
-        return $this->company_service->update(
-            $id, $request->only(['name', 'description', 'contact_information']));
+        return $this->company_service->update($id, $request->validated());
     }
 
     /**

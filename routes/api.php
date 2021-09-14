@@ -28,8 +28,8 @@ Route::middleware('jwt.verify')->group(function () {
         Route::resource('country-codes', "App\Http\Controllers\API\PhoneCountryCodeController")->except('edit', 'create');
         Route::resource('applicants', "App\Http\Controllers\API\ApplicantController")->except('edit', 'create');
         Route::resource("users", "App\Http\Controllers\API\UserController")->except('edit', 'create');
-        Route::resource('users/phones', "App\Http\Controllers\API\PhoneController")->except('edit', 'create');
-        Route::resource('users/emails', "App\Http\Controllers\API\EmailController")->except('edit', 'create');
+        Route::resource('phones', "App\Http\Controllers\API\PhoneController")->except('edit', 'create');
+        Route::resource('emails', "App\Http\Controllers\API\EmailController")->except('edit', 'create');
         Route::resource('workers', "App\Http\Controllers\API\WorkerController")->except('edit', 'create');
         Route::resource('technologies', "App\Http\Controllers\API\TechnologyController")->except('edit', 'create');
         Route::resource('roles', "App\Http\Controllers\API\RoleController")->only('index', 'show');
@@ -40,7 +40,7 @@ Route::middleware('jwt.verify')->group(function () {
         Route::resource('worker-positions', "App\Http\Controllers\API\WorkerPositionController")->except('edit', 'create');
         Route::resource('worker-emails', "App\Http\Controllers\API\WorkerEmailController")->except('edit', 'create');
         Route::resource('worker-phones', "App\Http\Controllers\API\WorkerPhoneController")->except('edit', 'create');
-        Route::get('networks', ["App\Http\Controllers\API\NetworkController", "index"])->name('networks');
+//        Route::get('networks', ["App\Http\Controllers\API\NetworkController", "index"])->name('networks');
 
         //Method to get phones by countries
         Route::get('country-code/phones/{id}', ["App\Http\Controllers\API\PhoneCountryCodeController", "phones"])->name('phones.country');

@@ -40,7 +40,7 @@ class CreateInterviewRequest extends ParentRequest
                 new CheckForValidInterviewerRule()],
             "applicants"=>["bail","required","array",
                 new ArrayNotEmptyRule(),
-                new  FiltrationArrayCheckRule($this->applicant_repository->getIdsOfApplicantsWithValidStatus())]
+                ]
         ];
     }
 }

@@ -143,6 +143,7 @@ return [
         App\Providers\RepositoryServiceProvider::class,
         App\Providers\ModelServiceProvider::class,
         App\Providers\FiltrationServiceProvider::class,
+        \App\Providers\StatisticsProvider::class,
 
         /*
          * Laravel Framework Service Providers...

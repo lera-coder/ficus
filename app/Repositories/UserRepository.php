@@ -6,6 +6,7 @@ namespace App\Repositories;
 use App\Models\User;
 use App\Repositories\Interfaces\UserRepositoryInterface;
 use Illuminate\Contracts\Pagination\Paginator;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 
@@ -155,5 +156,13 @@ class UserRepository implements UserRepositoryInterface
     public function getInterviewerIds():array
     {
         return DB::table('role_user')->whereIn('role_id', [3, 4])->pluck('user_id')->toArray();
+    }
+
+
+    /**
+     * @return User
+     */
+    public function me(){
+        return $this->model->me();
     }
 }

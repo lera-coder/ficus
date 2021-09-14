@@ -25,7 +25,7 @@ class EmailRepository implements EmailRepositoryInterface
      * @param $n
      * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
      */
-    public function all($n): LengthAwarePaginator
+    public function all($n)
     {
         return $this->model->query()->paginate($n);
     }
@@ -34,7 +34,7 @@ class EmailRepository implements EmailRepositoryInterface
      * @param $user_id
      * @return Builder|Model|object|null
      */
-    public function activeEmail($user_id): Builder
+    public function activeEmail($user_id)
     {
         return $this->model
             ->query()
@@ -47,16 +47,16 @@ class EmailRepository implements EmailRepositoryInterface
      * @param $id
      * @return HigherOrderBuilderProxy|mixed
      */
-    public function user($id): HigherOrderBuilderProxy
+    public function user($id)
     {
-        return $this->getById($id)->query()->user;
+        return $this->getById($id)->user;
     }
 
     /**
      * @param $id
      * @return Builder|Builder[]|Collection|Model|null
      */
-    public function getById($id): Builder
+    public function getById($id)
     {
         return $this->model->query()->findOrFail($id);
     }
@@ -65,7 +65,7 @@ class EmailRepository implements EmailRepositoryInterface
      * @param $email
      * @return Builder|Model
      */
-    public function getModelByEmail($email): Builder
+    public function getModelByEmail($email)
     {
         return $this->model->query()->where('email', $email)->firstOrFail();
     }

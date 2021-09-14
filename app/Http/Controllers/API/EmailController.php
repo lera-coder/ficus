@@ -2,14 +2,16 @@
 
 namespace App\Http\Controllers\API;
 
-use App\Http\Requests\EmailRequest;
-use App\Http\Resources\EmailFullCollection;
-use App\Http\Resources\EmailFullResource;
+
+use App\Http\Requests\EmailRequests\EmailRequest;
+use App\Http\Resources\EmailResources\EmailFullCollection;
+use App\Http\Resources\EmailResources\EmailFullResource;
 use App\Models\Email;
 use App\Repositories\Interfaces\EmailRepositoryInterface;
 use App\Services\ModelService\EmailService\EmailServiceInterface;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\Routing\ResponseFactory;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Gate;
 
@@ -31,7 +33,8 @@ class EmailController extends Controller
      */
     public function index()
     {
-        return new EmailFullCollection(EmailFullResource::collection($this->email_repository->all(20)));
+        $this->authorize('index');
+        return new EmailFullCollection($this->email_repository->all(20));
 
     }
 
@@ -41,6 +44,7 @@ class EmailController extends Controller
      */
     public function activeEmail()
     {
+        $this->authorize('activeEmail');
         return $this->email_repository->activeEmail(auth()->user()->id);
     }
 

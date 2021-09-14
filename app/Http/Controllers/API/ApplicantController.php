@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers\API;
 
-use App\Http\Requests\ApplicantMakeUserRequest;
-use App\Http\Requests\CreateApplicantRequest;
-use App\Http\Requests\UpdateApplicantRequest;
+use App\Http\Requests\ApplicantRequests\ApplicantMakeUserRequest;
+use App\Http\Requests\ApplicantRequests\CreateApplicantRequest;
+use App\Http\Requests\ApplicantRequests\UpdateApplicantRequest;
 use App\Http\Resources\UserApplicantPermissionResources\UserPermissionForApplicantsCollection;
 use App\Repositories\Interfaces\ApplicantRepositoryInterface;
 use App\Repositories\Interfaces\UserApplicantPermissionRepositoryInterface;
@@ -44,8 +44,7 @@ class ApplicantController extends Controller
      */
     public function store(CreateApplicantRequest $request)
     {
-        return $this->applicant_service->create($request->
-        only(["name", "email", "phone", "description", "status_id"]));
+        return $this->applicant_service->create($request->validated());
     }
 
     /**
@@ -65,8 +64,7 @@ class ApplicantController extends Controller
      */
     public function update(UpdateApplicantRequest $request, $id)
     {
-        return $this->applicant_service->update($id, $request->
-        only(["name", "email", "phone", "description", "status_id"]));
+        return $this->applicant_service->update($id, $request->validated());
     }
 
 
@@ -94,7 +92,6 @@ class ApplicantController extends Controller
     {
         $applicant = $this->applicant_repository->getById($id);
         $this->applicant_service->update($id, ['status' => 6]);
-//        $this->user_service->;
         $applicant->softDelete();
         return response()->json('Applicant was successfully upgraded to user of this system!');
 

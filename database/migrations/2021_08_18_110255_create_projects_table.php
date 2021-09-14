@@ -17,7 +17,7 @@ class CreateProjectsTable extends Migration
             $table->id();
             $table->string('name');
             $table->text('description')->nullable();
-            $table->float('price', 8,2);
+            $table->float('price', 8,2)->nullable();
 
             $table->unsignedBigInteger('company_id')->nullable();
             $table->unsignedBigInteger('status_id')->default(1);
