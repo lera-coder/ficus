@@ -8,15 +8,15 @@ use App\Services\ModelService\ModelServiceInterface;
 
 interface UserApplicantPermissionRepositoryInterface extends RepositoryInterface
 {
-    public function getByApplicant($id);
+    public function getByApplicant(int $id);
 
-    public function getByUser($id);
+    public function getByUser(int $id);
 
-    public function user($id);
+    public function user(int $id);
 
-    public function applicant($id);
+    public function applicant(int $id);
 
-    public function permission($id);
+    public function permission(int $id);
 
-    public function getByInterview($id);
+    public function getByInterview(int $id);
 }

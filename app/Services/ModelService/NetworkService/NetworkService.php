@@ -20,9 +20,9 @@ class NetworkService implements NetworkServiceInterface
      * @param $network
      * @throws InvalidNetworkConnectException
      */
-    public function checkNetworkExistance($network)
+    public function checkNetworkExistence($network)
     {
-        $models_quantity = $this->network_repository->checkSocialNetworkForExistance($network)->count();
+        $models_quantity = $this->network_repository->checkSocialNetworkForExistence($network)->count();
         if ($models_quantity == 0) throw new InvalidNetworkConnectException();
     }
 

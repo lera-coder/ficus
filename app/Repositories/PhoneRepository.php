@@ -4,35 +4,21 @@
 namespace App\Repositories;
 
 
+use App\Exceptions\ModelNotFoundException;
 use App\Models\Phone;
+use App\Models\PhoneCountryCode;
+use App\Models\User;
 use App\Repositories\Interfaces\PhoneRepositoryInterface;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Database\Eloquent\HigherOrderBuilderProxy;
-use Illuminate\Database\Eloquent\Model;
 
 class PhoneRepository implements PhoneRepositoryInterface
 {
 
-    public $model;
+    public Phone $model;
 
     public function __construct(Phone $phone)
     {
         $this->model = $phone;
-    }
-
-    /**
-     * @param $user_id
-     * @return Builder|Model|object|null
-     */
-    public function activePhone($user_id)
-    {
-        return $this->model
-            ->query()
-            ->where('user_id', $user_id)
-            ->active()
-            ->first();
     }
 
 
@@ -46,28 +32,46 @@ class PhoneRepository implements PhoneRepositoryInterface
     }
 
     /**
-     * @param $id
-     * @return HigherOrderBuilderProxy|mixed
+     * @param int $id
+     * @return Phone
+     * @throws ModelNotFoundException
      */
-    public function user($id)
+    public function getById(int $id):Phone
+    {
+        return $this->model->getModel($id);
+    }
+
+    /**
+     * @param int $id
+     * @return User
+     * @throws ModelNotFoundException
+     */
+    public function user(int $id):User
     {
         return $this->getById($id)->query()->user;
     }
 
-    /**
-     * @param $id
-     * @return Builder|Builder[]|Collection|Model|null
-     */
-    public function getById($id)
-    {
-        return $this->model->query()->findOrFail($id);
-    }
 
     /**
-     * @param $id
-     * @return HigherOrderBuilderProxy|mixed
+     * @param int $user_id
+     * @return Phone
      */
-    public function phoneCountryCode($id)
+    public function activePhone(int $user_id): Phone
+    {
+        return $this->model
+            ->query()
+            ->where('user_id', $user_id)
+            ->active()
+            ->first();
+    }
+
+
+    /**
+     * @param int $id
+     * @return PhoneCountryCode
+     * @throws ModelNotFoundException
+     */
+    public function phoneCountryCode(int $id): PhoneCountryCode
     {
         return $this->getById($id)->query()->phoneCountryCode;
     }

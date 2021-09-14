@@ -4,13 +4,16 @@
 namespace App\Repositories;
 
 
+use App\Exceptions\ModelNotFoundException;
 use App\Models\ApplicantStatus;
 use App\Repositories\Interfaces\ApplicantStatusRepositoryInterface;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Collection;
 
 class ApplicantStatusRepository implements ApplicantStatusRepositoryInterface
 {
 
-    public $model;
+    public ApplicantStatus $model;
 
     public function __construct(ApplicantStatus $applicant_status)
     {
@@ -19,29 +22,33 @@ class ApplicantStatusRepository implements ApplicantStatusRepositoryInterface
 
 
     /**
-     * @param $n
-     * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
+     * @param int $n
+     * @return LengthAwarePaginator
      */
-    public function all($n)
+    public function all(int $n): LengthAwarePaginator
     {
         return $this->model->query()->paginate($n);
     }
 
-
     /**
-     * @param $id
-     * @return \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Builder[]|\Illuminate\Database\Eloquent\Collection|\Illuminate\Database\Eloquent\Model|null
+     * @param int $id
+     * @return ApplicantStatus
+     * @throws ModelNotFoundException
      */
-    public function getById($id)
+    public function getById(int $id): ApplicantStatus
     {
-        return $this->model->query()->findOrFail($id);
+        return $this->model->getModel($id);
     }
 
     /**
-     * @param $id
-     * @return \Illuminate\Database\Eloquent\HigherOrderBuilderProxy|mixed
+     * @param int $id
+     * @return Collection
+     * @throws ModelNotFoundException
      */
-    public function applicants($id){
+    public function applicants(int $id): Collection
+    {
         return $this->getById($id)->query()->applicants;
     }
+
+
 }

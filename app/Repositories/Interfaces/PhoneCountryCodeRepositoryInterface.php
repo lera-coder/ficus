@@ -6,9 +6,9 @@ namespace App\Repositories\Interfaces;
 
 interface PhoneCountryCodeRepositoryInterface extends RepositoryInterface
 {
-    public function phones($id);
+    public function phones(int $id);
 
-    public function users($id);
+    public function users(int $id);
 
     public function getIdByCode($code);
 

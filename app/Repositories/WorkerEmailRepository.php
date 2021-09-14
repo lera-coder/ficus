@@ -4,12 +4,14 @@
 namespace App\Repositories;
 
 
+use App\Exceptions\ModelNotFoundException;
 use App\Models\WorkerEmail;
 use App\Repositories\Interfaces\WorkerEmailRepositoryInterface;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
 class WorkerEmailRepository implements WorkerEmailRepositoryInterface
 {
-    public $model;
+    public WorkerEmail $model;
 
     public function __construct(WorkerEmail $worker_email)
     {
@@ -17,30 +19,32 @@ class WorkerEmailRepository implements WorkerEmailRepositoryInterface
     }
 
     /**
-     * @param $n
-     * @return mixed
+     * @param int $n
+     * @return LengthAwarePaginator
      */
-    public function all($n)
+    public function all(int $n): LengthAwarePaginator
     {
         return $this->model->query()->paginate($n);
     }
 
     /**
-     * @param $id
+     * @param int $id
      * @return mixed
+     * @throws ModelNotFoundException
      */
-    public function worker($id)
+    public function worker(int $id)
     {
         return $this->getById($id)->worker;
     }
 
     /**
-     * @param $id
+     * @param int $id
      * @return mixed
+     * @throws ModelNotFoundException
      */
-    public function getById($id)
+    public function getById(int $id)
     {
-        return $this->model->query()->findOrFail($id);
+        return $this->model->getModel($id);
     }
 
 

@@ -3,10 +3,9 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class Level extends Model
+class Level extends ParentModel
 {
     use HasFactory;
 
@@ -21,7 +20,7 @@ class Level extends Model
     /**
      * @return HasMany
      */
-    public function knowledges():HasMany
+    public function knowledges(): HasMany
     {
         return $this->hasMany(Knowledge::class);
     }

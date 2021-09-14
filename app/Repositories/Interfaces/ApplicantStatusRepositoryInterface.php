@@ -6,6 +6,6 @@ namespace App\Repositories\Interfaces;
 
 interface ApplicantStatusRepositoryInterface extends RepositoryInterface
 {
-    public function applicants($id);
+    public function applicants(int $id);
 
 }

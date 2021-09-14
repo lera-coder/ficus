@@ -7,11 +7,11 @@ namespace App\Repositories\Interfaces;
 interface KnowledgeRepositoryInterface extends RepositoryInterface
 {
 
-    public function knowledgable($id);
+    public function knowledgable(int $id);
 
-    public function technology($id);
+    public function technology(int $id);
 
-    public function level($id);
+    public function level(int $id);
 
-    public function knowledgeWithThisTechnologyAndKnowledgableType($technology_id, $knowledge_id);
+    public function knowledgeWithThisTechnologyAndKnowledgableType(int $technology_id, int $knowledge_id);
 }

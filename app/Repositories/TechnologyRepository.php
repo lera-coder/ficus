@@ -4,17 +4,14 @@
 namespace App\Repositories;
 
 
+use App\Exceptions\ModelNotFoundException;
 use App\Models\Technology;
 use App\Repositories\Interfaces\TechnologyRepositoryInterface;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Database\Eloquent\HigherOrderBuilderProxy;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\HigherOrderCollectionProxy;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
 class TechnologyRepository implements TechnologyRepositoryInterface
 {
-    public $model;
+    public Technology $model;
 
     public function __construct(Technology $technology)
     {
@@ -23,36 +20,39 @@ class TechnologyRepository implements TechnologyRepositoryInterface
 
     /**
      * @param $n
-     * @return mixed
+     * @return LengthAwarePaginator
      */
-    public function all($n)
+    public function all($n): LengthAwarePaginator
     {
         return $this->model->query()->paginate($n);
     }
 
     /**
-     * @param $id
-     * @return HigherOrderBuilderProxy|mixed
+     * @param int $id
+     * @return mixed
+     * @throws ModelNotFoundException
      */
-    public function knowledges($id)
+    public function knowledges(int $id)
     {
         return $this->getById($id)->query()->knowledges;
     }
 
     /**
-     * @param $id
-     * @return Builder|Builder[]|Collection|Model|null
+     * @param int $id
+     * @return mixed
+     * @throws ModelNotFoundException
      */
-    public function getById($id)
+    public function getById(int $id)
     {
-        return $this->model->query()->findOrFail($id);
+        return $this->model->getModel($id);
     }
 
     /**
-     * @param $id
-     * @return HigherOrderBuilderProxy|HigherOrderCollectionProxy|mixed
+     * @param int $id
+     * @return mixed
+     * @throws ModelNotFoundException
      */
-    public function projects($id)
+    public function projects(int $id)
     {
         return $this->getById($id)->query()->projects;
     }

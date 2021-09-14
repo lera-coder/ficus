@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class UserApplicantPermission extends Model
+class UserApplicantPermission extends ParentModel
 {
     use HasFactory;
 

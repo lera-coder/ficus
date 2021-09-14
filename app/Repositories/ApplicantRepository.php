@@ -4,17 +4,18 @@
 namespace App\Repositories;
 
 
+use App\Exceptions\ModelNotFoundException;
 use App\Models\Applicant;
-use App\Models\Knowledge;
-use App\Models\WorkerStatus;
+use App\Models\ApplicantStatus;
 use App\Repositories\Interfaces\ApplicantRepositoryInterface;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Collection;
 
 class ApplicantRepository implements ApplicantRepositoryInterface
 {
-    public $model;
+    public Applicant $model;
 
     /**
-     * ApplicantRepository constructor.
      * @param Applicant $applicant
      */
     public function __construct(Applicant $applicant)
@@ -23,51 +24,60 @@ class ApplicantRepository implements ApplicantRepositoryInterface
     }
 
     /**
-     * @param $n
-     * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
+     * @param int $n
+     * @return LengthAwarePaginator
      */
-    public function all($n)
+    public function all(int $n): LengthAwarePaginator
     {
         return $this->model->query()->paginate($n);
     }
 
     /**
-     * @param $id
-     * @return \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Builder[]|\Illuminate\Database\Eloquent\Collection|\Illuminate\Database\Eloquent\Model|null
+     * @param int $id
+     * @return Applicant
+     * @throws ModelNotFoundException
      */
-    public function getById($id)
+    public function getById(int $id): Applicant
     {
-        return $this->model->query()->findOrFail($id);
+        return $this->model->getModel($id);
     }
 
     /**
-     * @param $id
-     * @return \Illuminate\Database\Eloquent\HigherOrderBuilderProxy|mixed
+     * @param int $id
+     * @return ApplicantStatus
+     * @throws ModelNotFoundException
      */
-    public function status($id){
+    public function status(int $id): ApplicantStatus
+    {
         return $this->getById($id)->query()->status;
     }
 
+
     /**
-     * @param $id
-     * @return \Illuminate\Database\Eloquent\HigherOrderBuilderProxy|mixed
+     * @param int $id
+     * @return Collection
+     * @throws ModelNotFoundException
      */
-    public function knowledges($id){
+    public function knowledges(int $id): Collection
+    {
         return $this->getById($id)->query()->knowledges;
     }
 
     /**
-     * @param $id
-     * @return \Illuminate\Database\Eloquent\HigherOrderBuilderProxy|mixed
+     * @param int $id
+     * @return Collection
+     * @throws ModelNotFoundException
      */
-    public function interviews($id){
+    public function interviews(int $id): Collection
+    {
         return $this->getById($id)->query()->interviews;
     }
 
     /**
      * @return array
      */
-    public function getIdsOfApplicantsWithValidStatus(){
-        return $this->model->all()->whereNotIn('status_id', [5,6])->pluck('id')->toArray();
+    public function getIdsOfApplicantsWithValidStatus(): array
+    {
+        return $this->model->all()->whereNotIn('status_id', [5, 6])->pluck('id')->toArray();
     }
 }

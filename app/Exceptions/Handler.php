@@ -73,6 +73,10 @@ class Handler extends ExceptionHandler
             return response()->json("You cannot send email about interview after interview!", 405);
         }
 
+        else if($e instanceof ModelNotFoundException){
+            return response()->json("Model not found!", 404);
+        }
+
         return parent::render($request, $e);
     }
 }

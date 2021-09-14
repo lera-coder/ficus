@@ -4,12 +4,15 @@
 namespace App\Repositories;
 
 
+use App\Exceptions\ModelNotFoundException;
 use App\Models\WorkerPosition;
 use App\Repositories\Interfaces\WorkerPositionRepositoryInterface;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Collection;
 
 class WorkerPositionRepository implements WorkerPositionRepositoryInterface
 {
-    public $model;
+    public WorkerPosition $model;
 
     public function __construct(WorkerPosition $worker_position)
     {
@@ -18,29 +21,31 @@ class WorkerPositionRepository implements WorkerPositionRepositoryInterface
 
     /**
      * @param $n
-     * @return mixed
+     * @return LengthAwarePaginator
      */
-    public function all($n)
+    public function all($n): LengthAwarePaginator
     {
         return $this->model->query()->paginate($n);
     }
 
     /**
-     * @param $id
-     * @return mixed
+     * @param int $id
+     * @return Collection
+     * @throws ModelNotFoundException
      */
-    public function workers($id)
+    public function workers(int $id): Collection
     {
         return $this->getById($id)->workers;
     }
 
     /**
-     * @param $id
-     * @return mixed
+     * @param int $id
+     * @return WorkerPosition
+     * @throws ModelNotFoundException
      */
-    public function getById($id)
+    public function getById(int $id): WorkerPosition
     {
-        return $this->model->query()->findOrFail($id);
+        return $this->model->getModel($id);
     }
 
 }

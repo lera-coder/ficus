@@ -6,9 +6,9 @@ namespace App\Repositories\Interfaces;
 
 interface InterviewStatusRepositoryInterface extends RepositoryInterface
 {
-    public function getIdByName($status_name);
+    public function getIdByName(string$status_name);
 
     public function getAllIds();
 
-    public function getIdsForFiltration($statuses_array);
+    public function getIdsForFiltration(array $statuses_array);
 }

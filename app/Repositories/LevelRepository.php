@@ -4,12 +4,15 @@
 namespace App\Repositories;
 
 
+use App\Exceptions\ModelNotFoundException;
 use App\Models\Level;
 use App\Repositories\Interfaces\LevelRepositoryInterface;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Collection;
 
 class LevelRepository implements LevelRepositoryInterface
 {
-    public $model;
+    public Level $model;
 
     public function __construct(Level $level)
     {
@@ -18,29 +21,32 @@ class LevelRepository implements LevelRepositoryInterface
 
     /**
      * @param $n
-     * @return mixed
+     * @return LengthAwarePaginator
      */
-    public function all($n)
+    public function all($n): LengthAwarePaginator
     {
         return $this->model->query()->paginate($n);
     }
 
     /**
-     * @param Level $id
-     * @return mixed
+     * @param int $id
+     * @return Collection
+     * @throws ModelNotFoundException
      */
-    public function knowledges($id)
+    public function knowledges(int $id):Collection
     {
         return $this->getById($id)->knowledges;
     }
 
     /**
-     * @param $id
-     * @return mixed
+     * @param int $id
+     * @return Level
+     * @throws ModelNotFoundException
      */
-    public function getById($id)
+    public function getById(int $id):Level
     {
-        return $this->model->query()->findOrFail($id);
+        return $this->model->getModel($id);
     }
+
 
 }

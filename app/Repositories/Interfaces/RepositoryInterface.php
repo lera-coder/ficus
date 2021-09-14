@@ -9,9 +9,9 @@ use App\Models\Knowledge;
 
 interface RepositoryInterface
 {
-    public  function all($n);
+    public  function all(int $n);
 
-    public  function getById($id);
+    public  function getById(int $id);
 
 
 

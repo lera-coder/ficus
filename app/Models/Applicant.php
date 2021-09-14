@@ -3,12 +3,11 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Applicant extends Model
+class Applicant extends ParentModel
 {
     use HasFactory, SoftDeletes;
 
@@ -24,7 +23,7 @@ class Applicant extends Model
     /**
      * @return BelongsTo
      */
-    public function status():BelongsTo
+    public function status(): BelongsTo
     {
         return $this->BelongsTo(ApplicantStatus::class);
     }
@@ -32,7 +31,7 @@ class Applicant extends Model
     /**
      * @return BelongsToMany
      */
-    public function users():BelongsToMany
+    public function users(): BelongsToMany
     {
         return $this->belongsToMany(User::class, 'users_applicants')->withPivotValue('');
     }
@@ -41,7 +40,7 @@ class Applicant extends Model
     /**
      * @return BelongsToMany
      */
-    public function interviews():BelongsToMany
+    public function interviews(): BelongsToMany
     {
         return $this->belongsToMany(Applicant::class, 'applicants_interviews');
     }
