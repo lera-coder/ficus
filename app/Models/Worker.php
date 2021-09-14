@@ -52,9 +52,9 @@ class Worker extends Model
     }
 
     /**
-     * @return BelongsTo
+     * @return belongsTo
      */
-    public function company():HasMany
+    public function company():belongsTo
     {
         return $this->belongsTo(Company::class);
     }

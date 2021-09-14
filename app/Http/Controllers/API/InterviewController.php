@@ -8,6 +8,7 @@ use App\Http\Requests\InterviewRequests\InterviewFiltrationRequest;
 use App\Http\Requests\InterviewRequests\UpdateInterviewRequest;
 use App\Http\Resources\InterviewResources\InterviewFullCollection;
 use App\Http\Resources\UserApplicantPermissionResources\UserApplicantPermissionCollection;
+use App\Jobs\InterviewStatisticsJob;
 use App\Repositories\Interfaces\InterviewRepositoryInterface;
 use App\Repositories\Interfaces\UserApplicantPermissionRepositoryInterface;
 use App\Services\ModelService\InterviewService\InterviewServiceInterface;
@@ -43,7 +44,9 @@ class InterviewController extends Controller
     public function store(CreateInterviewRequest $request)
     {
         $interview = $this->interview_service->create($request->validated());
-        event(new InterviewCreated());
+//        event(new InterviewCreated());
+
+        InterviewStatisticsJob::dispatch();
         return $interview;
 
     }

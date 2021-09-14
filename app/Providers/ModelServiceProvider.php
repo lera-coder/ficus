@@ -77,6 +77,7 @@ class ModelServiceProvider extends ServiceProvider
         $this->app->bind(WorkerStatusServiceInterface::class, WorkerStatusService::class);
         $this->app->bind(InterviewServiceInterface::class, InterviewService::class);
 
+
     }
 
     /**
