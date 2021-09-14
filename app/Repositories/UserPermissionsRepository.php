@@ -4,17 +4,15 @@
 namespace App\Repositories;
 
 
+use App\Exceptions\ModelNotFoundException;
 use App\Models\UserPermission;
 use App\Repositories\Interfaces\UserPermissionsRepositoryInterface;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Database\Eloquent\Model;
 
 class UserPermissionsRepository implements UserPermissionsRepositoryInterface
 {
 
-    public $model;
+    public UserPermission $model;
 
     public function __construct(UserPermission $permission)
     {
@@ -25,17 +23,18 @@ class UserPermissionsRepository implements UserPermissionsRepositoryInterface
      * @param $n
      * @return LengthAwarePaginator
      */
-    public function all($n)
+    public function all($n): LengthAwarePaginator
     {
         return $this->model->query()->paginate($n);
     }
 
     /**
-     * @param $id
-     * @return Builder|Builder[]|Collection|Model|null
+     * @param int $id
+     * @return mixed
+     * @throws ModelNotFoundException
      */
-    public function getById($id)
+    public function getById(int $id)
     {
-        return $this->model->query()->findOrFail($id);
+        return $this->model->getModel($id);
     }
 }

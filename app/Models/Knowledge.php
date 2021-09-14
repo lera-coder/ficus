@@ -3,11 +3,10 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 
-class Knowledge extends Model
+class Knowledge extends ParentModel
 {
     use HasFactory;
 
@@ -26,7 +25,7 @@ class Knowledge extends Model
     /**
      * @return BelongsTo
      */
-    public function level():BelongsTo
+    public function level(): BelongsTo
     {
         return $this->belongsTo(Level::class);
     }
@@ -34,7 +33,7 @@ class Knowledge extends Model
     /**
      * @return MorphTo
      */
-    public function knowledgable():MorphTo
+    public function knowledgable(): MorphTo
     {
         return $this->morphTo();
     }
@@ -42,7 +41,7 @@ class Knowledge extends Model
     /**
      * @return BelongsTo
      */
-    public function technology():BelongsTo
+    public function technology(): BelongsTo
     {
         return $this->BelongsTo(Technology::class);
     }

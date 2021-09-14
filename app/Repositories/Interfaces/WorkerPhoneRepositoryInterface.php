@@ -5,6 +5,6 @@ namespace App\Repositories\Interfaces;
 
 interface WorkerPhoneRepositoryInterface extends RepositoryInterface
 {
-    public function worker($id);
+    public function worker(int $id);
 
 }

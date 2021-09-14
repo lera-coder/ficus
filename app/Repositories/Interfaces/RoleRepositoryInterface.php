@@ -5,5 +5,5 @@ namespace App\Repositories\Interfaces;
 
 interface RoleRepositoryInterface extends RepositoryInterface
 {
-    public function users($id);
+    public function users(int $id);
 }

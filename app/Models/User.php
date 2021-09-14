@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Exceptions\ModelNotFoundException;
 use Illuminate\Contracts\Auth\CanResetPassword;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -35,6 +36,20 @@ class User extends Authenticatable implements JWTSubject, MustVerifyEmail, CanRe
         'two_factor_options'
     ];
 
+    /**
+     * @param $id
+     * @return mixed
+     * @throws ModelNotFoundException
+     */
+    public static function getModel($id)
+    {
+        $model = static::find($id);
+
+        if (is_null($model)) {
+            throw new ModelNotFoundException;
+        }
+        return $model;
+    }
 
     /**
      * @return BelongsTo

@@ -4,17 +4,15 @@
 namespace App\Repositories;
 
 
+use App\Exceptions\ModelNotFoundException;
 use App\Models\Email;
+use App\Models\User;
 use App\Repositories\Interfaces\EmailRepositoryInterface;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Database\Eloquent\HigherOrderBuilderProxy;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
 class EmailRepository implements EmailRepositoryInterface
 {
-    public $model;
+    public Email $model;
 
     public function __construct(Email $email)
     {
@@ -22,19 +20,19 @@ class EmailRepository implements EmailRepositoryInterface
     }
 
     /**
-     * @param $n
-     * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
+     * @param int $n
+     * @return LengthAwarePaginator
      */
-    public function all($n)
+    public function all(int $n): LengthAwarePaginator
     {
         return $this->model->query()->paginate($n);
     }
 
     /**
-     * @param $user_id
-     * @return Builder|Model|object|null
+     * @param int $user_id
+     * @return Email
      */
-    public function activeEmail($user_id)
+    public function activeEmail(int $user_id): Email
     {
         return $this->model
             ->query()
@@ -44,29 +42,31 @@ class EmailRepository implements EmailRepositoryInterface
     }
 
     /**
-     * @param $id
-     * @return HigherOrderBuilderProxy|mixed
+     * @param int $id
+     * @return User
+     * @throws ModelNotFoundException
      */
-    public function user($id)
+    public function user(int $id): User
     {
         return $this->getById($id)->user;
     }
 
     /**
-     * @param $id
-     * @return Builder|Builder[]|Collection|Model|null
+     * @param int $id
+     * @return Email
+     * @throws ModelNotFoundException
      */
-    public function getById($id)
+    public function getById(int $id): Email
     {
-        return $this->model->query()->findOrFail($id);
+        return $this->model->getModel($id);
     }
 
     /**
-     * @param $email
-     * @return Builder|Model
+     * @param string $email_address
+     * @return Email
      */
-    public function getModelByEmail($email)
+    public function getModelByEmail(string $email_address): Email
     {
-        return $this->model->query()->where('email', $email)->firstOrFail();
+        return $this->model->where('email', $email_address)->firstOrFail();
     }
 }

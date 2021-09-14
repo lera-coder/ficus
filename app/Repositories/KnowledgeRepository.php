@@ -4,17 +4,18 @@
 namespace App\Repositories;
 
 
+use App\Exceptions\ModelNotFoundException;
 use App\Models\Knowledge;
+use App\Models\Level;
+use App\Models\Technology;
 use App\Repositories\Interfaces\KnowledgeRepositoryInterface;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Database\Eloquent\HigherOrderBuilderProxy;
-use Illuminate\Database\Eloquent\Model;
 
 class KnowledgeRepository implements KnowledgeRepositoryInterface
 {
-    public $model;
+    public Knowledge $model;
 
     public function __construct(Knowledge $knowledge)
     {
@@ -22,64 +23,71 @@ class KnowledgeRepository implements KnowledgeRepositoryInterface
     }
 
     /**
-     * @param $n
+     * @param int $n
      * @return LengthAwarePaginator
      */
-    public function all($n)
+    public function all(int $n): LengthAwarePaginator
     {
         return $this->model->query()->paginate($n);
     }
 
     /**
-     * @param $id
-     * @return HigherOrderBuilderProxy|mixed
+     * @param int $id
+     * @return Knowledge
+     * @throws ModelNotFoundException
      */
-    public function knowledgable($id)
+    public function getById(int $id):Knowledge
+    {
+        return $this->model->getModel($id);
+    }
+
+    /**
+     * @param int $id
+     * @return mixed
+     * @throws ModelNotFoundException
+     */
+    public function knowledgable(int $id):mixed
     {
         return $this->getById($id)->query()->knowledgable;
     }
 
-    /**
-     * @param $id
-     * @return Builder|Builder[]|Collection|Model|null
-     */
-    public function getById($id)
-    {
-        return $this->model->query()->findOrFail($id);
-    }
+
 
     /**
-     * @param $id
-     * @return HigherOrderBuilderProxy|mixed
+     * @param int $id
+     * @return Technology
+     * @throws ModelNotFoundException
      */
-    public function technology($id)
+    public function technology(int $id): Technology
     {
         return $this->getById($id)->query()->technology;
     }
 
     /**
-     * @param $id
-     * @return HigherOrderBuilderProxy|mixed
+     * @param int $id
+     * @return Level
+     * @throws ModelNotFoundException
      */
-    public function level($id)
+    public function level(int $id): Level
     {
         return $this->getById($id)->query()->level;
     }
 
 
     /**
-     * @param $technology_id
-     * @param $knowledge_id
+     * @param int $technology_id
+     * @param int $knowledge_id
      * @return Builder[]|Collection
+     * @throws ModelNotFoundException
      */
-    public function knowledgeWithThisTechnologyAndKnowledgableType($technology_id, $knowledge_id)
+    public function knowledgeWithThisTechnologyAndKnowledgableType
+    (int $technology_id, int $knowledge_id): ?Collection
     {
         $knowledge = $this->getById($knowledge_id);
         return $this->model->query()->where('knowledgable_type', $knowledge->knowledgable_type)
             ->where('knowledgable_id', $knowledge->knowledgable_id)
             ->where('technology_id', $technology_id)
             ->get();
-
     }
 
 

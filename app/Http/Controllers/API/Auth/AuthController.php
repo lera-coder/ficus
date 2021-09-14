@@ -153,7 +153,7 @@ class AuthController extends Controller
      */
     public function redirectToSocialNetwork($network)
     {
-        $this->network_service->checkNetworkExistance($network);
+        $this->network_service->checkNetworkExistence($network);
         return Socialite::driver($network)->stateless()->redirect();
     }
 

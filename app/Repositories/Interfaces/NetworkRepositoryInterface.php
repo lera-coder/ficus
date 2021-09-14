@@ -6,11 +6,11 @@ namespace App\Repositories\Interfaces;
 
 interface NetworkRepositoryInterface extends RepositoryInterface
 {
-    public function users($id);
+    public function users(int $id);
 
-    public function getModelByName($name);
+    public function getModelByName(string $name);
 
-    public function checkSocialNetworkForExistance($network);
+    public function checkSocialNetworkForExistence(string $network);
 
     }
 

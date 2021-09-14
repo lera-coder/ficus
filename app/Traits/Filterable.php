@@ -107,9 +107,7 @@ trait Filterable
      * @return Builder
      */
     public function sort(array $request_data, Builder $result_query):Builder{
-        if(array_key_exists('sort', $request_data)){
-            return $result_query->orderBy($request_data['sort'][0], $request_data['sort'][1]);
-        }
+        return $result_query->orderBy($request_data['sort'][0], $request_data['sort'][1]);
     }
 
 

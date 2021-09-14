@@ -5,27 +5,27 @@ namespace App\Repositories\Interfaces;
 
 interface UserRepositoryInterface extends RepositoryInterface
 {
-    public function emails($id);
+    public function emails(int $id);
 
-    public function phones($id);
+    public function phones(int $id);
 
-    public function activePhone($id);
+    public function activePhone(int $id);
 
-    public function disactivePhones($id);
+    public function disactivePhones(int $id);
 
-    public function disactiveEmails($id);
+    public function disactiveEmails(int $id);
 
-    public function activeEmail($id);
+    public function activeEmail(int $id);
 
-    public function getFullActivePhone($id);
+    public function getFullActivePhone(int $id);
 
-    public function network($id);
+    public function network(int $id);
 
-    public function token2fa($id);
+    public function token2fa(int $id);
 
-    public function roles($id);
+    public function roles(int $id);
 
-    public function getIdViaLogin($login);
+    public function getIdViaLogin(string $login);
 
     public function getInterviewerIds();
 

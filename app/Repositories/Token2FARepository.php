@@ -4,12 +4,14 @@
 namespace App\Repositories;
 
 
+use App\Exceptions\ModelNotFoundException;
 use App\Models\Token2fa;
 use App\Repositories\Interfaces\Token2FARepositoryInterface;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
 class Token2FARepository implements Token2FARepositoryInterface
 {
-    protected $model;
+    protected Token2fa $model;
 
     public function __construct(Token2fa $token2FA)
     {
@@ -19,28 +21,30 @@ class Token2FARepository implements Token2FARepositoryInterface
 
     /**
      * @param $n
-     * @return mixed
+     * @return LengthAwarePaginator
      */
-    public function all($n)
+    public function all($n): LengthAwarePaginator
     {
         return $this->model->query()->paginate($n);
     }
 
     /**
-     * @param $id
+     * @param int $id
      * @return mixed
+     * @throws ModelNotFoundException
      */
-    public function user($id)
+    public function user(int $id)
     {
         return $this->getById($id)->user;
     }
 
     /**
-     * @param $id
+     * @param int $id
      * @return mixed
+     * @throws ModelNotFoundException
      */
-    public function getById($id)
+    public function getById(int $id)
     {
-        return $this->model->query()->findOrFail($id);
+        return $this->model->getModel($id);
     }
 }

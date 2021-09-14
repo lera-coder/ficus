@@ -1,15 +1,15 @@
 <?php
 
-
 namespace App\Repositories;
 
-
+use App\Exceptions\ModelNotFoundException;
 use App\Models\Company;
 use App\Repositories\Interfaces\CompanyRepositoryInterface;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
 class CompanyRepository implements CompanyRepositoryInterface
 {
-    public $model;
+    public Company $model;
 
     public function __construct(Company $company)
     {
@@ -17,41 +17,45 @@ class CompanyRepository implements CompanyRepositoryInterface
     }
 
     /**
-     * @param $n
-     * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
+     * @param int $n
+     * @return LengthAwarePaginator
      */
-    public function all($n)
+    public function all(int $n):LengthAwarePaginator
     {
         return $this->model->query()->paginate($n);
     }
 
 
     /**
-     * @param $id
-     * @return \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Builder[]|\Illuminate\Database\Eloquent\Collection|\Illuminate\Database\Eloquent\Model|null
+     * @param int $id
+     * @return Company
+     * @throws ModelNotFoundException
      */
-    public function getById($id)
+    public function getById(int $id): Company
     {
-        return $this->model->query()->findOrFail($id);
+        return $this->model->getModel($id);
     }
 
-
     /**
-     * @param Company $company_id
-     * @param $n
-     * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
+     * @param int $company_id
+     * @param int $n
+     * @return LengthAwarePaginator
+     * @throws ModelNotFoundException
      */
-    public function workers($company_id, $n){
+    public function workers(int $company_id, int $n):LengthAwarePaginator
+    {
         return $this->getById($company_id)->query()->workers->paginate($n);
     }
 
 
     /**
-     * @param Company $company_id
-     * @param $n
-     * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
+     * @param int $company_id
+     * @param int $n
+     * @return LengthAwarePaginator
+     * @throws ModelNotFoundException
      */
-    public function projects($company_id, $n){
+    public function projects(int $company_id, int $n):LengthAwarePaginator
+    {
         return $this->getById($company_id)->query()->projects->paginate($n);
     }
 }

@@ -6,19 +6,19 @@ namespace App\Repositories\Interfaces;
 
 interface InterviewRepositoryInterface extends RepositoryInterface
 {
-    public function applicants($id);
+    public function applicants(int $id);
 
-    public function getByStatuses($statuses);
+    public function getByStatuses(array $statuses);
 
-    public function getByApplicant($id);
+    public function getByApplicant(int $applicant_id);
 
-    public function getByInterviewer($interviewer_id);
+    public function getByInterviewer(int $interviewer_id);
 
     public function filtration(array $request_array);
 
-    public function status($id);
+    public function status(int $status_id);
 
-    public function interviewer($id);
+    public function interviewer(int $interviewer_id);
 
 
 }

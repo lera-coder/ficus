@@ -3,18 +3,18 @@
 
 namespace App\Repositories;
 
+use App\Exceptions\ModelNotFoundException;
+use App\Models\Company;
 use App\Models\Project;
+use App\Models\ProjectStatus;
+use App\Models\Worker;
 use App\Repositories\Interfaces\ProjectRepositoryInterface;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Database\Eloquent\HigherOrderBuilderProxy;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\HigherOrderCollectionProxy;
+use Illuminate\Support\Collection;
 
 class ProjectRepository implements ProjectRepositoryInterface
 {
-    public $model;
+    public Project $model;
 
     public function __construct(Project $project)
     {
@@ -25,54 +25,59 @@ class ProjectRepository implements ProjectRepositoryInterface
      * @param $n
      * @return LengthAwarePaginator
      */
-    public function all($n)
+    public function all($n):LengthAwarePaginator
     {
         return $this->model->query()->paginate($n);
     }
 
     /**
-     * @param $id
-     * @return HigherOrderBuilderProxy|HigherOrderCollectionProxy|mixed
+     * @param int $id
+     * @return Company
+     * @throws ModelNotFoundException
      */
-    public function company($id)
+    public function company(int $id): Company
     {
-        return $this->getById($id)->query()->company;
+        return $this->getById($id)->company;
     }
 
     /**
-     * @param $id
-     * @return Builder|Builder[]|Collection|Model|null
+     * @param int $id
+     * @return mixed
+     * @throws ModelNotFoundException
      */
-    public function getById($id)
+    public function getById(int $id)
     {
-        return $this->model->query()->findOrFail($id);
+        return $this->model->getModel($id);
     }
 
     /**
-     * @param $id
-     * @return HigherOrderBuilderProxy|HigherOrderCollectionProxy|mixed
+     * @param int $id
+     * @return ProjectStatus
+     * @throws ModelNotFoundException
      */
-    public function status($id)
+    public function status(int $id): ProjectStatus
     {
         return $this->getById($id)->status;
     }
 
 
     /**
-     * @param $id
-     * @return HigherOrderBuilderProxy|HigherOrderCollectionProxy|mixed
+     * @param int $id
+     * @return Worker
+     * @throws ModelNotFoundException
      */
-    public function worker($id)
+    public function worker(int $id): Worker
     {
         return $this->getById($id)->worker;
     }
 
 
     /**
-     * @param $id
-     * @return HigherOrderBuilderProxy|HigherOrderCollectionProxy|mixed
+     * @param int $id
+     * @return Collection
+     * @throws ModelNotFoundException
      */
-    public function technologies($id)
+    public function technologies(int $id): Collection
     {
         return $this->getById($id)->technologies;
     }

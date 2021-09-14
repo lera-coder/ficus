@@ -4,18 +4,15 @@
 namespace App\Repositories;
 
 
+use App\Exceptions\ModelNotFoundException;
 use App\Models\InterviewStatus;
 use App\Repositories\Interfaces\InterviewStatusRepositoryInterface;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Database\Eloquent\HigherOrderBuilderProxy;
-use Illuminate\Database\Eloquent\Model;
 
 class InterviewStatusRepository implements InterviewStatusRepositoryInterface
 {
 
-    public $model;
+    public InterviewStatus $model;
 
     public function __construct(InterviewStatus $interviewStatus)
     {
@@ -23,36 +20,37 @@ class InterviewStatusRepository implements InterviewStatusRepositoryInterface
     }
 
     /**
-     * @param $n
+     * @param int $n
      * @return LengthAwarePaginator
      */
-    public function all($n)
+    public function all(int $n): LengthAwarePaginator
     {
         return $this->model->query()->paginate($n);
     }
 
     /**
-     * @param $id
-     * @return Builder|Builder[]|Collection|Model|null
+     * @param int $id
+     * @return InterviewStatus
+     * @throws ModelNotFoundException
      */
-    public function getById($id)
+    public function getById(int $id):InterviewStatus
     {
-        return $this->model->query()->findOrFail($id);
+        return $this->model->getModel($id);
     }
 
     /**
      * @return array
      */
-    public function getAllIds()
+    public function getAllIds(): array
     {
         return $this->model->all()->pluck('id')->toArray();
     }
 
     /**
-     * @param $statuses_array
+     * @param array $statuses_array
      * @return array
      */
-    public function getIdsForFiltration($statuses_array)
+    public function getIdsForFiltration(array $statuses_array): array
     {
         $statuses_id_array = [];
         foreach ($statuses_array as $status) {
@@ -63,10 +61,10 @@ class InterviewStatusRepository implements InterviewStatusRepositoryInterface
     }
 
     /**
-     * @param $status_name
-     * @return HigherOrderBuilderProxy|mixed|null
+     * @param string $status_name
+     * @return int|null
      */
-    public function getIdByName($status_name)
+    public function getIdByName(string $status_name): ?int
     {
         $model = $this->model->query()->where('name', $status_name)->first();
         return $model ? $model->id : null;

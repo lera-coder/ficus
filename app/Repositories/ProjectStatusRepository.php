@@ -4,12 +4,14 @@
 namespace App\Repositories;
 
 
+use App\Exceptions\ModelNotFoundException;
 use App\Models\ProjectStatus;
 use App\Repositories\Interfaces\ProjectStatusRepositoryInterface;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
 class ProjectStatusRepository implements ProjectStatusRepositoryInterface
 {
-    public $model;
+    public ProjectStatus $model;
 
     public function __construct(ProjectStatus $project_status)
     {
@@ -18,28 +20,32 @@ class ProjectStatusRepository implements ProjectStatusRepositoryInterface
 
     /**
      * @param $n
-     * @return mixed
+     * @return LengthAwarePaginator
      */
-    public function all($n)
+    public function all($n): LengthAwarePaginator
     {
         return $this->model->query()->paginate($n);
     }
 
     /**
-     * @param $id
+     * @param int $id
      * @return mixed
+     * @throws ModelNotFoundException
      */
-    public function projects($id)
+    public function projects(int $id)
     {
         return $this->getById($id)->projects;
     }
 
     /**
-     * @param $id
+     * @param int $id
      * @return mixed
+     * @throws ModelNotFoundException
      */
-    public function getById($id)
+    public function getById(int $id)
     {
-        return $this->model->query()->findOrFail($id);
+        return $this->model->getModel($id);
     }
+
+
 }

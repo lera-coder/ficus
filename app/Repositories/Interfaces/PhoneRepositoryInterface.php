@@ -6,9 +6,9 @@ namespace App\Repositories\Interfaces;
 
 interface PhoneRepositoryInterface extends RepositoryInterface
 {
-    public function activePhone($user_id);
+    public function activePhone(int $user_id);
 
-    public function user($id);
+    public function user(int $id);
 
-    public function phoneCountryCode($id);
+    public function phoneCountryCode(int $id);
 }

@@ -9,8 +9,8 @@ use App\Models\Company;
 interface CompanyRepositoryInterface extends RepositoryInterface
 {
 
-    public function workers(Company $company, $n);
+    public function workers(int $company_id, int $n);
 
-    public function projects(Company $company, $n);
+    public function projects(int $company_id, int $n);
 
 }

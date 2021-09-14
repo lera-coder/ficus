@@ -4,17 +4,15 @@
 namespace App\Repositories;
 
 
+use App\Exceptions\ModelNotFoundException;
 use App\Models\WorkerStatus;
 use App\Repositories\Interfaces\WorkerStatusRepositoryInterface;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Database\Eloquent\HigherOrderBuilderProxy;
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Collection;
 
 class WorkerStatusRepository implements WorkerStatusRepositoryInterface
 {
-    public $model;
+    public WorkerStatus $model;
 
     public function __construct(WorkerStatus $worker_status)
     {
@@ -22,29 +20,31 @@ class WorkerStatusRepository implements WorkerStatusRepositoryInterface
     }
 
     /**
-     * @param $n
+     * @param int $n
      * @return LengthAwarePaginator
      */
-    public function all($n)
+    public function all($n): LengthAwarePaginator
     {
         return $this->model->query()->paginate($n);
     }
 
     /**
-     * @param $id
-     * @return HigherOrderBuilderProxy|mixed
+     * @param int $id
+     * @return Collection
+     * @throws ModelNotFoundException
      */
-    public function workers($id)
+    public function workers(int $id): Collection
     {
         return $this->getById($id)->query()->workers;
     }
 
     /**
-     * @param $id
-     * @return Builder|Builder[]|Collection|Model|null
+     * @param int $id
+     * @return WorkerStatus
+     * @throws ModelNotFoundException
      */
-    public function getById($id)
+    public function getById(int $id): WorkerStatus
     {
-        return $this->model->query()->findOrFail($id);
+        return $this->model->getModel($id);
     }
 }

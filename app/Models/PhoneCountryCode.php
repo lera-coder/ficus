@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class PhoneCountryCode extends Model
+class PhoneCountryCode extends ParentModel
 {
     use HasFactory;
 

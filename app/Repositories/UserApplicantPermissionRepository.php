@@ -2,20 +2,17 @@
 
 namespace App\Repositories;
 
+use App\Exceptions\ModelNotFoundException;
 use App\Models\UserApplicantPermission;
 use App\Repositories\Interfaces\InterviewRepositoryInterface;
 use App\Repositories\Interfaces\UserApplicantPermissionRepositoryInterface;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Database\Eloquent\HigherOrderBuilderProxy;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\HigherOrderCollectionProxy;
 
 class UserApplicantPermissionRepository implements UserApplicantPermissionRepositoryInterface
 {
-    public $model;
-    protected $interview_repository;
+    public UserApplicantPermission $model;
+    protected InterviewRepositoryInterface $interview_repository;
 
     public function __construct(UserApplicantPermission $user_applicant_permission,
                                 InterviewRepositoryInterface $interview_repository)
@@ -28,14 +25,15 @@ class UserApplicantPermissionRepository implements UserApplicantPermissionReposi
      * @param $n
      * @return LengthAwarePaginator
      */
-    public function all($n)
+    public function all($n): LengthAwarePaginator
     {
         return $this->model->query()->paginate($n);
     }
 
     /**
-     * @param $id
-     * @return HigherOrderBuilderProxy|HigherOrderCollectionProxy|mixed
+     * @param int $id
+     * @return mixed
+     * @throws ModelNotFoundException
      */
     public function user($id)
     {
@@ -43,53 +41,59 @@ class UserApplicantPermissionRepository implements UserApplicantPermissionReposi
     }
 
     /**
-     * @param $id
-     * @return Builder|Builder[]|Collection|Model|null
+     * @param int $id
+     * @return mixed
+     * @throws ModelNotFoundException
      */
-    public function getById($id)
+    public function getById(int $id)
     {
-        return $this->model->query()->findOrFail($id);
+        return $this->model->getModel($id);
     }
 
     /**
-     * @param $id
-     * @return HigherOrderBuilderProxy|HigherOrderCollectionProxy|mixed
+     * @param int $id
+     * @return mixed
+     * @throws ModelNotFoundException
      */
-    public function applicant($id)
+    public function applicant(int $id)
     {
         return $this->getById($id)->applicant;
     }
 
     /**
-     * @param $id
-     * @return HigherOrderBuilderProxy|HigherOrderCollectionProxy|mixed
+     * @param int $id
+     * @return mixed
+     * @throws ModelNotFoundException
      */
-    public function permission($id)
+    public function permission(int $id)
     {
         return $this->getById($id)->permission;
     }
 
 
     /**
-     * @param $id
-     * @return Builder[]|Collection
+     * @param int $id
+     * @return Collection
      */
-    public function getByApplicant($id)
+    public function getByApplicant(int $id): Collection
     {
         return $this->model->query()->where('applicant_id', $id)->get();
     }
 
     /**
      * @param $id
-     * @return Builder[]|Collection
+     * @return Collection
      */
-    public function getByUser($id)
+    public function getByUser(int $id): Collection
     {
         return $this->model->query()->where('user_id', $id)->get();
     }
 
-
-    public function getByInterview($id)
+    /**
+     * @param int $id
+     * @return Collection
+     */
+    public function getByInterview(int $id): Collection
     {
         $applicants_keys = $this->interview_repository->applicants($id)->modelkeys();
         return $this->model

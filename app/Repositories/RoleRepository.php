@@ -4,12 +4,14 @@
 namespace App\Repositories;
 
 
+use App\Exceptions\ModelNotFoundException;
 use App\Models\Role;
 use App\Repositories\Interfaces\RoleRepositoryInterface;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class RoleRepository implements RoleRepositoryInterface
 {
-    public $model;
+    public Role $model;
 
     public function __construct(Role $role)
     {
@@ -17,29 +19,33 @@ class RoleRepository implements RoleRepositoryInterface
     }
 
     /**
-     * @param $n
-     * @return mixed
+     * @param int $n
+     * @return LengthAwarePaginator
      */
-    public function all($n)
+    public function all(int $n): LengthAwarePaginator
     {
         return $this->model->paginate($n);
     }
 
     /**
-     * @param $id
+     * @param int $id
      * @return mixed
+     * @throws ModelNotFoundException
      */
-    public function users($id)
+    public function getById(int $id)
+    {
+        return $this->model->getModel($id);
+    }
+
+    /**
+     * @param int $id
+     * @return mixed
+     * @throws ModelNotFoundException
+     */
+    public function users(int $id)
     {
         return $this->getById($id)->users;
     }
 
-    /**
-     * @param $id
-     * @return mixed
-     */
-    public function getById($id)
-    {
-        return $this->model->findOrFail($id);
-    }
+
 }

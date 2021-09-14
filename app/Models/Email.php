@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Query\Builder;
 
@@ -12,7 +11,7 @@ use Illuminate\Database\Query\Builder;
  * Class Email
  * @package App\Models
  */
-class Email extends Model
+class Email extends ParentModel
 {
     use HasFactory;
 

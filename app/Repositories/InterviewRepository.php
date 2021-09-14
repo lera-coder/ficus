@@ -3,26 +3,28 @@
 
 namespace App\Repositories;
 
+use App\Exceptions\ModelNotFoundException;
 use App\Models\Interview;
+use App\Models\InterviewStatus;
+use App\Models\User;
 use App\Repositories\Interfaces\ApplicantRepositoryInterface;
 use App\Repositories\Interfaces\InterviewRepositoryInterface;
 use App\Repositories\Interfaces\InterviewStatusRepositoryInterface;
 use App\Traits\Filterable;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Database\Eloquent\HigherOrderBuilderProxy;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Query\Builder;
+use Illuminate\Database\Query\Builder as QueryBuilder;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\HigherOrderCollectionProxy;
 
 class InterviewRepository implements InterviewRepositoryInterface
 {
     use Filterable;
 
-    public $model;
-    protected $applicant_repository;
-    protected $interview_status_repository;
+    public Interview $model;
+    protected ApplicantRepositoryInterface $applicant_repository;
+    protected InterviewStatusRepositoryInterface $interview_status_repository;
 
     public function __construct(Interview $interview,
                                 ApplicantRepositoryInterface $applicant_repository,
@@ -35,76 +37,80 @@ class InterviewRepository implements InterviewRepositoryInterface
 
 
     /**
-     * @param $n
+     * @param int $n
      * @return LengthAwarePaginator
      */
-    public function all($n)
+    public function all(int $n): LengthAwarePaginator
     {
         return $this->model->query()->paginate($n);
     }
 
     /**
-     * @param $statuses
-     * @return Builder[]|Collection
+     * @param int $id
+     * @return InterviewStatus
+     * @throws ModelNotFoundException
      */
-    public function getByStatuses($statuses)
+    public function status($id): InterviewStatus
+    {
+        return $this->getById($id)->query()->status;
+    }
+
+    /**
+     * @param int $id
+     * @return Model
+     * @throws ModelNotFoundException
+     */
+    public function getById(int $id): Model
+    {
+        return $this->model->getModel($id);
+    }
+
+    /**
+     * @param int $interviewer_id
+     * @return User
+     * @throws ModelNotFoundException
+     */
+    public function interviewer(int $interviewer_id):User
+    {
+        return $this->getById($interviewer_id)->interviewer;
+    }
+
+    /**
+     * @param int $id
+     * @return Collection
+     * @throws ModelNotFoundException
+     */
+    public function applicants(int $id):Collection
+    {
+        return $this->getById($id)->applicants;
+    }
+
+
+    /**
+     * @param array $statuses
+     * @return Collection
+     */
+    public function getByStatuses(array $statuses): Collection
     {
         return $this->model->query()->whereIn('status_id', $statuses)->get();
     }
 
     /**
-     * @param $applicant_id
-     * @return mixed
+     * @param int $applicant_id
+     * @return Interview
      */
-    public function getByApplicant($applicant_id)
+    public function getByApplicant(int $applicant_id): Interview
     {
         return $this->applicant_repository->interviews($applicant_id);
     }
 
     /**
-     * @param $interviewer_id
-     * @return Builder
+     * @param int $interviewer_id
+     * @return EloquentBuilder
      */
-    public function getByInterviewer($interviewer_id)
+    public function getByInterviewer(int $interviewer_id): EloquentBuilder
     {
         return $this->model->query()->where('interviewer_id', $interviewer_id);
-    }
-
-    /**
-     * @param $id
-     * @return mixed
-     */
-    public function status($id)
-    {
-        return $this->getById($id)->status;
-    }
-
-    /**
-     * @param $id
-     * @return Builder|Builder[]|Collection|Model|null
-     */
-    public function getById($id)
-    {
-        return $this->model->query()->findOrFail($id);
-    }
-
-    /**
-     * @param $id
-     * @return HigherOrderBuilderProxy|HigherOrderCollectionProxy|mixed
-     */
-    public function interviewer($id)
-    {
-        return $this->getById($id)->interviewer;
-    }
-
-
-    /**
-     * @param $id
-     * @return HigherOrderBuilderProxy|HigherOrderCollectionProxy|mixed
-     */
-    public function applicants($id)
-    {
-        return $this->getById($id)->applicants;
     }
 
 
@@ -112,15 +118,15 @@ class InterviewRepository implements InterviewRepositoryInterface
      * @param array $request_filtration_array
      * @return LengthAwarePaginator
      */
-    public function filtration(array $request_filtration_array)
+    public function filtration(array $request_filtration_array):LengthAwarePaginator
     {
         $result_query = DB::table('interviews as i')
             ->join('applicants_interviews as ai', 'i.id', '=', 'ai.interview_id')
-            ->join('applicants as a',  'ai.applicant_id', '=', 'a.id')
+            ->join('applicants as a', 'ai.applicant_id', '=', 'a.id')
             ->join('users as u', 'i.interviewer_id', '=', 'u.id')
-            ->select('a.name as applicant_name', 'a.id as applicant_id', 'u.name as user_name', 'i.*' );
+            ->select('a.name as applicant_name', 'a.id as applicant_id', 'u.name as user_name', 'i.*');
 
-        $result_query = $this->filtationByStatuses($request_filtration_array, $result_query);
+        $result_query = $this->filtrationByStatuses($request_filtration_array, $result_query);
         $result_query = $this->filtrationByInterviewers($request_filtration_array, $result_query);
         $result_query = $this->filtrationByApplicants($request_filtration_array, $result_query);
         $result_query = $this->filtrationByDate($request_filtration_array, $result_query);
@@ -129,12 +135,14 @@ class InterviewRepository implements InterviewRepositoryInterface
         return $result_query;
     }
 
+
     /**
-     * @param $request_filtration_array
-     * @param $result_query
-     * @return Builder
+     * @param array $request_filtration_array
+     * @param QueryBuilder $result_query
+     * @return QueryBuilder
      */
-    public function filtationByStatuses(array $request_filtration_array, Builder $result_query): Builder
+    public function filtrationByStatuses(
+        array $request_filtration_array, QueryBuilder $result_query): QueryBuilder
     {
         return $this->filtrationWhereInByKeys
         ($result_query, $request_filtration_array, 'statuses', 'status_id');
@@ -142,10 +150,11 @@ class InterviewRepository implements InterviewRepositoryInterface
 
     /**
      * @param array $request_filtration_array
-     * @param Builder $result_query
-     * @return Builder
+     * @param QueryBuilder $result_query
+     * @return QueryBuilder
      */
-    public function filtrationByInterviewers(array $request_filtration_array, Builder $result_query): Builder
+    public function filtrationByInterviewers(
+        array $request_filtration_array, QueryBuilder $result_query): QueryBuilder
     {
         return $this->filtrationWhereInByKeys
         ($result_query, $request_filtration_array, 'interviewers', 'interviewer_id');
@@ -153,10 +162,11 @@ class InterviewRepository implements InterviewRepositoryInterface
 
     /**
      * @param array $request_filtration_array
-     * @param Builder $result_query
-     * @return Builder
+     * @param QueryBuilder $result_query
+     * @return QueryBuilder
      */
-    public function filtrationByApplicants(array $request_filtration_array, Builder $result_query): Builder
+    public function filtrationByApplicants(array $request_filtration_array,
+                                           QueryBuilder $result_query): QueryBuilder
     {
         return $this->filtrationWhereInByKeys
         ($result_query, $request_filtration_array, 'applicants', 'applicant_id');
@@ -164,10 +174,11 @@ class InterviewRepository implements InterviewRepositoryInterface
 
     /**
      * @param array $request_filtration_array
-     * @param Builder $result_query
-     * @return Builder
+     * @param QueryBuilder $result_query
+     * @return QueryBuilder
      */
-    public function filtrationByDate(array $request_filtration_array, Builder $result_query): Builder
+    public function filtrationByDate(array $request_filtration_array,
+                                     QueryBuilder $result_query): QueryBuilder
     {
         if (isset($request_filtration_array['interview-dates'])) {
             $result_query = $this->filtrationByDates($result_query,
@@ -178,8 +189,6 @@ class InterviewRepository implements InterviewRepositoryInterface
 
         return $result_query;
     }
-
-
 
 
 }
