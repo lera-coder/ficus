@@ -15,7 +15,7 @@ use Illuminate\Support\Collection;
 
 class WorkerRepository implements WorkerRepositoryInterface
 {
-    public Worker $model;
+    public $model;
 
     public function __construct(Worker $worker)
     {

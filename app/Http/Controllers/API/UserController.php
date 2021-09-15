@@ -104,5 +104,9 @@ class UserController extends Controller
             ->getByUser($id));
     }
 
+    public function search($query){
+        return  $this->user_repository->search($query);
+    }
+
 
 }

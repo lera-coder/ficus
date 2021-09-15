@@ -12,7 +12,7 @@ use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
 class EmailRepository implements EmailRepositoryInterface
 {
-    public Email $model;
+    public $model;
 
     public function __construct(Email $email)
     {

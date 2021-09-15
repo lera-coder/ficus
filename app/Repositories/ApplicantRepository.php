@@ -13,7 +13,7 @@ use Illuminate\Support\Collection;
 
 class ApplicantRepository implements ApplicantRepositoryInterface
 {
-    public Applicant $model;
+    public $model;
 
     /**
      * @param Applicant $applicant

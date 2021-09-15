@@ -11,7 +11,7 @@ use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
 class ProjectStatusRepository implements ProjectStatusRepositoryInterface
 {
-    public ProjectStatus $model;
+    public $model;
 
     public function __construct(ProjectStatus $project_status)
     {

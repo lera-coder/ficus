@@ -12,7 +12,7 @@ use Illuminate\Support\Collection;
 
 class WorkerStatusRepository implements WorkerStatusRepositoryInterface
 {
-    public WorkerStatus $model;
+    public $model;
 
     public function __construct(WorkerStatus $worker_status)
     {

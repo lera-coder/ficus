@@ -12,7 +12,7 @@ use Illuminate\Support\Collection;
 
 class PhoneCountryCodeRepository implements PhoneCountryCodeRepositoryInterface
 {
-    public PhoneCountryCode $model;
+    public $model;
 
 
     public function __construct(PhoneCountryCode $phone_country_code)

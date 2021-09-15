@@ -73,6 +73,7 @@ Route::middleware('jwt.verify')->group(function () {
 
         //filtration for interviews
         Route::get("interviews/filtration", ["App\Http\Controllers\API\InterviewController", "filtration"]);
+        Route::get('users/search/{query}', ["App\Http\Controllers\API\UserController", "search"]);
 
     });
 

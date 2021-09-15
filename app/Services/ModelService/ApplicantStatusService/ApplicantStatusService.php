@@ -26,9 +26,9 @@ class ApplicantStatusService implements ApplicantStatusServiceInterface
 
     /**
      * @param $id
-     * @return mixed
+     * @return bool
      */
-    public function destroy($id)
+    public function destroy($id): bool
     {
         return $this->applicant_status_repository->getById($id)->destroy();
     }

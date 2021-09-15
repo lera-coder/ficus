@@ -12,7 +12,7 @@ use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 class UserPermissionsRepository implements UserPermissionsRepositoryInterface
 {
 
-    public UserPermission $model;
+    public $model;
 
     public function __construct(UserPermission $permission)
     {

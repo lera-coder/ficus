@@ -11,8 +11,8 @@ use Illuminate\Database\Eloquent\Collection;
 
 class UserApplicantPermissionRepository implements UserApplicantPermissionRepositoryInterface
 {
-    public UserApplicantPermission $model;
-    protected InterviewRepositoryInterface $interview_repository;
+    public $model;
+    protected $interview_repository;
 
     public function __construct(UserApplicantPermission $user_applicant_permission,
                                 InterviewRepositoryInterface $interview_repository)

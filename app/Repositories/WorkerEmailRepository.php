@@ -11,7 +11,7 @@ use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
 class WorkerEmailRepository implements WorkerEmailRepositoryInterface
 {
-    public WorkerEmail $model;
+    public $model;
 
     public function __construct(WorkerEmail $worker_email)
     {

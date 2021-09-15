@@ -12,7 +12,7 @@ use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 class InterviewStatusRepository implements InterviewStatusRepositoryInterface
 {
 
-    public InterviewStatus $model;
+    public $model;
 
     public function __construct(InterviewStatus $interviewStatus)
     {
