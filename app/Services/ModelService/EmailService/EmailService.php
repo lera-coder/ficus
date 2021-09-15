@@ -4,19 +4,17 @@
 namespace App\Services\ModelService\EmailService;
 
 
+use App\Exceptions\UnsuccessfullDeleteException;
 use App\Repositories\Interfaces\EmailRepositoryInterface;
 use App\Repositories\Interfaces\UserRepositoryInterface;
-use Illuminate\Contracts\Foundation\Application;
-use Illuminate\Contracts\Routing\ResponseFactory;
-use Illuminate\Http\Response;
-use Symfony\Component\HttpFoundation\Exception\JsonException;
 
 class EmailService implements EmailServiceInterface
 {
     protected $email_repository;
     protected $user_repository;
 
-    public function __construct(EmailRepositoryInterface $repository, UserRepositoryInterface $user_repository)
+    public function __construct(EmailRepositoryInterface $repository,
+                                UserRepositoryInterface $user_repository)
     {
         $this->email_repository = $repository;
         $this->user_repository = $user_repository;
@@ -41,16 +39,17 @@ class EmailService implements EmailServiceInterface
     }
 
     /**
-     * @param $id
-     * @return Application|ResponseFactory|Response
+     * @param int $id
+     * @return bool
+     * @throws UnsuccessfullDeleteException
      */
-    public function destroy($id)
+    public function destroy(int $id): bool
     {
-        try {
-            $this->email_repository->model->destroy($id);
-        } catch (JsonException $e) {
-            return response(['error' => $e->getMessage()], 404);
+        if (!$this->email_repository->model->destroy($id)) {
+            throw new UnsuccessfullDeleteException;
         }
+
+        return true;
     }
 
 

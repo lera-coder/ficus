@@ -111,7 +111,7 @@ class InterviewService implements InterviewServiceInterface
     public function deleteApplicantFromInterview($interview_id, $applicant_id)
     {
         try {
-            $field_id = DB::table('applicants_interviews')
+            DB::table('applicants_interviews')
                 ->where('applicant_id', $applicant_id)
                 ->where('interview_id', $interview_id)
                 ->delete();
@@ -180,7 +180,7 @@ class InterviewService implements InterviewServiceInterface
             $request_array['applicants'] = $this->getValidArrayFromKeysString($request_array['applicants']);
         if (array_key_exists('interview-dates', $request_array))
             $request_array['interview-dates'] = $this->getValidInterviewDateArray($request_array['interview-dates']);
-        if(array_key_exists('sort', $request_array)){
+        if (array_key_exists('sort', $request_array)) {
             $request_array['sort'] = $this->getValidSortArray($request_array['sort']);
         }
 
@@ -206,23 +206,6 @@ class InterviewService implements InterviewServiceInterface
         return explode('_', $request_string_keys);
     }
 
-    public function getValidSortArray(string $sort_string){
-        $sort_variants = ["interview-date"=>"interview_time", "applicants"=>"name", "interviewers"=>"interviewer_id"];
-        $sort_result = [];
-        if(str_contains('_', $sort_string)){
-            $sort_array = explode('_', $sort_string);
-            $sort_result[1] = $sort_array[1];
-            $sort_result[0] = $sort_variants[$sort_array[0]];
-        }
-        else{
-            $sort_result[0] = $sort_variants[$sort_string];
-            $sort_result[1] = 'asc';
-        }
-        return $sort_result;
-
-
-    }
-
     /**
      * @param string $dates
      * @return array[]
@@ -240,16 +223,15 @@ class InterviewService implements InterviewServiceInterface
                 array_push($dates_in, $this->convertStringToDateTime($date));
             }
         }
-        return array('dates_between'=>$dates_between, 'dates_in'=>$dates_in);
+        return array('dates_between' => $dates_between, 'dates_in' => $dates_in);
     }
-
-
 
     /**
      * @param array $date
      * @return array
      */
-    protected function convertArrayToDateTime(array $date){
+    protected function convertArrayToDateTime(array $date)
+    {
         $date[0] = $this->convertStringToDateTime($date[0]);
         $date[1] = $this->convertStringToDateTime($date[1]);
         return $date;
@@ -260,14 +242,27 @@ class InterviewService implements InterviewServiceInterface
      * @return string
      * @throws Exception
      */
-    protected function convertStringToDateTime(string $date){
+    protected function convertStringToDateTime(string $date)
+    {
         return new DateTime($date);
     }
 
+    public function getValidSortArray(string $sort_string)
+    {
+        $sort_variants = ["interview-date" => "interview_time", "applicants" => "name", "interviewers" => "interviewer_id"];
+        $sort_result = [];
+        if (str_contains('_', $sort_string)) {
+            $sort_array = explode('_', $sort_string);
+            $sort_result[1] = $sort_array[1];
+            $sort_result[0] = $sort_variants[$sort_array[0]];
+        } else {
+            $sort_result[0] = $sort_variants[$sort_string];
+            $sort_result[1] = 'asc';
+        }
+        return $sort_result;
 
 
-
-
+    }
 
 
 }

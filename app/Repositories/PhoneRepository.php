@@ -14,7 +14,7 @@ use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 class PhoneRepository implements PhoneRepositoryInterface
 {
 
-    public Phone $model;
+    public $model;
 
     public function __construct(Phone $phone)
     {

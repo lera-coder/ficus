@@ -13,7 +13,7 @@ use Illuminate\Support\Collection;
 class ApplicantStatusRepository implements ApplicantStatusRepositoryInterface
 {
 
-    public ApplicantStatus $model;
+    public $model;
 
     public function __construct(ApplicantStatus $applicant_status)
     {

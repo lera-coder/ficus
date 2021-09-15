@@ -11,7 +11,7 @@ use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
 class TechnologyRepository implements TechnologyRepositoryInterface
 {
-    public Technology $model;
+    public $model;
 
     public function __construct(Technology $technology)
     {

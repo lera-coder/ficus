@@ -3,6 +3,7 @@
 
 namespace App\Services\ModelService\ApplicantService;
 
+use App\Exceptions\UnsuccessfullDeleteException;
 use App\Repositories\Interfaces\ApplicantRepositoryInterface;
 use Illuminate\Database\Eloquent\Builder;
 
@@ -16,22 +17,25 @@ class ApplicantService implements ApplicantServiceInterface
     }
 
     /**
-     * @param $id
-     * @param $data
+     * @param int $id
+     * @param array $data
      * @return Builder
      */
-    public function update($id, $data): Builder
+    public function update(int $id, array $data): Builder
     {
         return $this->applicant_repository->getById($id)->update($data);
     }
 
     /**
-     * @param $id
-     * @return mixed
+     * @param int $id
+     * @return bool
      */
-    public function destroy($id)
+    public function destroy(int $id): bool
     {
-        return $this->applicant_repository->getById($id)->destroy();
+        if (!$this->applicant_repository->model->destroy($id)) {
+            throw new UnsuccessfullDeleteException;
+        }
+        return true;
     }
 
     /**

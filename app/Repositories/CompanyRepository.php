@@ -9,7 +9,7 @@ use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
 class CompanyRepository implements CompanyRepositoryInterface
 {
-    public Company $model;
+    public $model;
 
     public function __construct(Company $company)
     {

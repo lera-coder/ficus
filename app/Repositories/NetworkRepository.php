@@ -12,7 +12,7 @@ use Illuminate\Support\Collection;
 
 class NetworkRepository implements NetworkRepositoryInterface
 {
-    protected Network $model;
+    protected $model;
 
     public function __construct(Network $network)
     {

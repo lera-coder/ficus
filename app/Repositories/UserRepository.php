@@ -18,7 +18,7 @@ use Illuminate\Support\Facades\DB;
 
 class UserRepository implements UserRepositoryInterface
 {
-    public User $model;
+    public $model;
 
     public function __construct(User $user)
     {
@@ -180,5 +180,18 @@ class UserRepository implements UserRepositoryInterface
     public function me()
     {
         return $this->model->me();
+    }
+
+
+    public function search($query){
+        $users = DB::table('users')
+            ->join('emails', 'users.id', '=', 'emails.user_id')
+            ->join('phones', 'users.id', '=', 'phones.user_id')
+            ->select('users.*', 'emails.email', 'phones.phone_number')
+            ->where('email', 'like', "%{$query}%")
+            ->oRwhere('login', 'like', "%{$query}%")
+            ->pluck('id')->toArray();
+
+        return User::all()->whereIn('id', array_unique($users));
     }
 }

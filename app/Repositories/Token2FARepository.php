@@ -11,7 +11,7 @@ use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
 class Token2FARepository implements Token2FARepositoryInterface
 {
-    protected Token2fa $model;
+    protected $model;
 
     public function __construct(Token2fa $token2FA)
     {

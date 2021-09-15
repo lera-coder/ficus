@@ -15,7 +15,7 @@ use Illuminate\Database\Eloquent\Collection;
 
 class KnowledgeRepository implements KnowledgeRepositoryInterface
 {
-    public Knowledge $model;
+    public $model;
 
     public function __construct(Knowledge $knowledge)
     {

@@ -12,7 +12,7 @@ use Illuminate\Support\Collection;
 
 class LevelRepository implements LevelRepositoryInterface
 {
-    public Level $model;
+    public $model;
 
     public function __construct(Level $level)
     {

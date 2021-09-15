@@ -22,9 +22,9 @@ class InterviewRepository implements InterviewRepositoryInterface
 {
     use Filterable;
 
-    public Interview $model;
-    protected ApplicantRepositoryInterface $applicant_repository;
-    protected InterviewStatusRepositoryInterface $interview_status_repository;
+    public $model;
+    protected $applicant_repository;
+    protected $interview_status_repository;
 
     public function __construct(Interview $interview,
                                 ApplicantRepositoryInterface $applicant_repository,

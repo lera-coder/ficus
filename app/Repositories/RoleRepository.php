@@ -11,7 +11,7 @@ use Illuminate\Pagination\LengthAwarePaginator;
 
 class RoleRepository implements RoleRepositoryInterface
 {
-    public Role $model;
+    public $model;
 
     public function __construct(Role $role)
     {

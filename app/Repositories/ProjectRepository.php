@@ -14,7 +14,7 @@ use Illuminate\Support\Collection;
 
 class ProjectRepository implements ProjectRepositoryInterface
 {
-    public Project $model;
+    public $model;
 
     public function __construct(Project $project)
     {

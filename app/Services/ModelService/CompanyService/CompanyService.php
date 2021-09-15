@@ -25,9 +25,9 @@ class CompanyService implements CompanyServiceInterface
 
     /**
      * @param $id
-     * @return mixed
+     * @return bool
      */
-    public function destroy($id)
+    public function destroy($id):bool
     {
         return $this->company_repository->getById($id)->destroy();
     }
@@ -38,6 +38,6 @@ class CompanyService implements CompanyServiceInterface
      */
     public function create($data)
     {
-        return $this->company_repository->company->create($data);
+        return $this->company_repository->model->create($data);
     }
 }
