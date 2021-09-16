@@ -29,7 +29,7 @@ interface UserRepositoryInterface extends RepositoryInterface
 
     public function getInterviewerIds();
 
-
+    public function search($query);
 
 
     }

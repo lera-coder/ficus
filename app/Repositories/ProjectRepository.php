@@ -11,6 +11,7 @@ use App\Models\Worker;
 use App\Repositories\Interfaces\ProjectRepositoryInterface;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
 
 class ProjectRepository implements ProjectRepositoryInterface
 {
@@ -60,6 +61,15 @@ class ProjectRepository implements ProjectRepositoryInterface
         return $this->getById($id)->status;
     }
 
+    /**
+     * @param int $id
+     * @return mixed
+     * @throws ModelNotFoundException
+     */
+    public function users(int $id){
+        return $this->getById($id)->users;
+    }
+
 
     /**
      * @param int $id
@@ -80,5 +90,17 @@ class ProjectRepository implements ProjectRepositoryInterface
     public function technologies(int $id): Collection
     {
         return $this->getById($id)->technologies;
+    }
+
+    public function search(string $query){
+        $projects = DB::table('projects')
+            ->join('companies', 'companies.id', '=', 'projects.company_id')
+            ->select('projects.*', 'companies.name')
+            ->where('companies.name', 'like', "%{$query}%")
+            ->oRwhere('projects.name', 'like', "%{$query}%")
+            ->oRwhere('projects.description', 'like', "%{$query}%")
+            ->pluck('id')->toArray();
+
+        return Project::all()->whereIn('id', array_unique($projects));
     }
 }

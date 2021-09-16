@@ -2,12 +2,15 @@
 
 namespace App\Http\Controllers\API;
 
-use App\Http\Requests\CreateProjectRequest;
-use App\Http\Requests\UpdateProjectRequest;
+
+use App\Http\Requests\ProjectRequests\CreateProjectRequest;
+use App\Http\Requests\ProjectRequests\UpdateProjectRequest;
+use App\Http\Resources\ProjectResources\ProjectFullResourceCollection;
 use App\Models\Project;
 use App\Repositories\Interfaces\ProjectRepositoryInterface;
 use App\Services\ModelService\ProjectService\ProjectServiceInterface;
 use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\ResourceCollection;
 use Illuminate\Http\Response;
 
 class ProjectController extends Controller
@@ -33,8 +36,8 @@ class ProjectController extends Controller
 
 
     /**
-     * @param Request $request
-     * @return Response
+     * @param CreateProjectRequest $request
+     * @return mixed
      */
     public function store(CreateProjectRequest $request)
     {
@@ -53,9 +56,9 @@ class ProjectController extends Controller
 
 
     /**
-     * @param Request $request
-     * @param Project $project
-     * @return Response
+     * @param UpdateProjectRequest $request
+     * @param $id
+     * @return mixed
      */
     public function update(UpdateProjectRequest $request, $id)
     {
@@ -64,11 +67,19 @@ class ProjectController extends Controller
     }
 
     /**
-     * @param Project $project
-     * @return Response
+     * @param $id
+     * @return mixed
      */
     public function destroy($id)
     {
         return $this->project_service->destroy($id);
+    }
+
+    /**
+     * @param string $query
+     * @return ProjectFullResourceCollection
+     */
+    public function search(string $query):ProjectFullResourceCollection{
+        return new ProjectFullResourceCollection($this->project_repository->search($query));
     }
 }

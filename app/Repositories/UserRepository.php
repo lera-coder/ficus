@@ -41,7 +41,7 @@ class UserRepository implements UserRepositoryInterface
      */
     public function disactivePhones(int $id): Collection
     {
-        return $this->phones($id)->notActive();
+        return $this->phones($id)->where('is_active', 0);
     }
 
     /**
@@ -90,7 +90,7 @@ class UserRepository implements UserRepositoryInterface
      */
     public function activePhone(int $id): Phone
     {
-        return $this->phones($id)->active()->first();
+        return $this->phones($id)->where('is_active', 1)->first();
     }
 
     /**
@@ -134,14 +134,15 @@ class UserRepository implements UserRepositoryInterface
     }
 
     /**
-     * @param $id
-     * @return bool
+     * @param int $id
+     * @return Collection|null
+     * @throws ModelNotFoundException
      */
-    public function disactiveEmails($id): bool
+    public function disactiveEmails(int $id):?Collection
     {
         $emails = $this->emails($id);
-        return (is_null($emails)) ?:
-            $emails->notActive()->get();
+        return (is_null($emails)) ? $emails:
+            $emails->where('is_active', 0);
     }
 
     /**
@@ -161,7 +162,7 @@ class UserRepository implements UserRepositoryInterface
      */
     public function activeEmail(int $id): Email
     {
-        return $this->emails($id)->active()->first();
+        return $this->emails($id)->where('is_active', 1)->first();
     }
 
 
@@ -183,13 +184,20 @@ class UserRepository implements UserRepositoryInterface
     }
 
 
-    public function search($query){
+    /**
+     * @param $query
+     * @return Collection
+     */
+    public function search($query):Collection{
+
         $users = DB::table('users')
             ->join('emails', 'users.id', '=', 'emails.user_id')
             ->join('phones', 'users.id', '=', 'phones.user_id')
             ->select('users.*', 'emails.email', 'phones.phone_number')
             ->where('email', 'like', "%{$query}%")
             ->oRwhere('login', 'like', "%{$query}%")
+            ->oRwhere('name', 'like', "%{$query}%")
+            ->oRwhere('phone_number', 'like', "%{$query}%")
             ->pluck('id')->toArray();
 
         return User::all()->whereIn('id', array_unique($users));
