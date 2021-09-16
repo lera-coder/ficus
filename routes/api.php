@@ -40,6 +40,8 @@ Route::middleware('jwt.verify')->group(function () {
         Route::resource('worker-positions', "App\Http\Controllers\API\WorkerPositionController")->except('edit', 'create');
         Route::resource('worker-emails', "App\Http\Controllers\API\WorkerEmailController")->except('edit', 'create');
         Route::resource('worker-phones', "App\Http\Controllers\API\WorkerPhoneController")->except('edit', 'create');
+        Route::resource("users", "App\Http\Controllers\API\UserController")->except('edit', 'create');
+
 //        Route::get('networks', ["App\Http\Controllers\API\NetworkController", "index"])->name('networks');
 
         //Method to get phones by countries
@@ -74,6 +76,7 @@ Route::middleware('jwt.verify')->group(function () {
         //filtration for interviews
         Route::get("interviews/filtration", ["App\Http\Controllers\API\InterviewController", "filtration"]);
         Route::get('users/search/{query}', ["App\Http\Controllers\API\UserController", "search"]);
+        Route::get('projects/search/{query}', ["App\Http\Controllers\API\ProjectController", "search"]);
 
     });
 

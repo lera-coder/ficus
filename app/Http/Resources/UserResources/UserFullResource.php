@@ -2,6 +2,8 @@
 
 namespace App\Http\Resources\UserResources;
 
+use App\Http\Resources\EmailResources\EmailResource;
+use App\Http\Resources\PhoneResources\PhoneResource;
 use App\Repositories\Interfaces\EmailRepositoryInterface;
 use App\Repositories\Interfaces\UserRepositoryInterface;
 use Illuminate\Http\Resources\Json\JsonResource;

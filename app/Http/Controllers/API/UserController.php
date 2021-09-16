@@ -5,13 +5,17 @@ namespace App\Http\Controllers\API;
 use App\Http\Requests\UserRequests\CreateUserRequest;
 use App\Http\Requests\UserRequests\UpdateUserRequest;
 use App\Http\Resources\UserApplicantPermissionResources\ApplicantPermissionForUsersCollection;
+use App\Http\Resources\UserResources\UserFullResourceCollection;
 use App\Models\User;
 use App\Repositories\Interfaces\UserApplicantPermissionRepositoryInterface;
 use App\Repositories\Interfaces\UserRepositoryInterface;
 use App\Services\ModelService\UserService\UserServiceInterface;
+use App\Services\SearchService\UserSearchService\UserSearchServiceInterface;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\Routing\ResponseFactory;
-use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Collection as EloquentCollection;
+use Illuminate\Http\Resources\Json\ResourceCollection;
+use \Illuminate\Support\Collection as SupportCollection;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
@@ -34,7 +38,7 @@ class UserController extends Controller
 
 
     /**
-     * @return User[]|Collection
+     * @return User[]|EloquentCollection
      */
     public function index()
     {
@@ -43,7 +47,8 @@ class UserController extends Controller
 
 
     /**
-     * @param Request $request
+     * @param CreateUserRequest $request
+     * @return mixed
      */
     public function store(CreateUserRequest $request)
     {
@@ -104,8 +109,15 @@ class UserController extends Controller
             ->getByUser($id));
     }
 
-    public function search($query){
-        return  $this->user_repository->search($query);
+
+    /**
+     * @param $query
+     * @param UserSearchServiceInterface $searchService
+     * @return UserFullResourceCollection
+     */
+    public function search($query, UserSearchServiceInterface $searchService):UserFullResourceCollection
+    {
+        return new UserFullResourceCollection($searchService->search($query));
     }
 
 

@@ -14,4 +14,8 @@ interface ProjectRepositoryInterface extends RepositoryInterface
 
     public function technologies(int $id);
 
+    public function search(string $query);
+
+    public function users(int $id);
+
 }

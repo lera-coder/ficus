@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Exceptions\ModelNotFoundException;
+use App\Traits\Searchable;
 use Illuminate\Contracts\Auth\CanResetPassword;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -18,7 +19,7 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
 
 class User extends Authenticatable implements JWTSubject, MustVerifyEmail, CanResetPassword
 {
-    use HasFactory, Notifiable;
+    use HasFactory, Notifiable, Searchable;
 
 
     protected $fillable = [
@@ -35,6 +36,12 @@ class User extends Authenticatable implements JWTSubject, MustVerifyEmail, CanRe
         'remember_token',
         'two_factor_options'
     ];
+
+//    protected $casts = [
+//
+//        'login' => 'json',
+//        'name' =>'json'
+//    ];
 
     /**
      * @param $id

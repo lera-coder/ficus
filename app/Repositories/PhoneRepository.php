@@ -59,9 +59,8 @@ class PhoneRepository implements PhoneRepositoryInterface
     public function activePhone(int $user_id): Phone
     {
         return $this->model
-            ->query()
             ->where('user_id', $user_id)
-            ->active()
+            ->where('is_active', 1)
             ->first();
     }
 

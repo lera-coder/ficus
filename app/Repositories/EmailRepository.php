@@ -35,9 +35,8 @@ class EmailRepository implements EmailRepositoryInterface
     public function activeEmail(int $user_id): Email
     {
         return $this->model
-            ->query()
             ->where('user_id', $user_id)
-            ->active()
+            ->where('is_active', 1)
             ->first();
     }
 
