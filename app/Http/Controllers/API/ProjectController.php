@@ -9,6 +9,7 @@ use App\Http\Resources\ProjectResources\ProjectFullResourceCollection;
 use App\Models\Project;
 use App\Repositories\Interfaces\ProjectRepositoryInterface;
 use App\Services\ModelService\ProjectService\ProjectServiceInterface;
+use App\Services\SearchService\ProjectSearchService\ProjectSearchServiceInterface;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\ResourceCollection;
 use Illuminate\Http\Response;
@@ -79,7 +80,9 @@ class ProjectController extends Controller
      * @param string $query
      * @return ProjectFullResourceCollection
      */
-    public function search(string $query):ProjectFullResourceCollection{
-        return new ProjectFullResourceCollection($this->project_repository->search($query));
+    public function search(string $query,
+                           ProjectSearchServiceInterface $project_search_service)
+                           :ProjectFullResourceCollection{
+        return new ProjectFullResourceCollection($project_search_service->search($query));
     }
 }
