@@ -186,9 +186,9 @@ class UserRepository implements UserRepositoryInterface
 
     /**
      * @param $query
-     * @return Collection
+     * @return \Illuminate\Database\Query\Builder
      */
-    public function search($query):Collection{
+    public function search($query){
 
         $users = DB::table('users')
             ->join('emails', 'users.id', '=', 'emails.user_id')
@@ -200,6 +200,6 @@ class UserRepository implements UserRepositoryInterface
             ->oRwhere('phone_number', 'like', "%{$query}%")
             ->pluck('id')->toArray();
 
-        return User::all()->whereIn('id', array_unique($users));
+        return DB::table('users')->whereIn('id', array_unique($users));
     }
 }

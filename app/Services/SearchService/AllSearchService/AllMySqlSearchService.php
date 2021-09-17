@@ -4,10 +4,12 @@
 namespace App\Services\SearchService\AllSearchService;
 
 
+use App\Http\Resources\PaginateItemsSearch\PaginateItemsCollection;
 use App\Http\Resources\ProjectResources\ProjectFullResourceCollection;
 use App\Http\Resources\UserResources\UserFullResourceCollection;
 use App\Services\SearchService\ProjectSearchService\ProjectSearchServiceInterface;
 use App\Services\SearchService\UserSearchService\UserSearchServiceInterface;
+use Illuminate\Support\Facades\DB;
 
 class AllMySqlSearchService implements AllSearchServiceInterface
 {
@@ -23,8 +25,11 @@ class AllMySqlSearchService implements AllSearchServiceInterface
 
     public function search(string $query)
     {
-        $users = new UserFullResourceCollection($this->userSearchService->search($query));
-        $projects = new ProjectFullResourceCollection($this->projectSearchService->search($query));
-        return $users->merge($projects);
+        $users = $this->userSearchService->search($query);
+        $users = $users->select('users.*')->addSelect(DB::raw("'User' as 'model'"));
+        $projects = $this->projectSearchService->search($query);
+        $projects = $projects->select('projects.*')->addSelect(DB::raw("'Project' as 'model'"));
+//        return $projects->union($users)->paginate(20);
+        return new PaginateItemsCollection($projects->union($users)->paginate(20));
     }
 }

@@ -83,6 +83,6 @@ class ProjectController extends Controller
     public function search(string $query,
                            ProjectSearchServiceInterface $project_search_service)
                            :ProjectFullResourceCollection{
-        return new ProjectFullResourceCollection($project_search_service->search($query));
+        return new ProjectFullResourceCollection($project_search_service->search($query)->paginate(20));
     }
 }

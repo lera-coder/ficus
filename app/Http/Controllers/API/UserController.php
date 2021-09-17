@@ -15,7 +15,7 @@ use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\Routing\ResponseFactory;
 use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Http\Resources\Json\ResourceCollection;
-use \Illuminate\Support\Collection as SupportCollection;
+use Illuminate\Support\Collection as SupportCollection;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
@@ -110,14 +110,11 @@ class UserController extends Controller
     }
 
 
-    /**
-     * @param $query
-     * @param UserSearchServiceInterface $searchService
-     * @return UserFullResourceCollection
-     */
-    public function search($query, UserSearchServiceInterface $searchService):UserFullResourceCollection
+
+    public function search($query, UserSearchServiceInterface $searchService)
     {
-        return new UserFullResourceCollection($searchService->search($query));
+//        return $searchService->search($query)->get();
+        return new UserFullResourceCollection($searchService->search($query)->paginate(20));
     }
 
 

@@ -36,7 +36,6 @@ class UserFullResource extends JsonResource
             'disactive_emails'=> EmailResource::collection($this->user_repository->disactiveEmails($this->id)),
             'phone'=>new PhoneResource($this->user_repository->activePhone($this->id)),
             'disactive_phones'=> PhoneResource::collection($this->user_repository->disactivePhones($this->id)),
-            'network'=>$this->network
 
         ];
     }
