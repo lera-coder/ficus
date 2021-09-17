@@ -13,8 +13,6 @@
         "laravel/framework": "^8.40",
         "laravel/socialite": "^5.2",
         "laravel/tinker": "^2.5",
-        "nexmo/client": "@beta",
-        "nexmo/laravel": "^2.4",
         "predis/predis": "^1.1",
         "swiftmailer/swiftmailer": "^6.0",
         "tymon/jwt-auth": "dev-develop",

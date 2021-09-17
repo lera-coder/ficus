@@ -92,6 +92,10 @@ class ProjectRepository implements ProjectRepositoryInterface
         return $this->getById($id)->technologies;
     }
 
+    /**
+     * @param string $query
+     * @return \Illuminate\Database\Query\Builder
+     */
     public function search(string $query){
         $projects = DB::table('projects')
             ->join('companies', 'companies.id', '=', 'projects.company_id')
@@ -101,6 +105,6 @@ class ProjectRepository implements ProjectRepositoryInterface
             ->oRwhere('projects.description', 'like', "%{$query}%")
             ->pluck('id')->toArray();
 
-        return Project::all()->whereIn('id', array_unique($projects));
+        return DB::table('projects')->whereIn('id', array_unique($projects));
     }
 }
