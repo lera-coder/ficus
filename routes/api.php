@@ -1,5 +1,6 @@
 <?php
 
+use App\Services\SearchService\AllSearchService\AllSearchServiceInterface;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -18,7 +19,7 @@ Route::middleware('jwt.verify')->group(function () {
 
 
     //Routes in Admin Panel
-    Route::middleware(['verified','auth.2fa'])->group(function () {
+    Route::middleware(['verified', 'auth.2fa'])->group(function () {
 
         //Model Routes
         Route::resource('companies', 'App\Http\Controllers\API\CompanyController')->except('edit', 'create');
@@ -75,18 +76,23 @@ Route::middleware('jwt.verify')->group(function () {
 
         //filtration for interviews
         Route::get("interviews/filtration", ["App\Http\Controllers\API\InterviewController", "filtration"]);
+
+        //searching
         Route::get('users/search/{query}', ["App\Http\Controllers\API\UserController", "search"]);
         Route::get('projects/search/{query}', ["App\Http\Controllers\API\ProjectController", "search"]);
+        Route::get('search/{query}', function ($query, AllSearchServiceInterface $allSearchService) {
+            return $allSearchService->search($query);
+        });
 
     });
 
     //2auth
-    Route::post('2auth/token',['App\Http\Controllers\API\Auth\AuthController', 'post2FAToken'])->name('post2auth.token');
+    Route::post('2auth/token', ['App\Http\Controllers\API\Auth\AuthController', 'post2FAToken'])->name('post2auth.token');
 
     //Email verifiing
     Route::get('email/verify', ['App\Http\Controllers\API\Auth\AuthController', 'verifyEmailNotice'])->name('verification.notice');
     Route::get('/email/verify/{id}/{hash}', ['App\Http\Controllers\API\Auth\AuthController', 'verifyEmailConfirm'])->name('verification.verify');
-    Route::post('/email/verification-notification',['App\Http\Controllers\API\Auth\AuthController', 'verifyEmailSend'])->middleware(['throttle:6,1'])->name('verification.send');
+    Route::post('/email/verification-notification', ['App\Http\Controllers\API\Auth\AuthController', 'verifyEmailSend'])->middleware(['throttle:6,1'])->name('verification.send');
 
 });
 
